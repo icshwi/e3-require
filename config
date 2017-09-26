@@ -1,0 +1,13 @@
+# PROJECT and LIBVERSION should be defined in the makefile arguments
+# * this conf file should be in require/App/tools in order to override the default envs for driver.makefile
+# * selected EPICS VERSIONS should be defined
+# * each BASE should has startup dir and  EpicsHostArch.pl
+# * EPICS_MODULES is the target location of the epics modules (dynamically updated)
+# * EPICS_LOCATION is the target location of the epics bases  (dynamically updated)
+DEFAULT_EPICS_VERSIONS = 3.15.4 3.15.5
+BUILDCLASSES = 
+EPICS_MODULES = /eee/modules
+MODULE_LOCATION = ${EPICS_MODULES}/$(or ${PRJ},$(error PRJ not defined))/$(or ${LIBVERSION},$(error LIBVERSION not defined))
+EPICS_LOCATION = /eee/bases
+
+
