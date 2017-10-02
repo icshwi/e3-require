@@ -9,7 +9,7 @@ EPICS_MODULE_NAME:=require
 # The EPICS community tag number, which we would like to install
 # within ESS EPICS Environment (ESS)
 
-# export EPICS_MODULE_TAG:=2.9
+export EPICS_MODULE_TAG:=require_2_5_3
 
 # (LOCAL) EPICS_MODULE_PATH
 # Usually, it is the directory in $(TOP), after cloning the repository
@@ -39,7 +39,7 @@ export PROJECT:=$(EPICS_MODULE_NAME)
 # as the epics module version, and it will be used in the iocsh script 
 # with the require commands, for example
 # require $(PROJECT),$(LIBVERSION)
-export LIBVERSION:=2.5.3-pre0
+export LIBVERSION:=2.5.3
 
 
 # It may be the sole reason why we have so many troubles related with

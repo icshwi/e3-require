@@ -51,22 +51,22 @@ default: help
 #
 ## Install  "Require" EPICS Module in order to use it
 install:
-	sudo -E bash -c 'make -C $(EPICS_MODULE_SRC_PATH) LIBVERSION=$(LIBVERSION) PROJECT=$(EPICS_MODULE_NAME) install'
+	sudo -E bash -c 'make -C $(EPICS_MODULE_SRC_PATH) -f $(ESS_MODULE_MAKEFILE) LIBVERSION=$(LIBVERSION) PROJECT=$(EPICS_MODULE_NAME) install'
 
 
 
 ## Build     EPICS Module in order to use it with EEE
-build: 
-	make -C $(EPICS_MODULE_SRC_PATH) LIBVERSION=$(LIBVERSION) PROJECT=$(EPICS_MODULE_NAME)
+build: conf
+	make -C $(EPICS_MODULE_SRC_PATH) -f $(ESS_MODULE_MAKEFILE) LIBVERSION=$(LIBVERSION) PROJECT=$(EPICS_MODULE_NAME)
 
 ## Clean     EPICS Module in terms of EEE Makefile (module.Makefile)
 clean:
-	make -C $(EPICS_MODULE_SRC_PATH) LIBVERSION=$(LIBVERSION) PROJECT=$(EPICS_MODULE_NAME) clean
+	make -C $(EPICS_MODULE_SRC_PATH) -f $(ESS_MODULE_MAKEFILE) LIBVERSION=$(LIBVERSION) PROJECT=$(EPICS_MODULE_NAME) clean
 
 
 ## Distclean EPICS Module in terms of EEE Makefile (module.Makefile)
 distclean:
-	make -C $(EPICS_MODULE_SRC_PATH) LIBVERSION=$(LIBVERSION) PROJECT=$(EPICS_MODULE_NAME) distclean
+	make -C $(EPICS_MODULE_SRC_PATH) -f $(ESS_MODULE_MAKEFILE) LIBVERSION=$(LIBVERSION) PROJECT=$(EPICS_MODULE_NAME) distclean
 
 
 ## Get      EPICS Module, and change its $(EPICS_MODULE_TAG)
@@ -75,7 +75,7 @@ init:
 	git submodule deinit -f $(EPICS_MODULE_NAME)/	
 	git submodule init $(EPICS_MODULE_NAME)/
 	git submodule update --init --remote --recursive $(EPICS_MODULE_NAME)/.
-#	cd $(EPICS_MODULE_NAME) && git checkout tags/$(EPICS_MODULE_TAG)
+	cd $(EPICS_MODULE_NAME) && git checkout tags/$(EPICS_MODULE_TAG)
 
 
 ## Print ENV variables
@@ -102,5 +102,12 @@ env:
 dirs:
 	@echo $(M_DIRS) || true
 
+conf:
 
-.PHONY: install build clean distclean init env dirs
+	@install -m 664 $(TOP)/configure/require_config $(EPICS_MODULE_SRC_PATH)/App/tools/config
+	@install -m 644 $(TOP)/$(ESS_MODULE_MAKEFILE)   $(EPICS_MODULE_SRC_PATH)/
+#	@sudo install -d -m 755 /ioc/tools/
+#	@sudo install -m 755 $(TOP)/App/tools/* /ioc/tools/*
+#	@sudo install -m 664 $(TOP)/configure/require_config  /ioc/tools/config
+
+.PHONY: install build clean distclean init env dirs conf
