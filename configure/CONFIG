@@ -39,7 +39,7 @@ export PROJECT:=$(EPICS_MODULE_NAME)
 # as the epics module version, and it will be used in the iocsh script 
 # with the require commands, for example
 # require $(PROJECT),$(LIBVERSION)
-export LIBVERSION:=2.5.3
+# export LIBVERSION:=2.5.3
 
 
 # It may be the sole reason why we have so many troubles related with
@@ -49,3 +49,5 @@ export LIBVERSION:=2.5.3
 
 
 
+E3_ENV:=e3-env
+E3_ENV_TAG:=master

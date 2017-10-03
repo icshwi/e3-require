@@ -16,17 +16,36 @@
 #
 # Author  : Jeong Han Lee
 # email   : han.lee@esss.se
-# Date    : Tuesday, September 26 17:17:47 CEST 2017
+# Date    : Tuesday, October  3 14:57:53 CEST 2017
 # version : 0.0.1
 #
 
 
 TOP = $(CURDIR)
 
-
 include $(TOP)/configure/CONFIG
 
+E3_ENV_SRC=$(TOP)/e3-env/e3-env
+
+ifneq ($(wildcard $(E3_ENV_SRC)),)
+include $(E3_ENV_SRC)
+endif
+
+
 M_DIRS:=$(sort $(dir $(wildcard $(TOP)/*/.)))
+
+
+M_OPTIONS := -C $(EPICS_MODULE_SRC_PATH)
+M_OPTIONS += -f $(ESS_MODULE_MAKEFILE)
+M_OPTIONS += LIBVERSION="$(REQUIRE_VERSION)"
+M_OPTIONS += PROJECT="$(EPICS_MODULE_NAME)"
+M_OPTIONS += EPICS_MODULES="$(EPICS_MODULES)"
+M_OPTIONS += EPICS_LOCATION="$(EPICS_LOCATION)"
+M_OPTIONS += DEFAULT_EPICS_VERSIONS="$(DEFAULT_EPICS_VERSIONS)"
+
+unexport BUILDCLASSES
+
+
 
 # help is defined in 
 # https://gist.github.com/rcmachado/af3db315e31383502660
@@ -49,28 +68,37 @@ help:
 default: help
 
 #
-## Install  "Require" EPICS Module in order to use it
+## Install "Require" Module in order to use it
 install:
-	sudo -E bash -c 'make -C $(EPICS_MODULE_SRC_PATH) -f $(ESS_MODULE_MAKEFILE) LIBVERSION=$(LIBVERSION) PROJECT=$(EPICS_MODULE_NAME) install'
+	sudo -E bash -c 'make $(M_OPTIONS) install'
+	@sudo install -d -m 755  $(REQUIRE_TOOLS)
+	@sudo install -m 644 $(EPICS_MODULE_SRC_PATH)/App/tools/driver.makefile $(REQUIRE_TOOLS)/
+	@sudo install -m 755 $(EPICS_MODULE_SRC_PATH)/App/tools/*.tcl           $(REQUIRE_TOOLS)/
+	@sudo -E bash -c 'm4 -D_DEFAULT_EPICS_VERSIONS="$(DEFAULT_EPICS_VERSIONS)" -D_EPICS_MODULES="$(EPICS_MODULES)" -D_EPICS_LOCATION="$(EPICS_LOCATION)"  $(TOP)/configure/driver_makefile_conf.m4  > $(REQUIRE_TOOLS)/conf'
+	@sudo install -d -m 755 $(REQUIRE_BIN)
+	@sudo install -m 755 $(EPICS_MODULE_SRC_PATH)/iocsh $(REQUIRE_BIN)/
+
+#
+## Uninstall "Require" Module in order not to use it
+uninstall:
+	sudo -E bash -c 'make $(M_OPTIONS) uninstall'
 
 
-
-## Build     EPICS Module in order to use it with EEE
+## Build the EPICS Module
 build: conf
-	make -C $(EPICS_MODULE_SRC_PATH) -f $(ESS_MODULE_MAKEFILE) LIBVERSION=$(LIBVERSION) PROJECT=$(EPICS_MODULE_NAME)
+	make $(M_OPTIONS)
 
-## Clean     EPICS Module in terms of EEE Makefile (module.Makefile)
+## Clean the EPICS Module
 clean:
-	make -C $(EPICS_MODULE_SRC_PATH) -f $(ESS_MODULE_MAKEFILE) LIBVERSION=$(LIBVERSION) PROJECT=$(EPICS_MODULE_NAME) clean
+	make $(M_OPTIONS) clean
 
 
-## Distclean EPICS Module in terms of EEE Makefile (module.Makefile)
-distclean:
-	make -C $(EPICS_MODULE_SRC_PATH) -f $(ESS_MODULE_MAKEFILE) LIBVERSION=$(LIBVERSION) PROJECT=$(EPICS_MODULE_NAME) distclean
+## Initialize all environments
+init: e3-env mo-init
 
 
-## Get      EPICS Module, and change its $(EPICS_MODULE_TAG)
-init:
+## Get EPICS Module, and change its $(EPICS_MODULE_TAG)
+mo-init: 
 	@git submodule deinit -f $(EPICS_MODULE_NAME)/
 	git submodule deinit -f $(EPICS_MODULE_NAME)/	
 	git submodule init $(EPICS_MODULE_NAME)/
@@ -78,10 +106,9 @@ init:
 	cd $(EPICS_MODULE_NAME) && git checkout tags/$(EPICS_MODULE_TAG)
 
 
-## Print ENV variables
+## Print EPICS and ESS EPICS Environment variables
 env:
 	@echo ""
-	@echo "EPICS_BASE             : "$(EPICS_BASE)
 
 	@echo "EPICS_MODULE_NAME      : "$(EPICS_MODULE_NAME)
 	@echo "EPICS_MODULE_TAG       : "$(EPICS_MODULE_TAG)
@@ -91,10 +118,15 @@ env:
 	@echo "LIBVERSION             : "$(LIBVERSION)
 
 	@echo ""
-	@echo "EPICS_BASES_PATH       : "$(EPICS_BASES_PATH)
-	@echo "EPICS_MODULES_PATH     : "$(EPICS_MODULES_PATH)
-	@echo "EPICS_HOST_ARCH        : "$(EPICS_HOST_ARCH)
-	@echo "EPICS_ENV_PATH         : "$(EPICS_ENV_PATH)
+	@echo ">>>> ESS EPICS Environment <<<< "
+	@echo ""
+	@echo "EPICS_LOCATION         : "$(EPICS_LOCATION)
+	@echo "EPICS_MODULES          : "$(EPICS_MODULES)
+	@echo "DEFAULT_EPICS_VERSIONS : "$(DEFAULT_EPICS_VERSIONS)
+	@echo "REQUIRE_VERSION        : "$(REQUIRE_VERSION)
+	@echo "REQUIRE_PATH           : "$(REQUIRE_PATH)
+	@echo "REQUIRE_TOOLS          : "$(REQUIRE_TOOLS)
+	@echo "REQUIRE_BIN            : "$(REQUIRE_BIN)
 	@echo ""
 
 
@@ -103,11 +135,16 @@ dirs:
 	@echo $(M_DIRS) || true
 
 conf:
+	@install -m 644 $(TOP)/$(ESS_MODULE_MAKEFILE)  $(EPICS_MODULE_SRC_PATH)/
 
-	@install -m 664 $(TOP)/configure/require_config $(EPICS_MODULE_SRC_PATH)/App/tools/config
-	@install -m 644 $(TOP)/$(ESS_MODULE_MAKEFILE)   $(EPICS_MODULE_SRC_PATH)/
-#	@sudo install -d -m 755 /ioc/tools/
-#	@sudo install -m 755 $(TOP)/App/tools/* /ioc/tools/*
-#	@sudo install -m 664 $(TOP)/configure/require_config  /ioc/tools/config
+#
+#
+e3-env:
+	@git submodule deinit -f $(E3_ENV)/
+	git submodule deinit -f $(E3_ENV)/	
+	git submodule init $(E3_ENV)/
+	git submodule update --init --remote --recursive $(E3_ENV)/.
+#	cd $(E3_ENV) && git checkout tags/$(E3_ENV_TAG)
 
-.PHONY: install build clean distclean init env dirs conf
+
+.PHONY: install build clean distclean mo-init e3-env init env dirs conf

@@ -1,4 +1,8 @@
 
+# This is the one time path in order to compile and install
+# require within EPICS Environment. After the installation
+# include $(REQUIRE_TOOLS)/driver.makefile should be used
+#
 where_am_I := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 include ${where_am_I}/App/tools/driver.makefile
