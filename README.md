@@ -18,7 +18,7 @@ make install
 
 ## Execute iocsh
 
-``
+```
 cd e3-env
 . setE3env.bash
 iocsh
