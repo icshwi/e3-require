@@ -34,20 +34,9 @@ ESS_MODULE_MAKEFILE:=$(EPICS_MODULE_NAME).Makefile
 # require $(PROJECT),$(LIBVERSION)
 export PROJECT:=$(EPICS_MODULE_NAME)
 
-# (EEE) LIBVERSION
-# it is the jargon of EEE, the EEE generic makefile uses it 
-# as the epics module version, and it will be used in the iocsh script 
-# with the require commands, for example
-# require $(PROJECT),$(LIBVERSION)
-# export LIBVERSION:=2.5.3
 
 
-# It may be the sole reason why we have so many troubles related with
-# module version mismatch within the current EEE
-# 
-# export USR_DEPENDENCIES += devlib2,2.9.0
+# E3_ENV_NAME
+export E3_ENV_NAME:=e3-env
+#export E3_ENV_TAG:=v0.1
 
-
-
-E3_ENV:=e3-env
-E3_ENV_TAG:=master
