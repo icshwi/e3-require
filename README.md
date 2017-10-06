@@ -78,7 +78,11 @@ cas warning: Depending on your IP kernel this server may not be
 cas warning: reachable with UDP unicast (a host's IP in EPICS_CA_ADDR_LIST)
 iocRun: All initialization complete
 epicsEnvSet IOCSH_PS1,"kaffee> "
+```
 
+Switch the difference EPICS base, i.e., 3.15.5 
+
+```
 jhlee@kaffee: e3-require (master)$ . e3-env/setE3Env.bash "3.15.5"
 jhlee@kaffee: e3-require (master)$ iocsh
 
@@ -106,9 +110,6 @@ cas warning: Depending on your IP kernel this server may not be
 cas warning: reachable with UDP unicast (a host's IP in EPICS_CA_ADDR_LIST)
 iocRun: All initialization complete
 epicsEnvSet IOCSH_PS1,"kaffee> "
-
-
-
 
 ```
 
