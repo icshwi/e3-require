@@ -95,8 +95,9 @@ install:
 	 > $(REQUIRE_TOOLS)/conf'
 	$(QUIET) sudo install -d -m 755 $(REQUIRE_BIN)
 #	$(QUIET) sudo install -m 755 $(EPICS_MODULE_SRC_PATH)/iocsh $(REQUIRE_BIN)/
-	$(QUIET) sudo install -m 755 $(TOP)/iocsh.bash $(REQUIRE_BIN)/
-
+	$(QUIET) sudo install -m 755  $(TOP)/iocsh.bash       $(REQUIRE_BIN)/
+	$(QUIET) sudo install -m 644  $(TOP)/ess-env.conf     $(REQUIRE_BIN)/
+	$(QUIET) sudo install -m 644  $(TOP)/iocsh_functions  $(REQUIRE_BIN)/
 #
 ## Uninstall "Require" Module in order not to use it
 uninstall:
