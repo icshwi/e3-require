@@ -93,7 +93,8 @@ install:
 	 $(TOP)/configure/driver_makefile_conf.m4  \
 	 > $(REQUIRE_TOOLS)/conf'
 	$(QUIET) sudo install -d -m 755 $(REQUIRE_BIN)
-	$(QUIET) sudo install -m 755 $(EPICS_MODULE_SRC_PATH)/iocsh $(REQUIRE_BIN)/
+#	$(QUIET) sudo install -m 755 $(EPICS_MODULE_SRC_PATH)/iocsh $(REQUIRE_BIN)/
+	$(QUIET) sudo install -m 755 $(TOP)/iocsh.bash $(REQUIRE_BIN)/
 
 #
 ## Uninstall "Require" Module in order not to use it
@@ -120,7 +121,7 @@ git-submodule-sync:
 
 $(EPICS_MODULE_NAME): 
 	$(QUIET) $(git_update)
-	cd $@ && git checkout tags/$(EPICS_MODULE_TAG)
+	cd $@ && git checkout tags/$(REQUIRE_MODULE_TAG)
 
 
 $(E3_ENV_NAME): 
@@ -132,7 +133,7 @@ env:
 	$(QUIET) echo ""
 
 	$(QUIET) echo "EPICS_MODULE_NAME           : "$(EPICS_MODULE_NAME)
-	$(QUIET) echo "EPICS_MODULE_TAG            : "$(EPICS_MODULE_TAG)
+	$(QUIET) echo "REQUIRE_MODULE_TAG          : "$(REQUIRE_MODULE_TAG)
 	$(QUIET) echo "EPICS_MODULE_SRC_PATH       : "$(EPICS_MODULE_SRC_PATH)
 	$(QUIET) echo "ESS_MODULE_MAKEFILE         : "$(ESS_MODULE_MAKEFILE)
 

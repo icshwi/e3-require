@@ -5,11 +5,11 @@
 # 
 EPICS_MODULE_NAME:=require
 
-# (EPICS) EPICS_MODULE_TAG
-# The EPICS community tag number, which we would like to install
-# within ESS EPICS Environment (ESS)
+# # (EPICS) EPICS_MODULE_TAG
+# # The EPICS community tag number, which we would like to install
+# # within ESS EPICS Environment (ESS)
 
-export EPICS_MODULE_TAG:=require_2_5_3
+# export EPICS_MODULE_TAG:=require_2_5_3
 
 # (LOCAL) EPICS_MODULE_PATH
 # Usually, it is the directory in $(TOP), after cloning the repository

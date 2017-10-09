@@ -1,0 +1,236 @@
+# -*- mode: sh -*-
+
+ROOT_UID=0 
+E_NOTROOT=101
+EXIST=1
+NON_EXIST=0
+
+function pushd() { builtin pushd "$@" > /dev/null; }
+function popd()  { builtin popd  "$@" > /dev/null; }
+
+function checkIfRoot() {
+
+    if [[ $(id -u) -ne "$ROOT_UID" ]] ; then 
+	echo "Please run it as root or with sudo" ; 
+	exit $E_NOTROOT ;
+    fi
+
+}
+
+
+function checkIfDir() {
+
+    local dir=$1
+    local result=""
+    if [ ! -d "$dir" ]; then
+	result=$NON_EXIST
+	# doesn't exist
+    else
+	result=$EXIST
+	# exist
+    fi
+    echo "${result}"
+
+}
+
+function checkIfFile() {
+
+    local file=$1
+    local result=""
+    if [ ! -e "$file" ]; then
+	result=$NON_EXIST
+	# doesn't exist
+    else
+	result=$EXIST
+	# exist
+    fi
+    echo "${result}"	 
+}
+
+
+
+function checkIfVar() {
+
+    local var=$1
+    local result=""
+    if [ -z "$var" ]; then
+	result=$NON_EXIST
+	# doesn't exist
+    else
+	result=$EXIST
+	# exist
+    fi
+    echo "${result}"	 
+}
+
+
+function version () {
+    {	 
+    echo "European Spallation Souce ERIC iocsh"
+    } >&2
+    exit
+}
+
+
+
+function help () {
+    {
+    echo "usage: iocsh [options] [files]"
+    echo "Start an EPICS iocsh and load files"
+    echo "Recognized filetypes: *.db *.dbt *.template *.subs *.subst *.dbd *.so"
+    echo
+    echo "Possible options:"
+    echo " -3.xx.yy: Set EPICS base version."
+#    echo " -32: Force 32 bit version (on 64 bit systems)."
+    echo " -? or -h or --help: Show this page and exit."
+    echo " -v or --version: Show version and exit."
+    echo " -c: The next string is executed as a command by the EPICS shell."
+    echo " -s: The next string is a sequencer program (and arguments), run with 'seq'."
+    echo "     This forces an 'iocInit' before running the program."
+    echo " -r: The next string is a module (and version), loaded via 'require'."
+    echo " -n: The next string is the IOC name (used for prompt)."
+    echo "     Default: dirname if parent dir is \"ioc\" otherwise hostname."
+    echo
+    echo "Supported filetypes:"
+    echo "*.db, *.dbt and *.template are loaded via 'dbLoadRecords'."
+    echo "  After the filename, you can specify substitutions like MACRO=value."
+    echo "*.subs and *.subst are loaded via 'dbLoadTemplate'."
+    echo "*.dbd is loaded via 'dbLoadDatabase'."
+    echo "*.so is loaded via 'ld' or 'dlload' (3.14.12 or higer)."
+    echo "If an argument is @file, more arguments are read from that file."
+    echo "All other files are executed as startup scripts by the EPICS shell."
+    } >&2
+    exit
+}
+
+
+function subst () {
+    subst=""
+    while [ "$#" -gt 1 ]
+    do
+        case $2 in 
+            ( *=* )
+            subst="$subst,$2"; shift
+            ;;
+            ( * )
+            break
+            ;;
+        esac
+    done
+    echo ${subst#,}
+}
+
+function loadFiles () {
+    while [ "$#" -gt 0 ]
+    do
+	file=$1
+	case $file in
+	    ( -h | "-?" | -help | --help )
+            help
+            ;;
+	    ( -v | -ver | --ver | -version | --version )
+            version
+            ;;
+	    ( @* )              
+            loadFiles $(cat ${file#@})
+            ;;
+	    ( *.db | *.template)
+            subst=""
+            while [ "$#" -gt 1 ]
+            do
+		case $2 in 
+                    ( *=* )
+                    subst="$subst,$2"; shift
+                    ;;
+                    ( * )
+                    break
+                    ;;
+		esac
+            done
+            echo "dbLoadRecords \"$file\",\"${subst#,}\""
+            ;;
+	    ( *.subs | *.subst )
+            echo "dbLoadTemplate \"$file\""
+            ;;
+	    ( *.dbd )
+            # some dbd files must be loaded before main to take effect
+            echo "dbLoadDatabase \"$file\",\"$DBD\""
+            ;;
+	    ( *.so )             
+            if [ $BASEMINOR -ge 15 -o $BASEPATCH -ge 12 ]
+            then
+		echo "dlload \"$file\""
+            else
+		echo "ld \"$file\""
+            fi
+            ;;
+	    ( -c )               
+            shift
+            case $1 in
+		( seq* )
+		if [ "$init" != NO ]
+		then
+                    echo "iocInit"
+                    init=NO
+		fi
+		;;
+		( iocInit )
+		init=NO
+		;;
+            esac
+            echo $1
+            ;;
+	    ( -s )
+            shift
+            if [ "$init" != NO ]
+            then
+		echo "iocInit"
+		init=NO
+            fi
+            echo "seq $1"
+            ;;
+	    ( -r )               
+            shift
+            echo "require $1"
+            ;;
+	    ( -n )
+            shift
+            IOC="$1"
+            ;;
+	    ( -3.* )
+            echo "Version $file must be first argument" >&2
+            exit 1
+            ;;
+	    ( -32 )
+            echo "-32 option must come before all others (except -3.xx.yy)" >&2
+            exit 1
+            ;;
+	    ( -* )
+            {
+		echo "unknown option $1"
+		echo "try: $(basename $0) --help"
+            } >&2
+            exit 1
+	    ;;
+	    ( * )                
+            echo "< \"$file\""
+            if grep -q iocInit $file; then init=NO; fi
+            ;;
+	esac
+	shift
+    done
+}
+
+
+
+
+function select_epics_base() {
+
+    local base_version=$1;
+    local epics_base="";
+    epics_base=${EPICS_LOCATION}/base-${base_version#-}
+    echo ${epics_base}
+    
+}
+
+
