@@ -50,11 +50,15 @@ trap "softIoc_end" EXIT SIGTERM
     loadFiles   "$@"
 
     if [ "$init" != NO ]; then
-	echo "iocInit"
+	printf "iocInit\n"
     fi
 
     
 }  > ${STARTUP}
 
 ulimit -c unlimited
-softIoc -D ${EPICS_BASE}/dbd/softIoc.dbd "${STARTUP}" 2>&1
+# -x "PREFIX"
+# PREFIX:exit & PREFIX:BaseVersion PVs are added to softIoc
+# We can end this IOC via caput PREFIX:exit 1
+
+softIoc -D ${EPICS_BASE}/dbd/softIoc.dbd  -x "TEST" "${STARTUP}" 2>&1
