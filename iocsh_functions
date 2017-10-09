@@ -120,6 +120,40 @@ function subst () {
     echo ${subst#,}
 }
 
+
+function printIocEnv() {
+
+    local var="";
+    
+    printf "# date=\"$(date)\"\n"
+    printf "# user=\"${USER:-$(whoami)}\"\n"
+    
+    for var in PWD EPICS_HOST_ARCH  REQUIRE_PATH EPICS_CA_ADDR_LIST
+    do
+	printf "# $var=\"${!var}\"\n"
+    done
+    printf "\n";
+    
+}
+
+function loadRequire() {
+    
+    local libPrefix=lib
+    local libPostfix=.so
+    local libName=${libPrefix}${REQUIRE}${libPostfix}
+    
+    local require_lib=${RUNNING_REQUIRE_PATH}/lib/${EPICS_HOST_ARCH}/${libName}
+    local require_dbd=${RUNNING_REQUIRE_PATH}/dbd/${REQUIRE}.dbd
+
+    
+    local load_cmd="dlload"
+
+    printf "${load_cmd} ${require_lib}\n";
+    printf "dbLoadDatabase ${require_dbd}\n"
+    printf "${REQUIRE%-*}_registerRecordDeviceDriver\n\n"
+    
+}
+
 function loadFiles () {
     while [ "$#" -gt 0 ]
     do
