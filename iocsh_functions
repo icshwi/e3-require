@@ -233,4 +233,22 @@ function select_epics_base() {
     
 }
 
+# Ctrl+c : OK
+# exit   : OK
+# kill softioc process : OK
+# kill main precess : Enter twice in terminal,
+#                     close softIoc, but STATUP file is remained.
+#                     
+
+
+function softIoc_end() {
+    local pids=$(jobs -pr);
+    [ -n "$pids" ] && kill $pids;
+    stty sane;
+    printf "\n\n";
+
+    rm -f $STARTUP;
+  
+    
+}
 

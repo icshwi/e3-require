@@ -4,13 +4,14 @@
 declare -gr SC_SCRIPT="$(realpath "$0")"
 declare -gr SC_SCRIPTNAME=${0##*/}
 declare -gr SC_TOP="$(dirname "$SC_SCRIPT")"
-
+declare -g  STARTUP=""
 
 set -a
 . ${SC_TOP}/ess-env.conf
 set +a
 
 . ${SC_TOP}/iocsh_functions
+
 
 
 case $1 in
@@ -46,16 +47,23 @@ fi
 declare -g RUNNING_EPICS_BASE_VER=${EPICS_BASE##*/*-}
 declare -g RUNNING_REQUIRE_PATH=${EPICS_MODULES}/${REQUIRE}/${REQUIRE_VERSION}/R${RUNNING_EPICS_BASE_VER}
 
-startup=/tmp/iocsh.startup.$$
+# EPICS_BASE/bin should be in PATH
 
-# clean up and kill the softIoc when killed by any signal
-trap "kill -s SIGTERM 0; stty sane; echo; rm -f $startup; " EXIT
+declare -g SOFTIOC_CMD="softIoc"
+declare -g SOFTIOC_ARGS="-D ${EPICS_BASE}/dbd/softIoc.dbd"
+
+IOC=$(hostname|tr -d '\r')
+
+STARTUP=/tmp/${SC_SCRIPTNAME}_${IOC}_startup.$BASHPID
+
+
+trap "softIoc_end" EXIT SIGTERM
 
 {
     echo "# date=\"$(date)\""
     echo "# user=\"${USER:-$(whoami)}\""
     
-    for var in PWD BASE EPICS_HOST_ARCH SHELLBOX EPICS_CA_ADDR_LIST EPICS_DRIVER_PATH
+    for var in PWD EPICS_HOST_ARCH  REQUIRE_PATH EPICS_CA_ADDR_LIST
     do
 	echo "# $var=\"${!var}\""
     done
@@ -64,28 +72,27 @@ trap "kill -s SIGTERM 0; stty sane; echo; rm -f $startup; " EXIT
     LIBPREFIX=lib
     LIBPOSTFIX=.so
 
-    REQUIRE_LIB=${RUNNING_REQUIRE_PATH}/lib/$EPICS_HOST_ARCH/$LIBPREFIX$REQUIRE$LIBPOSTFIX
-    REQUIRE_DBD=${REQUIRE_LIB%/lib/*}/dbd/$REQUIRE.dbd
+    REQUIRE_LIB=${RUNNING_REQUIRE_PATH}/lib/${EPICS_HOST_ARCH}/${LIBPREFIX}${REQUIRE}${LIBPOSTFIX}
+    REQUIRE_DBD=${REQUIRE_LIB%/lib/*}/dbd/${REQUIRE}.dbd
 
-    EXE=softIoc
-    ARGS="-D $EPICS_BASE/dbd/softIoc.dbd"
     LDCMD="dlload"
 
 
-#    echo "$LDCMD $REQUIRE_LIB"
-#    echo "dbLoadDatabase $REQUIRE_DBD"
-#    echo "${REQUIRE%-*}_registerRecordDeviceDriver"
+    echo "$LDCMD $REQUIRE_LIB"
+    echo "dbLoadDatabase $REQUIRE_DBD"
+    echo "${REQUIRE%-*}_registerRecordDeviceDriver"
 
-
-#    loadFiles "$@"
+    loadFiles "$@"
 
     if [ "$init" != NO ]
     then
 	echo "iocInit"
     fi
-} > $startup
+} > ${STARTUP}
 
-echo $EXE $ARGS $startup
+
+    
+command='${SOFTIOC_CMD} ${SOFTIOC_ARGS} "${STARTUP}"'
 ulimit -c unlimited
-eval "$LOADER $LOADERARGS $EXE" $ARGS "$startup" 2>&1
+eval "${command}" 2>&1
 
