@@ -6,6 +6,7 @@ declare -gr SC_SCRIPTNAME=${0##*/}
 declare -gr SC_TOP="$(dirname "$SC_SCRIPT")"
 declare -g  STARTUP=""
 
+
 set -a
 . ${SC_TOP}/ess-env.conf
 set +a
@@ -30,6 +31,7 @@ esac
 
 # Default, use the default EPICS_BASE in env setup script
 # echo ${EPICS_BASE}
+# What about EPICS_BASE exists, however, require doesn't compile with that base...?
 
 
 if [[ $(checkIfDir ${EPICS_BASE}) -eq "$NON_EXIST" ]]; then
@@ -40,22 +42,13 @@ if [[ $(checkIfDir ${EPICS_BASE}) -eq "$NON_EXIST" ]]; then
     exit;
 fi
 
-
-## Extract selected EPICS BASE version from the active
-## environment 
-
 declare -g RUNNING_EPICS_BASE_VER=${EPICS_BASE##*/*-}
 declare -g RUNNING_REQUIRE_PATH=${EPICS_MODULES}/${REQUIRE}/${REQUIRE_VERSION}/R${RUNNING_EPICS_BASE_VER}
-
-# EPICS_BASE/bin should be in PATH
 
 declare -g SOFTIOC_CMD="softIoc"
 declare -g SOFTIOC_ARGS="-D ${EPICS_BASE}/dbd/softIoc.dbd"
 
-IOC=$(hostname|tr -d '\r')
-
 STARTUP=/tmp/${SC_SCRIPTNAME}_${IOC}_startup.$BASHPID
-
 
 trap "softIoc_end" EXIT SIGTERM
 
@@ -77,7 +70,6 @@ trap "softIoc_end" EXIT SIGTERM
 
     LDCMD="dlload"
 
-
     echo "$LDCMD $REQUIRE_LIB"
     echo "dbLoadDatabase $REQUIRE_DBD"
     echo "${REQUIRE%-*}_registerRecordDeviceDriver"
@@ -88,6 +80,8 @@ trap "softIoc_end" EXIT SIGTERM
     then
 	echo "iocInit"
     fi
+
+    
 } > ${STARTUP}
 
 
