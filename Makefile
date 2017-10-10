@@ -56,7 +56,7 @@ M_OPTIONS += DEFAULT_EPICS_VERSIONS="$(DEFAULT_EPICS_VERSIONS)"
 
 unexport BUILDCLASSES
 
-
+IOCSH_HASH_VERSION:=$(shell git rev-parse --short HEAD)
 
 # help is defined in 
 # https://gist.github.com/rcmachado/af3db315e31383502660
@@ -82,7 +82,7 @@ default: help
 
 #
 ## Install "Require" Module in order to use it
-install:
+install: uninstall
 	$(QUIET) sudo -E bash -c 'make $(M_OPTIONS) install'
 	$(QUIET) sudo install -d -m 755  $(REQUIRE_TOOLS)
 	$(QUIET) sudo install -m 644 $(EPICS_MODULE_SRC_PATH)/App/tools/driver.makefile $(REQUIRE_TOOLS)/
@@ -96,6 +96,7 @@ install:
 	$(QUIET) sudo install -d -m 755 $(REQUIRE_BIN)
 #	$(QUIET) sudo install -m 755 $(EPICS_MODULE_SRC_PATH)/iocsh $(REQUIRE_BIN)/
 	$(QUIET) sudo install -m 755  $(TOP)/iocsh.bash       $(REQUIRE_BIN)/
+	$(QUIET) sed -i 's/^IOCSH_HASH_VERSION=.*/IOCSH_HASH_VERSION=$(IOCSH_HASH_VERSION)/g' $(TOP)/ess-env.conf
 	$(QUIET) sudo install -m 644  $(TOP)/ess-env.conf     $(REQUIRE_BIN)/
 	$(QUIET) sudo install -m 644  $(TOP)/iocsh_functions  $(REQUIRE_BIN)/
 #

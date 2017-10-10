@@ -21,18 +21,13 @@
 #  ESS specific iocsh author : Jeong Han Lee
 #                     email  : han.lee@esss.se
 #
+#
 
 declare -gr SC_SCRIPT="$(realpath "$0")"
 declare -gr SC_SCRIPTNAME=${0##*/}
 declare -gr SC_TOP="$(dirname "$SC_SCRIPT")"
-declare -g  SC_VERSION="43be69b"
+declare -g  SC_VERSION="v0.2"
 declare -g  STARTUP=""
-
-# TODO
-# when require install this script, at that moment, update this!
-#
-SC_VERSION="$(git rev-parse --short HEAD)"
-
 
 set -a
 . ${SC_TOP}/ess-env.conf
@@ -43,25 +38,39 @@ set +a
 
 check_mandatory_env_settings
 
-STARTUP=/tmp/${SC_SCRIPTNAME}_${IOC}_startup.$BASHPID
+#
+# IOCSH_HASH_VERSION is defined when doing 'make install'
+SC_VERSION+=-${IOCSH_HASH_VERSION}.PID-${BASHPID}
 
-trap "softIoc_end" EXIT SIGTERM
+#
+# PS1 is defined as IOCSH Git HASH + HOSTNAME + BASHPID
+IOCSH_PS1=$(iocsh_ps1 "${IOCSH_HASH_VERSION}" "${BASHPID}")
 
+#
+# Default Initial Startup file for REQUIRE and minimal environment
+
+IOC_STARTUP=/tmp/${SC_SCRIPTNAME}-${SC_VERSION}-startup
+
+
+trap "softIoc_end ${IOC_STARTUP}" EXIT SIGTERM
 {
     printIocEnv;
-    loadRequire ;
-    loadFiles  "$@";
+    loadRequire;
+    loadFiles "$@";
 
     if [ "$init" != NO ]; then
 	printf "iocInit\n"
+
     fi
+
+    printf "epicsEnvSet IOCSH_PS1 \"$IOCSH_PS1\"\n";
     
-    
-}  > ${STARTUP}
+}  > ${IOC_STARTUP}
 
 ulimit -c unlimited
+
 # -x "PREFIX"
 # PREFIX:exit & PREFIX:BaseVersion PVs are added to softIoc
 # We can end this IOC via caput PREFIX:exit 1
 
-softIoc -D ${EPICS_BASE}/dbd/softIoc.dbd   "${STARTUP}" 2>&1
+softIoc -D ${EPICS_BASE}/dbd/softIoc.dbd "${IOC_STARTUP}" 2>&1
