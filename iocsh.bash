@@ -1,9 +1,37 @@
 #!/bin/bash
+#
+#  Copyright (c) 2004 - 2017    Paul Scherrer Institute 
+#  Copyright (c) 2017 - Present European Spallation Source ERIC
+#
+#  The program is free software: you can redistribute
+#  it and/or modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation, either version 2 of the
+#  License, or any newer version.
+#
+#  This program is distributed in the hope that it will be useful, but WITHOUT
+#  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+#  more details.
+#
+#  You should have received a copy of the GNU General Public License along with
+#  this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
+#
+#
+#  PSI original iocsh author : Dirk Zimoch
+#  ESS specific iocsh author : Jeong Han Lee
+#                     email  : han.lee@esss.se
+#
 
 declare -gr SC_SCRIPT="$(realpath "$0")"
 declare -gr SC_SCRIPTNAME=${0##*/}
 declare -gr SC_TOP="$(dirname "$SC_SCRIPT")"
+declare -g  SC_VERSION="43be69b"
 declare -g  STARTUP=""
+
+# TODO
+# when require install this script, at that moment, update this!
+#
+SC_VERSION="$(git rev-parse --short HEAD)"
 
 
 set -a
@@ -13,46 +41,21 @@ set +a
 . ${SC_TOP}/iocsh_functions
 
 
-case $1 in
-    ( -h | "-?" | -help | --help )
-    help
-    ;;
-    ( -v | -ver | --ver | -version | --version )
-    version
-    ;;
-    ( -3.* )
-    unset EPICS_BASE;
-    EPICS_BASE=$(select_epics_base "$1");
-    shift
-    ;;
-esac
-
-if [[ $(checkIfDir ${EPICS_BASE}) -eq "$NON_EXIST" ]]; then
-
-    printf "EPICS_BASE is defined to use. \n";
-    printf "Please check your environment!\n";
-    exit;
-fi
-
-declare -g RUNNING_EPICS_BASE_VER=${EPICS_BASE##*/*-}
-declare -g RUNNING_REQUIRE_PATH=${REQUIRE_PATH}/R${RUNNING_EPICS_BASE_VER}
+check_mandatory_env_settings
 
 STARTUP=/tmp/${SC_SCRIPTNAME}_${IOC}_startup.$BASHPID
-
-declare -a ioc_env=(PWD EPICS_HOST_ARCH  REQUIRE_PATH EPICS_CA_ADDR_LIST);
 
 trap "softIoc_end" EXIT SIGTERM
 
 {
-    printIocEnv "${ioc_env}"
-
-    loadRequire 
-    loadFiles   "$@"
+    printIocEnv;
+    loadRequire ;
+    loadFiles  "$@";
 
     if [ "$init" != NO ]; then
 	printf "iocInit\n"
     fi
-
+    
     
 }  > ${STARTUP}
 
@@ -61,4 +64,4 @@ ulimit -c unlimited
 # PREFIX:exit & PREFIX:BaseVersion PVs are added to softIoc
 # We can end this IOC via caput PREFIX:exit 1
 
-softIoc -D ${EPICS_BASE}/dbd/softIoc.dbd  -x "TEST" "${STARTUP}" 2>&1
+softIoc -D ${EPICS_BASE}/dbd/softIoc.dbd   "${STARTUP}" 2>&1

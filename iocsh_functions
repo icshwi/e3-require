@@ -64,45 +64,6 @@ function checkIfVar() {
 }
 
 
-function version () {
-    {	 
-    echo "European Spallation Souce ERIC iocsh"
-    } >&2
-    exit
-}
-
-
-
-function help () {
-    {
-    echo "usage: iocsh [options] [files]"
-    echo "Start an EPICS iocsh and load files"
-    echo "Recognized filetypes: *.db *.dbt *.template *.subs *.subst *.dbd *.so"
-    echo
-    echo "Possible options:"
-    echo " -3.xx.yy: Set EPICS base version."
-#    echo " -32: Force 32 bit version (on 64 bit systems)."
-    echo " -? or -h or --help: Show this page and exit."
-    echo " -v or --version: Show version and exit."
-    echo " -c: The next string is executed as a command by the EPICS shell."
-    echo " -s: The next string is a sequencer program (and arguments), run with 'seq'."
-    echo "     This forces an 'iocInit' before running the program."
-    echo " -r: The next string is a module (and version), loaded via 'require'."
-    echo " -n: The next string is the IOC name (used for prompt)."
-    echo "     Default: dirname if parent dir is \"ioc\" otherwise hostname."
-    echo
-    echo "Supported filetypes:"
-    echo "*.db, *.dbt and *.template are loaded via 'dbLoadRecords'."
-    echo "  After the filename, you can specify substitutions like MACRO=value."
-    echo "*.subs and *.subst are loaded via 'dbLoadTemplate'."
-    echo "*.dbd is loaded via 'dbLoadDatabase'."
-    echo "*.so is loaded via 'ld' or 'dlload' (3.14.12 or higer)."
-    echo "If an argument is @file, more arguments are read from that file."
-    echo "All other files are executed as startup scripts by the EPICS shell."
-    } >&2
-    exit
-}
-
 
 function subst () {
     subst=""
@@ -121,151 +82,60 @@ function subst () {
 }
 
 
-function printIocEnv() {
-
-    local var="";
-    
-    printf "# date=\"$(date)\"\n"
-    printf "# user=\"${USER:-$(whoami)}\"\n"
-    
-    for var in PWD EPICS_HOST_ARCH  REQUIRE_PATH EPICS_CA_ADDR_LIST
-    do
-	printf "# $var=\"${!var}\"\n"
-    done
-    printf "\n";
-    
-}
-
-function loadRequire() {
-    
-    local libPrefix=lib
-    local libPostfix=.so
-    local libName=${libPrefix}${REQUIRE}${libPostfix}
-    
-    local require_lib=${RUNNING_REQUIRE_PATH}/lib/${EPICS_HOST_ARCH}/${libName}
-    local require_dbd=${RUNNING_REQUIRE_PATH}/dbd/${REQUIRE}.dbd
-
-    
-    local load_cmd="dlload"
-
-    printf "${load_cmd} ${require_lib}\n";
-    printf "dbLoadDatabase ${require_dbd}\n"
-    printf "${REQUIRE%-*}_registerRecordDeviceDriver\n\n"
-    
-}
-
-function loadFiles () {
-    while [ "$#" -gt 0 ]
-    do
-	file=$1
-	case $file in
-	    ( -h | "-?" | -help | --help )
-            help
-            ;;
-	    ( -v | -ver | --ver | -version | --version )
-            version
-            ;;
-	    ( @* )              
-            loadFiles $(cat ${file#@})
-            ;;
-	    ( *.db | *.template)
-            subst=""
-            while [ "$#" -gt 1 ]
-            do
-		case $2 in 
-                    ( *=* )
-                    subst="$subst,$2"; shift
-                    ;;
-                    ( * )
-                    break
-                    ;;
-		esac
-            done
-            echo "dbLoadRecords \"$file\",\"${subst#,}\""
-            ;;
-	    ( *.subs | *.subst )
-            echo "dbLoadTemplate \"$file\""
-            ;;
-	    ( *.dbd )
-            # some dbd files must be loaded before main to take effect
-            echo "dbLoadDatabase \"$file\",\"$DBD\""
-            ;;
-	    ( *.so )             
-            if [ $BASEMINOR -ge 15 -o $BASEPATCH -ge 12 ]
-            then
-		echo "dlload \"$file\""
-            else
-		echo "ld \"$file\""
-            fi
-            ;;
-	    ( -c )               
-            shift
-            case $1 in
-		( seq* )
-		if [ "$init" != NO ]
-		then
-                    echo "iocInit"
-                    init=NO
-		fi
-		;;
-		( iocInit )
-		init=NO
-		;;
-            esac
-            echo $1
-            ;;
-	    ( -s )
-            shift
-            if [ "$init" != NO ]
-            then
-		echo "iocInit"
-		init=NO
-            fi
-            echo "seq $1"
-            ;;
-	    ( -r )               
-            shift
-            echo "require $1"
-            ;;
-	    ( -n )
-            shift
-            IOC="$1"
-            ;;
-	    ( -3.* )
-            echo "Version $file must be first argument" >&2
-            exit 1
-            ;;
-	    ( -32 )
-            echo "-32 option must come before all others (except -3.xx.yy)" >&2
-            exit 1
-            ;;
-	    ( -* )
-            {
-		echo "unknown option $1"
-		echo "try: $(basename $0) --help"
-            } >&2
-            exit 1
-	    ;;
-	    ( * )                
-            echo "< \"$file\""
-            if grep -q iocInit $file; then init=NO; fi
-            ;;
-	esac
-	shift
-    done
-}
-
-
-
-
 function select_epics_base() {
 
     local base_version=$1;
     local epics_base="";
-    epics_base=${EPICS_LOCATION}/base-${base_version#-}
+    epics_base=${EPICS}/base-${base_version#-}
     echo ${epics_base}
     
 }
+
+
+function version () {
+    printf "%s : %s%s\n" "European Spallation Source ERIC" "$SC_SCRIPTNAME" ${SC_VERSION:+" ($SC_VERSION)"}  >&2
+    exit
+}
+
+
+
+function printIocEnv ()
+{
+    declare -a var_list=();
+    var_list+=" "; var_list+=HOSTDISPLAY;
+    var_list+=" "; var_list+=WINDOWID;
+    var_list+=" "; var_list+=PWD;
+    var_list+=" "; var_list+=USER;
+    var_list+=" "; var_list+=LOGNAME;
+    var_list+=" "; var_list+=EPICS_HOST_ARCH;
+    var_list+=" "; var_list+=EPICS_LOCATION;
+    var_list+=" "; var_list+=EPICS;
+    var_list+=" "; var_list+=EPICS_MODULES;
+    var_list+=" "; var_list+=REQUIRE;
+    var_list+=" "; var_list+=REQUIRE_VERSION;
+    var_list+=" "; var_list+=REQUIRE_BIN
+    var_list+=" "; var_list+=REQUIRE_LIB;
+    var_list+=" "; var_list+=REQUIRE_DBD;
+    var_list+=" "; var_list+=EPICS_CA_AUTO_ADDR_LIST;
+    var_list+=" "; var_list+=EPICS_CA_ADDR_LIST;
+    var_list+=" "; var_list+=LD_LIBRARY_PATH;
+    
+    printf "#\n";
+    printf "# Start at \"$(date)\"\n"
+    printf "#\n";
+    printf "# %s : %s%s\n" "European Spallation Source ERIC" "$SC_SCRIPTNAME" ${SC_VERSION:+" ($SC_VERSION)"};
+    printf "#\n";
+     
+    
+    for var in ${var_list[@]};  do
+	printf "# $var=\"${!var}\"\n"
+    done
+    printf "#\n";
+    printf "# Check which version and other environment variables\n";
+    printf "#\n";
+}
+
+
 
 # Ctrl+c : OK
 # exit   : OK
@@ -273,6 +143,7 @@ function select_epics_base() {
 # kill main precess : Enter twice in terminal,
 #                     close softIoc, but STATUP file is remained.
 #                     
+
 
 
 function softIoc_end() {
@@ -286,3 +157,193 @@ function softIoc_end() {
     
 }
 
+
+function die() #@ Print error message and exit with error code
+{
+    #@ USAGE: die [errno [message]]
+    error=${1:-1}
+    ## exits with 1 if error number not given
+    shift
+    [ -n "$*" ] &&
+	printf "%s%s: %s\n" "$SC_SCRIPTNAME" ${SC_VERSION:+" ($SC_VERSION)"} "$*" >&2
+    exit "$error"
+}
+
+
+
+function loadRequire()
+{
+    
+    local libPrefix=lib
+    local libPostfix=.so
+    local libName=${libPrefix}${REQUIRE}${libPostfix}
+    
+    local require_lib=${REQUIRE_LIB}/${EPICS_HOST_ARCH}/${libName}
+    local require_dbd=${REQUIRE_DBD}/${REQUIRE}.dbd
+
+    
+    local load_cmd="dlload"
+
+    printf "${load_cmd} ${require_lib}\n";
+    printf "dbLoadDatabase ${require_dbd}\n"
+    printf "${REQUIRE%-*}_registerRecordDeviceDriver\n\n"
+    
+}
+
+function check_mandatory_env_settings ()
+{
+    declare -a var_list=();
+    
+    var_list+=EPICS_HOST_ARCH;
+    var_list+=" ";
+    var_list+=EPICS_LOCATION;
+    var_list+=" ";
+    var_list+=EPICS;
+    var_list+=" ";
+    var_list+=EPICS_MODULES;
+    var_list+=" ";
+    var_list+=EPICS_BASE;
+    var_list+=" ";
+    var_list+=REQUIRE;
+    var_list+=" ";
+    var_list+=REQUIRE_BIN
+    var_list+=" ";
+    var_list+=REQUIRE_LIB;
+    var_list+=" ";
+    var_list+=REQUIRE_DBD;
+    var_list+=" ";
+    var_list+=REQUIRE_VERSION;
+        
+    for var in ${var_list[@]};  do
+	if [[ $(checkIfVar ${!var}) -eq "$NON_EXIST" ]]; then
+	    die 1 " $var is not defined!. Check e3-env/setE3Env.bash"
+	fi
+    done
+}
+
+
+
+function loadFiles () {
+    while [ "$#" -gt 0 ]; do
+	file=$1
+	case $file in
+	    -h | "-?" | -help | --help )
+		help
+		;; 
+	    -v | -ver | --ver | -version | --version )
+		version
+		;;
+	    @* )              
+		loadFiles $(cat ${file#@})
+		;;
+	    *.db | *.template)
+		subst=""
+		while [ "$#" -gt 1 ]; do
+		    case $2 in 
+			( *=* )
+			subst="$subst,$2"; shift
+			;;
+			( * )
+			break
+			;;
+		    esac
+		done
+		echo "dbLoadRecords \"$file\",\"${subst#,}\""
+		;;
+	    *.subs | *.subst )
+		echo "dbLoadTemplate \"$file\""
+		;;
+	    *.dbd )
+		# some dbd files must be loaded before main to take effect
+		echo "dbLoadDatabase \"$file\",\"$DBD\""
+		;;
+	    *.so )             
+		if [ $BASEMINOR -ge 15 -o $BASEPATCH -ge 12 ]; then
+		    echo "dlload \"$file\""
+		else
+		    echo "ld \"$file\""
+		fi
+		;;
+	    -c )               
+		shift
+		case $1 in
+		    seq* )
+			if [ "$init" != NO ]; then
+			    echo "iocInit"
+			    init=NO
+			fi
+			;;
+		    iocInit )
+			init=NO
+			;;
+		esac
+		echo $1
+		;;
+	    -s )
+		shift
+		if [ "$init" != NO ]; then
+		    echo "iocInit"
+		    init=NO
+		fi
+		echo "seq $1"
+		;;
+	    -r )               
+		shift
+		echo "require $1"
+		;;
+	    -n )
+		shift
+		IOC="$1"
+		;;
+	    # -32 )
+	    # 	echo "-32 option must come before all others (except -3.xx.yy)" >&2
+	    # 	exit 1
+	    # 	;;
+	    -* )
+		{
+		    echo "unknown option $1"
+		    echo "try: $(basename $0) --help"
+		} >&2
+		exit 1
+		;;
+	    * )                
+		echo "< \"$file\""
+		if grep -q iocInit $file; then init=NO; fi
+		;;
+	esac
+	shift
+    done
+}
+
+
+
+
+function help () {
+    {
+    echo "usage: iocsh [options] [files]"
+    echo "Start an EPICS iocsh and load files"
+    echo "Recognized filetypes: *.db *.dbt *.template *.subs *.subst *.dbd *.so"
+    echo
+    echo "Possible options:"
+#    echo " -3.xx.yy: Set EPICS base version."
+#    echo " -32: Force 32 bit version (on 64 bit systems)."
+    echo " -? or -h or --help: Show this page and exit."
+    echo " -v or --version: Show version and exit."
+    echo " -c: The next string is executed as a command by the EPICS shell."
+    echo " -s: The next string is a sequencer program (and arguments), run with 'seq'."
+    echo "     This forces an 'iocInit' before running the program."
+    echo " -r: The next string is a module (and version), loaded via 'require'."
+    echo " -n: The next string is the IOC name (used for prompt)."
+    echo "     Default: dirname if parent dir is \"ioc\" otherwise hostname."
+    echo
+    echo "Supported filetypes:"
+    echo "*.db, *.dbt and *.template are loaded via 'dbLoadRecords'."
+    echo "  After the filename, you can specify substitutions like MACRO=value."
+    echo "*.subs and *.subst are loaded via 'dbLoadTemplate'."
+    echo "*.dbd is loaded via 'dbLoadDatabase'."
+#    echo "*.so is loaded via 'ld' or 'dlload' (3.14.12 or higer)."
+    echo "If an argument is @file, more arguments are read from that file."
+    echo "All other files are executed as startup scripts by the EPICS shell."
+    } >&2
+    exit
+}
