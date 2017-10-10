@@ -34,7 +34,8 @@ $ make init
 $ make env
 ```
 If it is not the same as e3-base one, please modify e3-env/e3-env file according to e3-base one.
-One can check it again. 
+One can check it again.
+
 ```
 $ make env
 ```
@@ -43,6 +44,7 @@ $ make env
 ```
 $ make build
 ```
+
 * Install e3-require
 ```
 make install
@@ -51,73 +53,102 @@ make install
 ## Execute iocsh
 Once one installs e3-require, one can execute the simple iocsh for testing. 
 
+
 ```
 e3-require (master)$ . e3-env/setE3Env.bash
-jhlee@kaffee: e3-require (master)$ iocsh
-Library /work/iocBoot/R3.15.4/linux-x86_64/libmisc.so not found.
-Command 'require' is not available.
-/e3/bases/base-3.15.4/bin/linux-x86_64/softIoc -D /e3/bases/base-3.15.4/dbd/softIoc.dbd /tmp/iocsh.startup.31197
-# date="Fri Oct  6 14:30:32 CEST 2017"
-# user="jhlee"
+e3-require (master)$ iocsh.bash 
+#
+# Start at "2017-W41-Oct10-1604-57-CEST"
+#
+# Version information:
+# European Spallation Source ERIC : iocsh.bash (v0.2-fd4e0b5.PID-10102)
+#
+# HOSTDISPLAY="kaffee:0"
+# WINDOWID="54525967"
 # PWD="/home/jhlee/gitsrc/e3-require"
-# BASE="3.15.4"
+# USER="jhlee"
+# LOGNAME="jhlee"
 # EPICS_HOST_ARCH="linux-x86_64"
-# SHELLBOX=""
+# EPICS_BASE="/e3/bases/base-3.15.5"
+# EPICS_LOCATION="/e3/bases"
+# EPICS="/e3/bases"
+# EPICS_MODULES="/e3/modules"
+# REQUIRE="require"
+# REQUIRE_VERSION="2.5.3"
+# REQUIRE_BIN="/e3/modules/require/2.5.3/bin"
+# REQUIRE_LIB="/e3/modules/require/2.5.3/R3.15.5/lib"
+# REQUIRE_DBD="/e3/modules/require/2.5.3/R3.15.5/dbd"
+# EPICS_CA_AUTO_ADDR_LIST="yes"
 # EPICS_CA_ADDR_LIST="194.47.240.7 10.0.2.15 10.4.8.11 10.4.8.12 10.4.8.13 10.4.8.14"
-# EPICS_DRIVER_PATH=".:bin/linux-x86_64:bin:snl:../snl:O.3.15.4_linux-x86_64:src/O.3.15.4_linux-x86_64:snl/O.3.15.4_linux-x86_64:../snl/O.3.15.4_linux-x86_64:/ioc/modules:/work/iocBoot/R3.15.4/linux-x86_64"
-iocInit
-Starting iocInit
-############################################################################
-## EPICS R3.15.4-EEE-3.15.4 $$Date$$
-## EPICS Base built Oct  6 2017
-############################################################################
-cas warning: Configured TCP port was unavailable.
-cas warning: Using dynamically assigned TCP port 37010,
-cas warning: but now two or more servers share the same UDP port.
-cas warning: Depending on your IP kernel this server may not be
-cas warning: reachable with UDP unicast (a host's IP in EPICS_CA_ADDR_LIST)
-iocRun: All initialization complete
-epicsEnvSet IOCSH_PS1,"kaffee> "
-```
-
-Switch the difference EPICS base, i.e., 3.15.5 
-
-```
-jhlee@kaffee: e3-require (master)$ . e3-env/setE3Env.bash "3.15.5"
-jhlee@kaffee: e3-require (master)$ iocsh
-
-Library /work/iocBoot/R3.15.5/linux-x86_64/libmisc.so not found.
-Command 'require' is not available.
-/e3/bases/base-3.15.5/bin/linux-x86_64/softIoc -D /e3/bases/base-3.15.5/dbd/softIoc.dbd /tmp/iocsh.startup.31257
-# date="Fri Oct  6 14:32:32 CEST 2017"
-# user="jhlee"
-# PWD="/home/jhlee/gitsrc/e3-require"
-# BASE="3.15.5"
-# EPICS_HOST_ARCH="linux-x86_64"
-# SHELLBOX=""
-# EPICS_CA_ADDR_LIST="194.47.240.7 10.0.2.15 10.4.8.11 10.4.8.12 10.4.8.13 10.4.8.14"
-# EPICS_DRIVER_PATH=".:bin/linux-x86_64:bin:snl:../snl:O.3.15.5_linux-x86_64:src/O.3.15.5_linux-x86_64:snl/O.3.15.5_linux-x86_64:../snl/O.3.15.5_linux-x86_64:/ioc/modules:/work/iocBoot/R3.15.5/linux-x86_64"
+# PATH="/e3/modules/require/2.5.3/bin:/e3/bases/base-3.15.5/bin/linux-x86_64:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
+# LD_LIBRARY_PATH="/e3/bases/base-3.15.5/lib/linux-x86_64:/e3/modules/require/2.5.3/R3.15.5/lib/linux-x86_64"
+#
+# Please Use Version and other environment variables
+# in order to report or debug this shell
+#
+dlload /e3/modules/require/2.5.3/R3.15.5/lib/linux-x86_64/librequire.so
+dbLoadDatabase /e3/modules/require/2.5.3/R3.15.5/dbd/require.dbd
+require_registerRecordDeviceDriver
+Loading module info records for require
 iocInit
 Starting iocInit
 ############################################################################
 ## EPICS R3.15.5-EEE-3.15.5
-## EPICS Base built Oct  6 2017
+## EPICS Base built Oct 10 2017
 ############################################################################
-cas warning: Configured TCP port was unavailable.
-cas warning: Using dynamically assigned TCP port 42529,
-cas warning: but now two or more servers share the same UDP port.
-cas warning: Depending on your IP kernel this server may not be
-cas warning: reachable with UDP unicast (a host's IP in EPICS_CA_ADDR_LIST)
 iocRun: All initialization complete
-epicsEnvSet IOCSH_PS1,"kaffee> "
+epicsEnvSet IOCSH_PS1 "fd4e0b5.kaffee.10115 > "
+fd4e0b5.kaffee.10115 >
+```
 
+Switch the difference EPICS base, i.e., 3.15.4
+
+```
+e3-require (master)$ . e3-env/setE3Env.bash 3.15.4
+e3-require (master)$ iocsh.bash 
+#
+# Start at "2017-W41-Oct10-1606-06-CEST"
+#
+# Version information:
+# European Spallation Source ERIC : iocsh.bash (v0.2-fd4e0b5.PID-11400)
+#
+# HOSTDISPLAY="kaffee:0"
+# WINDOWID="54525967"
+# PWD="/home/jhlee/gitsrc/e3-require"
+# USER="jhlee"
+# LOGNAME="jhlee"
+# EPICS_HOST_ARCH="linux-x86_64"
+# EPICS_BASE="/e3/bases/base-3.15.4"
+# EPICS_LOCATION="/e3/bases"
+# EPICS="/e3/bases"
+# EPICS_MODULES="/e3/modules"
+# REQUIRE="require"
+# REQUIRE_VERSION="2.5.3"
+# REQUIRE_BIN="/e3/modules/require/2.5.3/bin"
+# REQUIRE_LIB="/e3/modules/require/2.5.3/R3.15.4/lib"
+# REQUIRE_DBD="/e3/modules/require/2.5.3/R3.15.4/dbd"
+# EPICS_CA_AUTO_ADDR_LIST="yes"
+# EPICS_CA_ADDR_LIST="194.47.240.7 10.0.2.15 10.4.8.11 10.4.8.12 10.4.8.13 10.4.8.14"
+# PATH="/e3/modules/require/2.5.3/bin:/e3/bases/base-3.15.4/bin/linux-x86_64:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
+# LD_LIBRARY_PATH="/e3/bases/base-3.15.4/lib/linux-x86_64:/e3/modules/require/2.5.3/R3.15.4/lib/linux-x86_64"
+#
+# Please Use Version and other environment variables
+# in order to report or debug this shell
+#
+dlload /e3/modules/require/2.5.3/R3.15.4/lib/linux-x86_64/librequire.so
+dbLoadDatabase /e3/modules/require/2.5.3/R3.15.4/dbd/require.dbd
+require_registerRecordDeviceDriver
+Loading module info records for require
+iocInit
+Starting iocInit
+############################################################################
+## EPICS R3.15.4-EEE-3.15.4 $$Date$$
+## EPICS Base built Oct 10 2017
+############################################################################
+iocRun: All initialization complete
+epicsEnvSet IOCSH_PS1 "fd4e0b5.kaffee.11413 > "
+fd4e0b5.kaffee.11413 >
 ```
 
 ## TODO
 
-It is working version, so please don't expect the actual running ioc... since we miss the following library:
-
-```
-Library /work/iocBoot/R3.15.4/linux-x86_64/libmisc.so not found.
-Command 'require' is not available.
-```
