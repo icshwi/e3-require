@@ -5,10 +5,10 @@ E_NOTROOT=101
 EXIST=1
 NON_EXIST=0
 
-function pushd() { builtin pushd "$@" > /dev/null; }
-function popd()  { builtin popd  "$@" > /dev/null; }
+function pushd { builtin pushd "$@" > /dev/null; }
+function popd  { builtin popd  "$@" > /dev/null; }
 
-function checkIfRoot()
+function checkIfRoot
 {
     if [[ $(id -u) -ne "$ROOT_UID" ]] ; then 
 	echo "Please run it as root or with sudo" ; 
@@ -17,7 +17,7 @@ function checkIfRoot()
 };
 
 
-function checkIfDir()
+function checkIfDir
 {
     
     local dir=$1
@@ -33,7 +33,7 @@ function checkIfDir()
 };
 
 
-function checkIfFile()
+function checkIfFile
 {
     local file=$1
     local result=""
@@ -48,7 +48,7 @@ function checkIfFile()
 };
 
 
-function checkIfVar()
+function checkIfVar
 {
     local var=$1
     local result=""
@@ -63,7 +63,7 @@ function checkIfVar()
 };
 
 
-function subst()
+function subst
 {
     subst=""
     while [ "$#" -gt 1 ]
@@ -81,7 +81,7 @@ function subst()
 };
 
 
-function select_epics_base()
+function select_epics_base
 {
     local base_version=$1;
     local epics_base="";
@@ -90,14 +90,14 @@ function select_epics_base()
 };
 
 
-function version ()
+function version
 {
     printf "%s : %s%s\n" "European Spallation Source ERIC" "$SC_SCRIPTNAME" ${SC_VERSION:+" ($SC_VERSION)"}  >&2
     exit
 };
 
 
-function printParamShow()
+function printParamShow
 {
     declare -a var_list=();
     var_list+=" "; var_list+=EPICS_CA_REPEATER_PORT;
@@ -112,7 +112,7 @@ function printParamShow()
     printf "#\n";
 };
 
-function printIocEnv ()
+function printIocEnv
 {
     declare -a var_list=();
     var_list+=" "; var_list+=HOSTDISPLAY;
@@ -162,18 +162,16 @@ function printIocEnv ()
 #                     
 
 
-function softIoc_end()
+function softIoc_end
 {
-    local pids=$(jobs -pr);
     local startup_file=$1
-    [ -n "$pids" ] && kill $pids;
-    stty sane;
-    printf "\n\n";
     rm -f ${startup_file};
+    stty sane;
+    exit;
 };
 
 
-function die() #@ Print error message and exit with error code
+function die #@ Print error message and exit with error code
 {
     #@ USAGE: die [errno [message]]
     error=${1:-1}
@@ -185,7 +183,7 @@ function die() #@ Print error message and exit with error code
 };
 
 
-function iocsh_ps1()
+function iocsh_ps1
 {
     local iocsh_ps1="";
     local hash=$1;
@@ -201,7 +199,7 @@ function iocsh_ps1()
 };
 
 
-function loadRequire()
+function loadRequire
 {
     local libPrefix=lib
     local libPostfix=.so
@@ -220,7 +218,7 @@ function loadRequire()
 
 
 
-function check_mandatory_env_settings ()
+function check_mandatory_env_settings 
 {
     declare -a var_list=();
     
@@ -253,7 +251,7 @@ function check_mandatory_env_settings ()
 
 
 
-function loadFiles ()
+function loadFiles 
 {
     while [ "$#" -gt 0 ]; do
 	file=$1
@@ -343,7 +341,8 @@ function loadFiles ()
 };
 
 
-function help () {
+function help
+{
     {
 	echo "usage: iocsh [options] [files]"
 	echo "Start an EPICS iocsh and load files"

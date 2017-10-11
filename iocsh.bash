@@ -52,7 +52,9 @@ IOCSH_PS1=$(iocsh_ps1 "${IOCSH_HASH_VERSION}" "${BASHPID}")
 IOC_STARTUP=/tmp/${SC_SCRIPTNAME}-${SC_VERSION}-startup
 
 
-trap "softIoc_end ${IOC_STARTUP}" EXIT SIGTERM
+trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
+
+
 {
     printIocEnv;
     loadRequire;
@@ -74,3 +76,4 @@ ulimit -c unlimited
 # We can end this IOC via caput PREFIX:exit 1
 
 softIoc -D ${EPICS_BASE}/dbd/softIoc.dbd "${IOC_STARTUP}" 2>&1
+

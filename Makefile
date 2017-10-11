@@ -46,6 +46,10 @@ ifdef DEBUG_SHELL
   SHELL = /bin/sh -x
 endif
 
+# Pass necessary driver.makefile variables through makefile options
+# This options is only vaild for require. The similiar options can
+# be found in individual modulename.Makefile
+#
 M_OPTIONS := -C $(EPICS_MODULE_SRC_PATH)
 M_OPTIONS += -f $(ESS_MODULE_MAKEFILE)
 M_OPTIONS += LIBVERSION="$(REQUIRE_VERSION)"
@@ -53,9 +57,10 @@ M_OPTIONS += PROJECT="$(EPICS_MODULE_NAME)"
 M_OPTIONS += EPICS_MODULES="$(EPICS_MODULES)"
 M_OPTIONS += EPICS_LOCATION="$(EPICS_LOCATION)"
 M_OPTIONS += DEFAULT_EPICS_VERSIONS="$(DEFAULT_EPICS_VERSIONS)"
-
 unexport BUILDCLASSES
 
+
+# 
 IOCSH_HASH_VERSION:=$(shell git rev-parse --short HEAD)
 
 # help is defined in 
@@ -87,18 +92,19 @@ install: uninstall
 	$(QUIET) sudo install -d -m 755  $(REQUIRE_TOOLS)
 	$(QUIET) sudo install -m 644 $(EPICS_MODULE_SRC_PATH)/App/tools/driver.makefile $(REQUIRE_TOOLS)/
 	$(QUIET) sudo install -m 755 $(EPICS_MODULE_SRC_PATH)/App/tools/*.tcl           $(REQUIRE_TOOLS)/
-	$(QUIET) sudo -E bash -c 'm4 \
+#	$(QUIET) sudo -E bash -c 'm4 \
 	-D_DEFAULT_EPICS_VERSIONS="$(DEFAULT_EPICS_VERSIONS)" \
 	-D_EPICS_MODULES="$(EPICS_MODULES)" \
 	-D_EPICS_LOCATION="$(EPICS_LOCATION)" \
 	 $(TOP)/configure/driver_makefile_conf.m4  \
-	 > $(REQUIRE_TOOLS)/conf'
+	 > $(REQUIRE_TOOLS)/config'
 	$(QUIET) sudo install -d -m 755 $(REQUIRE_BIN)
 #	$(QUIET) sudo install -m 755 $(EPICS_MODULE_SRC_PATH)/iocsh $(REQUIRE_BIN)/
 	$(QUIET) sudo install -m 755  $(TOP)/iocsh.bash       $(REQUIRE_BIN)/
 	$(QUIET) sed -i 's/^IOCSH_HASH_VERSION=.*/IOCSH_HASH_VERSION=$(IOCSH_HASH_VERSION)/g' $(TOP)/ess-env.conf
 	$(QUIET) sudo install -m 644  $(TOP)/ess-env.conf     $(REQUIRE_BIN)/
 	$(QUIET) sudo install -m 644  $(TOP)/iocsh_functions  $(REQUIRE_BIN)/
+	$(QUIET) sudo install -m 644  $(TOP)/$(E3_ENV_NAME)/setE3Env.bash  $(REQUIRE_BIN)/	
 #
 ## Uninstall "Require" Module in order not to use it
 uninstall:
