@@ -124,13 +124,13 @@ clean:
 ## Initialize EPICS BASE and E3 ENVIRONMENT Module
 init: git-submodule-sync $(EPICS_MODULE_NAME) $(E3_ENV_NAME)
 
-git-submodule-sync:
+git-submodule-sync: 
 	$(QUIET) git submodule sync
 
 
 $(EPICS_MODULE_NAME): 
 	$(QUIET) $(git_update)
-	cd $@ && git checkout tags/$(REQUIRE_MODULE_TAG)
+	cd $@ && git checkout $(REQUIRE_MODULE_TAG)
 
 
 $(E3_ENV_NAME): 

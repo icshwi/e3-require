@@ -210,9 +210,13 @@ function loadRequire
     
     local load_cmd="dlload"
 
+    printf "# Loading the mandatory require module ... \n"
+    printf "# \n";
     printf "${load_cmd} ${require_lib}\n";
     printf "dbLoadDatabase ${require_dbd}\n"
     printf "${REQUIRE%-*}_registerRecordDeviceDriver\n\n"
+    printf "# \n";
+    printf "# \n";
  
 };
 
