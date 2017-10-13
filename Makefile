@@ -107,7 +107,7 @@ install: uninstall
 	$(QUIET) sudo install -m 644  $(TOP)/$(E3_ENV_NAME)/setE3Env.bash  $(REQUIRE_BIN)/	
 #
 ## Uninstall "Require" Module in order not to use it
-uninstall:
+uninstall: conf
 	$(QUIET) sudo -E bash -c 'make $(M_OPTIONS) uninstall'
 
 
@@ -115,8 +115,13 @@ uninstall:
 build: conf
 	$(QUIET) make $(M_OPTIONS)
 
+
+## clean, build, and install again.
+rebuild: clean build install
+
+
 ## Clean the EPICS Module
-clean:
+clean: conf
 	$(QUIET) make $(M_OPTIONS) clean
 
 
@@ -171,4 +176,4 @@ conf:
 
 
 
-.PHONY: help default init $(EPICS_MODULE_NAME) $(E3_ENV_NAME) env conf install uninstall build clean 
+.PHONY: help default init $(EPICS_MODULE_NAME) $(E3_ENV_NAME) env conf install uninstall build clean rebuild 
