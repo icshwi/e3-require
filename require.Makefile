@@ -21,7 +21,7 @@ SOURCES_T2 += strdup.c
 SOURCES_vxWorks   += asprintf.c
 HEADERS += strdup.h asprintf.h
 HEADERS += require.h
-HEADERS += require_env.h
+#HEADERS += require_env.h
 
 # We need to find the Linux link.h before the EPICS link.h
 USR_INCLUDES_Linux=-idirafter $(EPICS_BASE)/include 

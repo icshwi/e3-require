@@ -173,6 +173,7 @@ env:
 
 conf:
 	$(QUIET) install -m 644 $(TOP)/$(ESS_MODULE_MAKEFILE)  $(EPICS_MODULE_SRC_PATH)/
+	$(QUIET) install -m 644 $(TOP)/require.c               $(EPICS_MODULE_SRC_PATH)/
 
 
 

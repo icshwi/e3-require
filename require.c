@@ -56,7 +56,7 @@ epicsShareFunc int epicsShareAPI iocshCmd(const char *cmd);
 #endif
 
 #include "require.h"
-#include "require_env.h"
+//#include "require_env.h"
 
 int requireDebug;
 
@@ -238,6 +238,11 @@ const char osClass[] = OS_CLASS;
 /* loadlib (library)
 Find a loadable library by name and load it.
 */
+
+
+char epicsRelease[80];
+char epicsBasetype[80];
+char *targetArch;
 
 void set_require_env()
 {

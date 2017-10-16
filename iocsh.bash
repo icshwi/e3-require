@@ -51,6 +51,11 @@ IOCSH_PS1=$(iocsh_ps1 "${IOCSH_HASH_VERSION}" "${BASHPID}")
 
 IOC_STARTUP=/tmp/${SC_SCRIPTNAME}-${SC_VERSION}-startup
 
+# EPICS_DRIVER_PATH defined in iocsh and startup.script_common
+# Remember, driver is equal to module, so EPICS_DRIVER_PATH is the module directory
+# In our jargon. It is the same as ${EPICS_MODULES}
+
+EPICS_DRIVER_PATH=${EPICS_MODULES}
 
 trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
 
