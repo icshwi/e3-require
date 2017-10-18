@@ -3,13 +3,20 @@
 # For example, https://github.com/epics-module/devlib2
 # devlib2 is EPICS_MODULE_NAME
 # 
-EPICS_MODULE_NAME:=require
+EPICS_MODULE_NAME:=$(REQUIRE)
 
-# # (EPICS) EPICS_MODULE_TAG
-# # The EPICS community tag number, which we would like to install
-# # within ESS EPICS Environment (ESS)
+# (EPICS) EPICS_MODULE_TAG
+# The EPICS community tag number, which we would like to install
+# within ESS EPICS Environment (ESS)
 
-# export EPICS_MODULE_TAG:=require_2_5_3
+# This is the module source tag
+# *) individual tags
+#    export EPICS_MODULE_TAG:=tags/require_2_5_3
+# *) master branch 
+#    export EPICS_MODULE_TAG:=master
+# *) individual hash 
+export EPICS_MODULE_TAG:=$(REQUIRE_MODULE_TAG)
+
 
 # (LOCAL) EPICS_MODULE_PATH
 # Usually, it is the directory in $(TOP), after cloning the repository

@@ -16,15 +16,17 @@
 #
 # Author  : Jeong Han Lee
 # email   : han.lee@esss.se
-# Date    : Friday, October  6 13:35:46 CEST 2017
-# version : 0.1.0
+# Date    : Wednesday, October 18 21:17:45 CEST 2017
+# version : 0.1.1
 #
 
 TOP:=$(CURDIR)
 
+
 include $(TOP)/configure/CONFIG
 
 -include $(TOP)/$(E3_ENV_NAME)/$(E3_ENV_NAME)
+
 
 #
 # Keep always the module up-to-date
@@ -106,7 +108,7 @@ install: uninstall
 	$(QUIET) sed -i 's/^IOCSH_HASH_VERSION=.*/IOCSH_HASH_VERSION=$(IOCSH_HASH_VERSION)/g' $(TOP)/ess-env.conf
 	$(QUIET) sudo install -m 644  $(TOP)/ess-env.conf     $(REQUIRE_BIN)/
 	$(QUIET) sudo install -m 644  $(TOP)/iocsh_functions  $(REQUIRE_BIN)/
-	$(QUIET) sudo install -m 644  $(TOP)/$(E3_ENV_NAME)/setE3Env.bash  $(REQUIRE_BIN)/	
+	$(QUIET) sudo install -m 644  $(TOP)/$(E3_ENV_NAME)/setE3Env.bash  $(REQUIRE_BIN)/
 #
 ## Uninstall "Require" Module in order not to use it
 uninstall: conf
@@ -133,6 +135,7 @@ init: git-submodule-sync $(EPICS_MODULE_NAME) $(E3_ENV_NAME)
 
 git-submodule-sync: 
 	$(QUIET) git submodule sync
+
 
 
 $(EPICS_MODULE_NAME): 
