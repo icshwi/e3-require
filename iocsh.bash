@@ -55,8 +55,6 @@ IOC_STARTUP=/tmp/${SC_SCRIPTNAME}-${SC_VERSION}-startup
 # Remember, driver is equal to module, so EPICS_DRIVER_PATH is the module directory
 # In our jargon. It is the same as ${EPICS_MODULES}
 
-EPICS_DRIVER_PATH=${EPICS_MODULES}
-
 trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
 
 

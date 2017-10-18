@@ -85,6 +85,8 @@ help:
 
 default: help
 
+
+all : rebuild
 #
 ## Install "Require" Module in order to use it
 install: uninstall
