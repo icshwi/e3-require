@@ -2,8 +2,12 @@
 # The EPICS community MODULE name. 
 # For example, https://github.com/epics-module/devlib2
 # devlib2 is EPICS_MODULE_NAME
+#
+# We have to use hard-coded require name, which we have to sync with
+# e3-env REQUIRE
 # 
-EPICS_MODULE_NAME:=$(REQUIRE)
+EPICS_MODULE_NAME:=require
+
 
 # (EPICS) EPICS_MODULE_TAG
 # The EPICS community tag number, which we would like to install
@@ -32,7 +36,7 @@ export EPICS_MODULE_SRC_PATH:=$(EPICS_MODULE_NAME)
 # should be maintained according to main repository evolving.
 # some export variables in CONFIG file 
 # in order to build and install for EEE
-ESS_MODULE_MAKEFILE:=$(EPICS_MODULE_NAME).Makefile
+export ESS_MODULE_MAKEFILE:=$(EPICS_MODULE_NAME).Makefile
 
 # (EEE) PROJECT 
 # it is the jargon of EEE, the EEE generic makefile uses it
