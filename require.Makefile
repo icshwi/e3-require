@@ -31,7 +31,7 @@ USR_INCLUDES_Linux=-idirafter $(EPICS_BASE)/include
 USR_CFLAGS_WIN32 += /D_WIN32_WINNT=0x501
 
 TEMPLATES += moduleversion.template
-TEMPLATES += moduleversion.db
+#TEMPLATES += moduleversion.db
 
 dbLoadTemplate.c: dbLoadTemplate_lex.c ../dbLoadTemplate.h
 
