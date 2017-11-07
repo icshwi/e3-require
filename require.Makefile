@@ -31,7 +31,34 @@ USR_INCLUDES_Linux=-idirafter $(EPICS_BASE)/include
 USR_CFLAGS_WIN32 += /D_WIN32_WINNT=0x501
 
 TEMPLATES += moduleversion.template
+TEMPLATES += moduleversion.db
 
 dbLoadTemplate.c: dbLoadTemplate_lex.c ../dbLoadTemplate.h
 
 
+
+
+
+EPICS_BASE_HOST_BIN = $(EPICS_BASE)/bin/$(EPICS_HOST_ARCH)
+MSI =  $(EPICS_BASE_HOST_BIN)/msi
+
+
+USR_DBFLAGS += -I . -I ..
+USR_DBFLAGS += -I$(EPICS_BASE)/db
+
+
+TEMS = $(wildcard *.template)
+
+
+db: $(TEMS)
+
+$(TEMS): 
+	@printf "Inflating database ... %44s >>> %40s \n" "$@" "$(basename $(@)).db"
+	@rm -f  $(basename $(@)).db.d  $(basename $(@)).db
+	@$(MSI) -D $(USR_DBFLAGS) -o $(basename $(@)).db $@  > $(basename $(@)).db.d
+	@$(MSI)    $(USR_DBFLAGS) -o $(basename $(@)).db $@
+
+
+
+
+.PHONY: db $(TEMS) 

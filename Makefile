@@ -181,5 +181,21 @@ conf:
 	$(QUIET) install -m 644 $(TOP)/require.c               $(EPICS_MODULE_SRC_PATH)/
 
 
+### We have to think how to find $(EPICS_BASE) and
+### $(EPICS_HOST_ARCH) during driver.makefile
+### Friday, November  3 16:44:55 CET 2017, jhlee
+### Currently feasible solutoin without touching driver.makefile
+### is the following:
+###
+### 0) source setE3Env.bash 3.15.4
+### 1) make db
+### 2) make install
+### 3) source setE3Env.bash 3.15.5
+### 4) make db
+### 5) make install 
+###   ..... 
+db: conf
+	$(QUIET) make $(M_OPTIONS) db
 
-.PHONY: help default init $(EPICS_MODULE_NAME) $(E3_ENV_NAME) env conf install uninstall build clean rebuild 
+
+.PHONY: help default init $(EPICS_MODULE_NAME) $(E3_ENV_NAME) env conf install uninstall build clean rebuild db

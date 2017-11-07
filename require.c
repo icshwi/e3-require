@@ -1614,7 +1614,7 @@ require_priv(const char* module,
 
   /* 
    * Even if it creates nothing, if they cannot find start up script, 
-   * I would like to do silient the calling the startup scripts. 
+   * I would like to do silent the calling the startup scripts. 
    * E3 doesn't need this automatic execute them.
    * 
    * Tuesday, October 17 13:51:23 CEST 2017, jhlee
