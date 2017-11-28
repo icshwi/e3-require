@@ -28,6 +28,15 @@ include $(TOP)/configure/CONFIG
 -include $(TOP)/$(E3_ENV_NAME)/$(E3_ENV_NAME)
 
 
+ifndef VERBOSE
+  QUIET := @
+endif
+
+ifdef DEBUG_SHELL
+  SHELL = /bin/sh -x
+endif
+
+
 #
 # Keep always the module up-to-date
 define git_update =
@@ -40,13 +49,6 @@ git submodule update --init --recursive --recursive $@/.
 git submodule update --remote --merge $@/
 endef
 
-ifndef VERBOSE
-  QUIET := @
-endif
-
-ifdef DEBUG_SHELL
-  SHELL = /bin/sh -x
-endif
 
 # Pass necessary driver.makefile variables through makefile options
 # This options is only vaild for require. The similiar options can
@@ -88,7 +90,6 @@ help:
 default: help
 
 
-all : rebuild
 #
 ## Install "Require" Module in order to use it
 install: uninstall
@@ -128,17 +129,18 @@ rebuild: clean build install
 clean: conf
 	$(QUIET) make $(M_OPTIONS) clean
 
-
+## Show driver.makefile help
+help2:
+	$(QUIET) make $(M_OPTIONS) help
 #
 ## Initialize EPICS BASE and E3 ENVIRONMENT Module
-init: git-submodule-sync $(EPICS_MODULE_NAME) $(E3_ENV_NAME)
+init: git-submodule-sync $(EPICS_MODULE_SRC_PATH) $(E3_ENV_NAME)
 
 git-submodule-sync: 
 	$(QUIET) git submodule sync
 
 
-
-$(EPICS_MODULE_NAME): 
+$(EPICS_MODULE_SRC_PATH): 
 	$(QUIET) $(git_update)
 	cd $@ && git checkout $(REQUIRE_MODULE_TAG)
 
@@ -151,11 +153,11 @@ $(E3_ENV_NAME):
 env:
 	$(QUIET) echo ""
 
-	$(QUIET) echo "EPICS_MODULE_NAME           : "$(EPICS_MODULE_NAME)
-	$(QUIET) echo "REQUIRE_MODULE_TAG          : "$(REQUIRE_MODULE_TAG)
 	$(QUIET) echo "EPICS_MODULE_SRC_PATH       : "$(EPICS_MODULE_SRC_PATH)
 	$(QUIET) echo "ESS_MODULE_MAKEFILE         : "$(ESS_MODULE_MAKEFILE)
-
+	$(QUIET) echo "REQUIRE_MODULE_TAG          : "$(REQUIRE_MODULE_TAG)
+	$(QUIET) echo "LIBVERSION                  : "$(REQUIRE_VERSION)
+	$(QUIET) echo "PROJECT                     : "$(PROJECT)
 	$(QUIET) echo ""
 	$(QUIET) echo "----- >>>> EPICS BASE Information <<<< -----"
 	$(QUIET) echo ""
@@ -178,7 +180,7 @@ env:
 
 conf:
 	$(QUIET) install -m 644 $(TOP)/$(ESS_MODULE_MAKEFILE)  $(EPICS_MODULE_SRC_PATH)/
-	$(QUIET) install -m 644 $(TOP)/require.c               $(EPICS_MODULE_SRC_PATH)/
+#	$(QUIET) install -m 644 $(TOP)/require.c               $(EPICS_MODULE_SRC_PATH)/
 
 
 ### We have to think how to find $(EPICS_BASE) and
@@ -198,4 +200,4 @@ db: conf
 	$(QUIET) make $(M_OPTIONS) db
 
 
-.PHONY: help default init $(EPICS_MODULE_NAME) $(E3_ENV_NAME) env conf install uninstall build clean rebuild db
+.PHONY: help default init $(EPICS_MODULE_SRC_PATH) $(E3_ENV_NAME) env conf install uninstall build clean rebuild db
