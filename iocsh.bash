@@ -22,6 +22,7 @@
 #                     email  : han.lee@esss.se
 #
 #
+# 
 
 declare -gr SC_SCRIPT="$(realpath "$0")"
 declare -gr SC_SCRIPTNAME=${0##*/}
@@ -63,10 +64,9 @@ trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
     loadRequire;
 
     loadFiles "$@";
-    if [ "$init" != NO ]; then
-	printf "iocInit\n"
-
-    fi
+#   if [ "$init" != NO ]; then
+#	printf "iocInit\n"
+#   fi
 
     printf "epicsEnvSet IOCSH_PS1 \"$IOCSH_PS1\"\n";
     printf "epicsEnvShow T_A\n";

@@ -269,76 +269,76 @@ function loadFiles
 	    @* )              
 		loadFiles $(cat ${file#@})
 		;;
-	    *.db | *.template)
-		subst=""
-		while [ "$#" -gt 1 ]; do
-		    case $2 in 
-			*=* )
-			    subst="$subst,$2"; shift
-			    ;;
-			* )
-			    break
-			    ;;
-		    esac
-		done
-		echo "dbLoadRecords \"$file\",\"${subst#,}\""
-		;;
-	    *.subs | *.subst )
-		echo "dbLoadTemplate \"$file\""
-		;;
-	    *.dbd )
-		# some dbd files must be loaded before main to take effect
-		echo "dbLoadDatabase \"$file\",\"$DBD\""
-		;;
-	    *.so )             
-		if [ $BASEMINOR -ge 15 -o $BASEPATCH -ge 12 ]; then
-		    echo "dlload \"$file\""
-		else
-		    echo "ld \"$file\""
-		fi
-		;;
-	    -c )               
-		shift
-		case $1 in
-		    seq* )
-			if [ "$init" != NO ]; then
-			    echo "iocInit"
-			    init=NO
-			fi
-			;;
-		    iocInit )
-			init=NO
-			;;
-		esac
-		echo $1
-		;;
-	    -s )
-		shift
-		if [ "$init" != NO ]; then
-		    echo "iocInit"
-		    init=NO
-		fi
-		echo "seq $1"
-		;;
-	    -r )               
-		shift
-		echo "require $1"
-		;;
-	    -n )
-		shift
-		IOC="$1"
-		;;
+	    # *.db | *.template)
+	    # 	subst=""
+	    # 	while [ "$#" -gt 1 ]; do
+	    # 	    case $2 in 
+	    # 		*=* )
+	    # 		    subst="$subst,$2"; shift
+	    # 		    ;;
+	    # 		* )
+	    # 		    break
+	    # 		    ;;
+	    # 	    esac
+	    # 	done
+	    # 	echo "dbLoadRecords \"$file\",\"${subst#,}\""
+	    # 	;;
+	    # *.subs | *.subst )
+	    # 	echo "dbLoadTemplate \"$file\""
+	    # 	;;
+	    # *.dbd )
+	    # 	# some dbd files must be loaded before main to take effect
+	    # 	echo "dbLoadDatabase \"$file\",\"$DBD\""
+	    # 	;;
+	    # *.so )             
+	    # 	if [ $BASEMINOR -ge 15 -o $BASEPATCH -ge 12 ]; then
+	    # 	    echo "dlload \"$file\""
+	    # 	else
+	    # 	    echo "ld \"$file\""
+	    # 	fi
+	    # 	;;
+	    # -c )               
+	    # 	shift
+	    # 	case $1 in
+	    # 	    seq* )
+	    # 		if [ "$init" != NO ]; then
+	    # 		    echo "iocInit"
+	    # 		    init=NO
+	    # 		fi
+	    # 		;;
+	    # 	    iocInit )
+	    # 		init=NO
+	    # 		;;
+	    # 	esac
+	    # 	echo $1
+	    # 	;;
+	    # -s )
+	    # 	shift
+	    # 	if [ "$init" != NO ]; then
+	    # 	    echo "iocInit"
+	    # 	    init=NO
+	    # 	fi
+	    # 	echo "seq $1"
+	    # 	;;
+	    # -r )               
+	    # 	shift
+	    # 	echo "require $1"
+	    # 	;;
+	    # -n )
+	    # 	shift
+	    # 	IOC="$1"
+	    # 	;;
 	    -* )
-		{
-		    echo "unknown option $1"
-		    echo "try: $(basename $0) --help"
-		} >&2
-		exit 1
-		;;
-	    * )                
-		echo "< \"$file\""
-		if grep -q iocInit $file; then init=NO; fi
-		;;
+	    	{
+	    	    echo "unknown option $1"
+	    	    echo "try: $(basename $0) --help"
+	    	} >&2
+	    	exit 1
+	    # 	;;
+	    # * )                
+	    # 	echo "< \"$file\""
+	    # 	if grep -q iocInit $file; then init=NO; fi
+	    # 	;;
 	esac
 	shift
     done
@@ -348,27 +348,8 @@ function loadFiles
 function help
 {
     {
-	echo "usage: iocsh [options] [files]"
-	echo "Start an EPICS iocsh and load files"
-	echo "Recognized filetypes: *.db *.dbt *.template *.subs *.subst *.dbd *.so"
-	echo
-	echo "Possible options:"
-	echo " -? or -h or --help: Show this page and exit."
-	echo " -v or --version: Show version and exit."
-	echo " -c: The next string is executed as a command by the EPICS shell."
-	echo " -s: The next string is a sequencer program (and arguments), run with 'seq'."
-	echo "     This forces an 'iocInit' before running the program."
-	echo " -r: The next string is a module (and version), loaded via 'require'."
-	echo " -n: The next string is the IOC name (used for prompt)."
-	echo "     Default: dirname if parent dir is \"ioc\" otherwise hostname."
-	echo
-	echo "Supported filetypes:"
-	echo "*.db, *.dbt and *.template are loaded via 'dbLoadRecords'."
-	echo "  After the filename, you can specify substitutions like MACRO=value."
-	echo "*.subs and *.subst are loaded via 'dbLoadTemplate'."
-	echo "*.dbd is loaded via 'dbLoadDatabase'."
-	echo "If an argument is @file, more arguments are read from that file."
-	echo "All other files are executed as startup scripts by the EPICS shell."
+	printf "USAGE: iocsh.bash [startup files]"
+	printf "Start an ESS EPICS iocsh.bash and load startup scripts"
     } >&2
     exit
 }
