@@ -51,103 +51,75 @@ make install
 ```
 
 ## Execute iocsh
-Once one installs e3-require, one can execute the simple iocsh for testing. 
+* Once one installs e3-require, one can execute the simple iocsh for testing. 
 
 
 ```
 e3-require (master)$ . e3-env/setE3Env.bash
 e3-require (master)$ iocsh.bash 
 #
-# Start at "2017-W41-Oct10-1604-57-CEST"
+#
+# Start at "2017-W49-Dec04-1805-28-CET"
 #
 # Version information:
-# European Spallation Source ERIC : iocsh.bash (v0.2-fd4e0b5.PID-10102)
+# European Spallation Source ERIC : iocsh.bash (v0.2-0d11bf5.PID-13637)
 #
 # HOSTDISPLAY="kaffee:0"
-# WINDOWID="54525967"
-# PWD="/home/jhlee/gitsrc/e3-require"
+# WINDOWID="157286415"
+# PWD="/home/jhlee/e3/e3-require"
 # USER="jhlee"
 # LOGNAME="jhlee"
 # EPICS_HOST_ARCH="linux-x86_64"
-# EPICS_BASE="/e3/bases/base-3.15.5"
-# EPICS_LOCATION="/e3/bases"
-# EPICS="/e3/bases"
-# EPICS_MODULES="/e3/modules"
+# EPICS_BASE="/epics/bases/base-3.15.5"
+# EPICS_LOCATION="/epics/bases"
+# EPICS="/epics/bases"
+# EPICS_MODULES="/epics/modules"
 # REQUIRE="require"
-# REQUIRE_VERSION="2.5.3"
-# REQUIRE_BIN="/e3/modules/require/2.5.3/bin"
-# REQUIRE_LIB="/e3/modules/require/2.5.3/R3.15.5/lib"
-# REQUIRE_DBD="/e3/modules/require/2.5.3/R3.15.5/dbd"
+# REQUIRE_VERSION="2.5.4"
+# REQUIRE_BIN="/epics/modules/require/2.5.4/bin"
+# REQUIRE_LIB="/epics/modules/require/2.5.4/R3.15.5/lib"
+# REQUIRE_DBD="/epics/modules/require/2.5.4/R3.15.5/dbd"
 # EPICS_CA_AUTO_ADDR_LIST="yes"
 # EPICS_CA_ADDR_LIST="194.47.240.7 10.0.2.15 10.4.8.11 10.4.8.12 10.4.8.13 10.4.8.14"
-# PATH="/e3/modules/require/2.5.3/bin:/e3/bases/base-3.15.5/bin/linux-x86_64:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
-# LD_LIBRARY_PATH="/e3/bases/base-3.15.5/lib/linux-x86_64:/e3/modules/require/2.5.3/R3.15.5/lib/linux-x86_64"
+# PATH="/epics/modules/require/2.5.4/bin:/epics/bases/base-3.15.5/bin/linux-x86_64:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/sbin:/home/jhlee/bin:/opt/etherlab/bin:/opt/etherlab/sbin:/opt/ess/opcUa/bin"
+# LD_LIBRARY_PATH="/epics/bases/base-3.15.5/lib/linux-x86_64:/epics/modules/require/2.5.4/R3.15.5/lib/linux-x86_64:/usr/local/lib:/home/jhlee/lib:/opt/etherlab/lib:/opt/ess/opcUa/lib"
 #
 # Please Use Version and other environment variables
 # in order to report or debug this shell
 #
-dlload /e3/modules/require/2.5.3/R3.15.5/lib/linux-x86_64/librequire.so
-dbLoadDatabase /e3/modules/require/2.5.3/R3.15.5/dbd/require.dbd
+# Loading the mandatory require module ... 
+# 
+dlload /epics/modules/require/2.5.4/R3.15.5/lib/linux-x86_64/librequire.so
+dbLoadDatabase /epics/modules/require/2.5.4/R3.15.5/dbd/require.dbd
 require_registerRecordDeviceDriver
 Loading module info records for require
-iocInit
-Starting iocInit
-############################################################################
-## EPICS R3.15.5-EEE-3.15.5
-## EPICS Base built Oct 10 2017
-############################################################################
-iocRun: All initialization complete
-epicsEnvSet IOCSH_PS1 "fd4e0b5.kaffee.10115 > "
-fd4e0b5.kaffee.10115 >
-```
-
-Switch the difference EPICS base, i.e., 3.15.4
+# 
+# 
+epicsEnvSet IOCSH_PS1 "0d11bf5.kaffee.13650 > "
+epicsEnvShow T_A
+T_A is not an environment variable.
+epicsEnvShow EPICS_HOST_ARCH
+EPICS_HOST_ARCH=linux-x86_64
+var requireDebug 1
+0d11bf5.kaffee.13650 > 
 
 ```
-e3-require (master)$ . e3-env/setE3Env.bash 3.15.4
-e3-require (master)$ iocsh.bash 
-#
-# Start at "2017-W41-Oct10-1606-06-CEST"
-#
-# Version information:
-# European Spallation Source ERIC : iocsh.bash (v0.2-fd4e0b5.PID-11400)
-#
-# HOSTDISPLAY="kaffee:0"
-# WINDOWID="54525967"
-# PWD="/home/jhlee/gitsrc/e3-require"
-# USER="jhlee"
-# LOGNAME="jhlee"
-# EPICS_HOST_ARCH="linux-x86_64"
-# EPICS_BASE="/e3/bases/base-3.15.4"
-# EPICS_LOCATION="/e3/bases"
-# EPICS="/e3/bases"
-# EPICS_MODULES="/e3/modules"
-# REQUIRE="require"
-# REQUIRE_VERSION="2.5.3"
-# REQUIRE_BIN="/e3/modules/require/2.5.3/bin"
-# REQUIRE_LIB="/e3/modules/require/2.5.3/R3.15.4/lib"
-# REQUIRE_DBD="/e3/modules/require/2.5.3/R3.15.4/dbd"
-# EPICS_CA_AUTO_ADDR_LIST="yes"
-# EPICS_CA_ADDR_LIST="194.47.240.7 10.0.2.15 10.4.8.11 10.4.8.12 10.4.8.13 10.4.8.14"
-# PATH="/e3/modules/require/2.5.3/bin:/e3/bases/base-3.15.4/bin/linux-x86_64:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
-# LD_LIBRARY_PATH="/e3/bases/base-3.15.4/lib/linux-x86_64:/e3/modules/require/2.5.3/R3.15.4/lib/linux-x86_64"
-#
-# Please Use Version and other environment variables
-# in order to report or debug this shell
-#
-dlload /e3/modules/require/2.5.3/R3.15.4/lib/linux-x86_64/librequire.so
-dbLoadDatabase /e3/modules/require/2.5.3/R3.15.4/dbd/require.dbd
-require_registerRecordDeviceDriver
-Loading module info records for require
-iocInit
+
+* By default, iocInit is removed. Thus, one should call iocInit in their startup script files.
+
+```
+0d11bf5.kaffee.13650 > iocInit
 Starting iocInit
 ############################################################################
-## EPICS R3.15.4-EEE-3.15.4 $$Date$$
-## EPICS Base built Oct 10 2017
+## EPICS R3.15.5-EEE-3.15.5-patch
+## EPICS Base built Nov 28 2017
 ############################################################################
+require: fillModuleListRecord
+require: (null):MODULES[0] = "require"
+require: (null):VERSIONS[0] = "2.5.4"
+require: (null):MOD_VER+="require 2.5.4"
+
 iocRun: All initialization complete
-epicsEnvSet IOCSH_PS1 "fd4e0b5.kaffee.11413 > "
-fd4e0b5.kaffee.11413 >
 ```
 
 ## TODO
