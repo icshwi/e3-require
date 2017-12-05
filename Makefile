@@ -25,7 +25,8 @@ TOP:=$(CURDIR)
 
 include $(TOP)/configure/CONFIG
 
--include $(TOP)/$(E3_ENV_NAME)/$(E3_ENV_NAME)
+#-include $(TOP)/$(E3_ENV_NAME)/$(E3_ENV_NAME)
+-include $(TOP)/$(E3_ENV_NAME)/e3-global-env
 
 
 ifndef VERBOSE
@@ -57,10 +58,10 @@ endef
 M_OPTIONS := -C $(EPICS_MODULE_SRC_PATH)
 M_OPTIONS += -f $(ESS_MODULE_MAKEFILE)
 M_OPTIONS += LIBVERSION="$(REQUIRE_VERSION)"
-M_OPTIONS += PROJECT="$(EPICS_MODULE_NAME)"
-M_OPTIONS += EPICS_MODULES="$(EPICS_MODULES)"
-M_OPTIONS += EPICS_LOCATION="$(EPICS_LOCATION)"
-M_OPTIONS += DEFAULT_EPICS_VERSIONS="$(DEFAULT_EPICS_VERSIONS)"
+M_OPTIONS += MODULE="$(EPICS_MODULE_NAME)"
+M_OPTIONS += EPICS_MODULES="$(BASE_INSTALL_LOCATION)"
+M_OPTIONS += EPICS_LOCATION="$(ESS_EPICS_PATH)"
+M_OPTIONS += DEFAULT_EPICS_VERSIONS="$(EPICS_VERSION)"
 unexport BUILDCLASSES
 
 
@@ -132,6 +133,10 @@ clean: conf
 ## Show driver.makefile help
 help2:
 	$(QUIET) make $(M_OPTIONS) help
+## Show driver.makefile help
+debug:
+	$(QUIET) make $(M_OPTIONS) debug
+#
 #
 ## Initialize EPICS BASE and E3 ENVIRONMENT Module
 init: git-submodule-sync $(EPICS_MODULE_SRC_PATH) $(E3_ENV_NAME)
@@ -147,7 +152,7 @@ $(EPICS_MODULE_SRC_PATH):
 
 $(E3_ENV_NAME): 
 	$(QUIET) $(git_update)
-
+	cd $@ && git checkout $(E3_ENV_TAG)	
 
 ## Print EPICS and ESS EPICS Environment variables
 env:
@@ -157,7 +162,7 @@ env:
 	$(QUIET) echo "ESS_MODULE_MAKEFILE         : "$(ESS_MODULE_MAKEFILE)
 	$(QUIET) echo "REQUIRE_MODULE_TAG          : "$(REQUIRE_MODULE_TAG)
 	$(QUIET) echo "LIBVERSION                  : "$(REQUIRE_VERSION)
-	$(QUIET) echo "PROJECT                     : "$(PROJECT)
+	$(QUIET) echo "MODULE                      : "$(MODULE)
 	$(QUIET) echo ""
 	$(QUIET) echo "----- >>>> EPICS BASE Information <<<< -----"
 	$(QUIET) echo ""
@@ -166,10 +171,10 @@ env:
 	$(QUIET) echo ""
 	$(QUIET) echo "----- >>>> ESS EPICS Environment  <<<< -----"
 	$(QUIET) echo ""
-	$(QUIET) echo "EPICS_LOCATION              : "$(EPICS_LOCATION)
-	$(QUIET) echo "EPICS_MODULES               : "$(EPICS_MODULES)
-	$(QUIET) echo "DEFAULT_EPICS_VERSIONS      : "$(DEFAULT_EPICS_VERSIONS)
-	$(QUIET) echo "BASE_INSTALL_LOCATIONS      : "$(BASE_INSTALL_LOCATIONS)
+	$(QUIET) echo "ESS_EPICS_PATH              : "$(ESS_EPICS_PATH)
+	$(QUIET) echo "EPICS_MODULES               : "$(REQUIRE_PATH)
+	$(QUIET) echo "EPICS_VERSION               : "$(EPICS_VERSION)
+	$(QUIET) echo "BASE_INSTALL_LOCATION       : "$(BASE_INSTALL_LOCATION)
 	$(QUIET) echo "REQUIRE_VERSION             : "$(REQUIRE_VERSION)
 	$(QUIET) echo "REQUIRE_PATH                : "$(REQUIRE_PATH)
 	$(QUIET) echo "REQUIRE_TOOLS               : "$(REQUIRE_TOOLS)

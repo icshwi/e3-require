@@ -44,10 +44,10 @@ export ESS_MODULE_MAKEFILE:=$(EPICS_MODULE_NAME).Makefile
 # with the require commands, for    example
 # require $(PROJECT),$(LIBVERSION)
 export PROJECT:=$(EPICS_MODULE_NAME)
-
+export MODULE:=$(PROJECT)
 
 
 # E3_ENV_NAME
 export E3_ENV_NAME:=e3-env
-#export E3_ENV_TAG:=v0.1
+export E3_ENV_TAG:=target_path_test
 

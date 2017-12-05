@@ -124,7 +124,7 @@ function printIocEnv
     var_list+=(EPICS_BASE);
     var_list+=(EPICS_LOCATION);
     var_list+=(EPICS);
-    var_list+=(EPICS_MODULES);
+    var_list+=(ESS_EPICS_PATH);
     var_list+=(REQUIRE);
     var_list+=(REQUIRE_VERSION);
     var_list+=(REQUIRE_BIN);
@@ -227,9 +227,9 @@ function check_mandatory_env_settings
 {
     declare -a var_list=();
     var_list+=(EPICS_HOST_ARCH);
-    var_list+=(EPICS_LOCATION);
+    var_list+=(ESS_EPICS_PATH);
     var_list+=(EPICS);
-    var_list+=(EPICS_MODULES);
+#    var_list+=(EPICS_MODULES);
     var_list+=(EPICS_BASE);
     var_list+=(REQUIRE);
     var_list+=(REQUIRE_BIN);
