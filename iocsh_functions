@@ -100,11 +100,11 @@ function version
 function printParamShow
 {
     declare -a var_list=();
-    var_list+=" "; var_list+=EPICS_CA_REPEATER_PORT;
-    var_list+=" "; var_list+=EPICS_CA_SERVER_PORT;
-    var_list+=" "; var_list+=EPICS_TIMEZONE;
-    var_list+=" "; var_list+=EPICS_TS_NTP_INET;
-    var_list+=" "; var_list+=EPICS_AR_PORT;
+    var_list+=(EPICS_CA_REPEATER_PORT);
+    var_list+=(EPICS_CA_SERVER_PORT);
+    var_list+=(EPICS_TIMEZONE);
+    var_list+=(EPICS_TS_NTP_INET);
+    var_list+=(EPICS_AR_PORT);
 
     for var in ${var_list[@]};  do
 	printf "# $var=\"${!var}\"\n"
@@ -115,31 +115,32 @@ function printParamShow
 function printIocEnv
 {
     declare -a var_list=();
-    var_list+=" "; var_list+=HOSTDISPLAY;
-    var_list+=" "; var_list+=WINDOWID;
-    var_list+=" "; var_list+=PWD;
-    var_list+=" "; var_list+=USER;
-    var_list+=" "; var_list+=LOGNAME;
-    var_list+=" "; var_list+=EPICS_HOST_ARCH;
-    var_list+=" "; var_list+=EPICS_BASE;
-    var_list+=" "; var_list+=EPICS_LOCATION;
-    var_list+=" "; var_list+=EPICS;
-    var_list+=" "; var_list+=EPICS_MODULES;
-    var_list+=" "; var_list+=REQUIRE;
-    var_list+=" "; var_list+=REQUIRE_VERSION;
-    var_list+=" "; var_list+=REQUIRE_BIN
-    var_list+=" "; var_list+=REQUIRE_LIB;
-    var_list+=" "; var_list+=REQUIRE_DBD;
-    var_list+=" "; var_list+=EPICS_CA_AUTO_ADDR_LIST;
-    var_list+=" "; var_list+=EPICS_CA_ADDR_LIST;
-    var_list+=" "; var_list+=PATH;
-    var_list+=" "; var_list+=LD_LIBRARY_PATH;
+    var_list+=(HOSTDISPLAY);
+    var_list+=(WINDOWID);
+    var_list+=(PWD);
+    var_list+=(USER);
+    var_list+=(LOGNAME);
+    var_list+=(EPICS_HOST_ARCH);
+    var_list+=(EPICS_BASE);
+    var_list+=(EPICS_LOCATION);
+    var_list+=(EPICS);
+    var_list+=(EPICS_MODULES);
+    var_list+=(REQUIRE);
+    var_list+=(REQUIRE_VERSION);
+    var_list+=(REQUIRE_BIN);
+    var_list+=(REQUIRE_LIB);
+    var_list+=(REQUIRE_DBD);
+    var_list+=(EPICS_CA_AUTO_ADDR_LIST);
+    var_list+=(EPICS_CA_ADDR_LIST);
+    var_list+=(PATH);
+    var_list+=(LD_LIBRARY_PATH);
     
     printf "#\n";
     printf "# Start at \"$(date +%Y-W%V-%b%d-%H%M-%S-%Z)\"\n"
     printf "#\n";
     printf "# Version information:\n";
     printf "# %s : %s%s\n" "European Spallation Source ERIC" "$SC_SCRIPTNAME" ${SC_VERSION:+" ($SC_VERSION)"};
+    printf "## can you see this?\n";
     printf "#\n";
      
     
@@ -225,27 +226,16 @@ function loadRequire
 function check_mandatory_env_settings 
 {
     declare -a var_list=();
-    
-    var_list+=EPICS_HOST_ARCH;
-    var_list+=" ";
-    var_list+=EPICS_LOCATION;
-    var_list+=" ";
-    var_list+=EPICS;
-    var_list+=" ";
-    var_list+=EPICS_MODULES;
-    var_list+=" ";
-    var_list+=EPICS_BASE;
-    var_list+=" ";
-    var_list+=REQUIRE;
-    var_list+=" ";
-    var_list+=REQUIRE_BIN
-    var_list+=" ";
-    var_list+=REQUIRE_LIB;
-    var_list+=" ";
-    var_list+=REQUIRE_DBD;
-    var_list+=" ";
-    var_list+=REQUIRE_VERSION;
-    
+    var_list+=(EPICS_HOST_ARCH);
+    var_list+=(EPICS_LOCATION);
+    var_list+=(EPICS);
+    var_list+=(EPICS_MODULES);
+    var_list+=(EPICS_BASE);
+    var_list+=(REQUIRE);
+    var_list+=(REQUIRE_BIN);
+    var_list+=(REQUIRE_LIB);
+    var_list+=(REQUIRE_DBD);
+    var_list+=(REQUIRE_VERSION);
     for var in ${var_list[@]};  do
 	if [[ $(checkIfVar ${!var}) -eq "$NON_EXIST" ]]; then
 	    die 1 " $var is not defined!. Please source e3-env/setE3Env.bash."
@@ -269,76 +259,76 @@ function loadFiles
 	    @* )              
 		loadFiles $(cat ${file#@})
 		;;
-	    # *.db | *.template)
-	    # 	subst=""
-	    # 	while [ "$#" -gt 1 ]; do
-	    # 	    case $2 in 
-	    # 		*=* )
-	    # 		    subst="$subst,$2"; shift
-	    # 		    ;;
-	    # 		* )
-	    # 		    break
-	    # 		    ;;
-	    # 	    esac
-	    # 	done
-	    # 	echo "dbLoadRecords \"$file\",\"${subst#,}\""
-	    # 	;;
-	    # *.subs | *.subst )
-	    # 	echo "dbLoadTemplate \"$file\""
-	    # 	;;
-	    # *.dbd )
-	    # 	# some dbd files must be loaded before main to take effect
-	    # 	echo "dbLoadDatabase \"$file\",\"$DBD\""
-	    # 	;;
-	    # *.so )             
-	    # 	if [ $BASEMINOR -ge 15 -o $BASEPATCH -ge 12 ]; then
-	    # 	    echo "dlload \"$file\""
-	    # 	else
-	    # 	    echo "ld \"$file\""
-	    # 	fi
-	    # 	;;
-	    # -c )               
-	    # 	shift
-	    # 	case $1 in
-	    # 	    seq* )
-	    # 		if [ "$init" != NO ]; then
-	    # 		    echo "iocInit"
-	    # 		    init=NO
-	    # 		fi
-	    # 		;;
-	    # 	    iocInit )
-	    # 		init=NO
-	    # 		;;
-	    # 	esac
-	    # 	echo $1
-	    # 	;;
-	    # -s )
-	    # 	shift
-	    # 	if [ "$init" != NO ]; then
-	    # 	    echo "iocInit"
-	    # 	    init=NO
-	    # 	fi
-	    # 	echo "seq $1"
-	    # 	;;
-	    # -r )               
-	    # 	shift
-	    # 	echo "require $1"
-	    # 	;;
-	    # -n )
-	    # 	shift
-	    # 	IOC="$1"
-	    # 	;;
+	    *.db | *.template)
+	    	subst=""
+	    	while [ "$#" -gt 1 ]; do
+	    	    case $2 in 
+	    		*=* )
+	    		    subst="$subst,$2"; shift
+	    		    ;;
+	    		* )
+	    		    break
+	    		    ;;
+	    	    esac
+	    	done
+	    	echo "dbLoadRecords \"$file\",\"${subst#,}\""
+	    	;;
+	    *.subs | *.subst )
+	    	echo "dbLoadTemplate \"$file\""
+	    	;;
+	    *.dbd )
+	    	# some dbd files must be loaded before main to take effect
+	    	echo "dbLoadDatabase \"$file\",\"$DBD\""
+	    	;;
+	    *.so )             
+	    	if [ $BASEMINOR -ge 15 -o $BASEPATCH -ge 12 ]; then
+	    	    echo "dlload \"$file\""
+	    	else
+	    	    echo "ld \"$file\""
+	    	fi
+	    	;;
+	    -c )               
+	    	shift
+	    	case $1 in
+	    	    seq* )
+	    		if [ "$init" != NO ]; then
+	    		    echo "iocInit"
+	    		    init=NO
+	    		fi
+	    		;;
+	    	    iocInit )
+	    		init=NO
+	    		;;
+	    	esac
+	    	echo $1
+	    	;;
+	    -s )
+	    	shift
+	    	if [ "$init" != NO ]; then
+	    	    echo "iocInit"
+	    	    init=NO
+	    	fi
+	    	echo "seq $1"
+	    	;;
+	    -r )               
+	    	shift
+	    	echo "require $1"
+	    	;;
+	    -n )
+	    	shift
+	    	IOC="$1"
+	    	;;
 	    -* )
 	    	{
 	    	    echo "unknown option $1"
 	    	    echo "try: $(basename $0) --help"
 	    	} >&2
 	    	exit 1
-	    # 	;;
-	    # * )                
-	    # 	echo "< \"$file\""
-	    # 	if grep -q iocInit $file; then init=NO; fi
-	    # 	;;
+	     	;;
+	    * )                
+	    	echo "< \"$file\""
+	    	if grep -q iocInit $file; then init=NO; fi
+	    	;;
 	esac
 	shift
     done
