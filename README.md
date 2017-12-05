@@ -124,3 +124,41 @@ iocRun: All initialization complete
 
 ## TODO
 
+## Useful commands
+
+In case that one would like to push individual files in require-ess, disenable ignore in submodule require-ess, and carefully following the steps:
+
+```
+e3-require (target_path_test)$  cd require-ess/
+
+require-ess ((v2.5.4))$ git st
+
+HEAD detached at 34c293d
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   App/tools/driver.makefile
+
+require-ess ((v2.5.4))$ git diff App/tools/driver.makefile
+
+require-ess ((v2.5.4))$ git add App/tools/driver.makefile
+
+require-ess ((v2.5.4))$ git commit -m "remove R_base_VERSION in module path"
+[detached HEAD d7cf410] remove R_base_VERSION in module path
+1 file changed, 17 insertions(+), 15 deletions(-)
+
+require-ess ((d7cf410...))$ git push origin HEAD:master
+Counting objects: 5, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (5/5), done.
+Writing objects: 100% (5/5), 668 bytes | 0 bytes/s, done.
+Total 5 (delta 2), reused 0 (delta 0)
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+To https://github.com/icshwi/require-ess
+   34c293d..d7cf410  HEAD -> master
+jhlee@kaffee: require-ess ((d7cf410...))$ git st
+HEAD detached from 34c293d
+```
+Assume that individual files were changed before doing that.
+
