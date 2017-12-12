@@ -1,17 +1,8 @@
 # -*- mode: Makefile;-*-
 # Pass necessary driver.makefile variables through makefile options
 #
-M_OPTIONS := -C $(EPICS_MODULE_SRC_PATH)
-M_OPTIONS += -f $(ESS_MODULE_MAKEFILE)
-M_OPTIONS += LIBVERSION="$(LIBVERSION)"
-M_OPTIONS += PROJECT="$(PROJECT)"
-M_OPTIONS += EPICS_MODULES="$(EPICS_MODULES)"
-M_OPTIONS += EPICS_LOCATION="$(ESS_EPICS_PATH)"
-M_OPTIONS += DEFAULT_EPICS_VERSIONS="$(EPICS_VERSION)"
-#M_OPTIONS += BUILDCLASSES="Linux"
 
-
-.PHONY: help defalut install uninstall build rebuild clean help2 init git-submodule-sync $(EPICS_MODULE_SRC_PATH) cehckout $(E3_ENV_NAME) env conf
+.PHONY: help default install uninstall build rebuild clean help2 init git-submodule-sync $(EPICS_MODULE_SRC_PATH) cehckout $(E3_ENV_NAME) env conf
 
 
 # # help is defined in 
@@ -111,6 +102,7 @@ env:
 	$(QUIET) echo "EPICS_MODULE_TAG            : "$(EPICS_MODULE_TAG)
 	$(QUIET) echo "LIBVERSION                  : "$(LIBVERSION)
 	$(QUIET) echo "PROJECT                     : "$(PROJECT)
+	$(QUIET) echo "REQUIRE MODULE PATH         : "$(BASE_INSTALL_LOCATION)
 	$(QUIET) echo ""
 	$(QUIET) echo "----- >>>> EPICS BASE Information <<<< -----"
 	$(QUIET) echo ""

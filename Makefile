@@ -19,8 +19,8 @@
 # Date    : Wednesday, October 18 21:17:45 CEST 2017
 # version : 0.1.1
 #
-TOP:=$(CURDIR)
 
+TOP:=$(CURDIR)
 
 -include $(TOP)/e3-env/E3_ENV_CONF
 
@@ -32,6 +32,8 @@ endif
 
 
 include $(TOP)/configure/MK_DEFINES
+
+include $(TOP)/configure/BUILD_REQUIRE
 
 include $(TOP)/configure/BUILD_E3
 
