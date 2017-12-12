@@ -9,7 +9,7 @@ export EPICS_MODULE_SRC_PATH:=require-ess-dev
 export ESS_MODULE_MAKEFILE:=$(EPICS_MODULE_NAME).Makefile
 export PROJECT:=$(EPICS_MODULE_NAME)
 export MODULE:=$(PROJECT)
-export LIBVERSION:=0.0.0
+export LIBVERSION:=0.0.1
 
 export E3_ENV_NAME:=e3-env
 export E3_ENV_TAG:=$(DEVELOP_BRANCH)
