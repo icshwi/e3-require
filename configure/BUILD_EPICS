@@ -1,0 +1,16 @@
+
+# One should define the any dependency modules and EPICS base path
+# in the following directory
+
+-include $(TOP)/$(E3_ENV_NAME)/epics-community-env
+
+.PHONY: epics epics-clean
+
+epics:
+	$(QUIET)echo "EPICS_BASE=$(COMMUNITY_EPICS_BASE)"  > $(TOP)/$(EPICS_MODULE_SRC_PATH)/configure/RELEASE
+	$(QUIET)echo "INSTALL_LOCATION=$(M_IOCSTATS)" > $(TOP)/$(EPICS_MODULE_SRC_PATH)/configure/CONFIG_SITE	
+	sudo -E bash -c "$(MAKE) -C $(EPICS_MODULE_SRC_PATH)"
+
+epics-clean:
+	sudo -E bash -c "$(MAKE) -C $(EPICS_MODULE_SRC_PATH) clean"
+
