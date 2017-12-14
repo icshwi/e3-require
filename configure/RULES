@@ -1,0 +1,13 @@
+#CONFIG
+# include $(EPICS_BASE)/configure/RULES
+
+include $(TOP)/configure/DEFINES_FT
+include $(TOP)/configure/RULES_E3
+include $(TOP)/configure/RULES_EPICS
+include $(TOP)/configure/RULES_DB
+include $(TOP)/configure/RULES_VARS
+
+
+ifneq (,$(findstring dev,$(MAKECMDGOALS)))
+include $(TOP)/configure/RULES_DEV
+endif

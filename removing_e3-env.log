@@ -1,0 +1,6 @@
+How to remove e3-env
+
+
+git submodule deinit -f -- e3-env
+rm -rf .git/modules/e3-env
+git rm -f e3-env

@@ -1,0 +1,13 @@
+# One should define the any dependency modules and EPICS base path
+# in the following directory
+
+# .PHONY: epics epics-clean
+
+# epics:
+#        $(QUIET)echo "EPICS_BASE=$(EPICS_BASE)"       > $(TOP)/$(EPICS_MODULE_SRC_PATH)/configure/RELEASE
+#        $(QUIET)echo "INSTALL_LOCATION=$(M_IOCSTATS)" > $(TOP)/$(EPICS_MODULE_SRC_PATH)/configure/CONFIG_SITE   
+#        sudo -E bash -c "$(MAKE) -C $(EPICS_MODULE_SRC_PATH)"
+
+#epics-clean:
+#        sudo -E bash -c "$(MAKE) -C $(EPICS_MODULE_SRC_PATH) clean"
+

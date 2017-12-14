@@ -1,1 +1,24 @@
-CONFIG_ESS
+
+VARS_EXCLUDES := $(.VARIABLES)
+
+ifneq (,$(findstring dev,$(MAKECMDGOALS)))
+include $(TOP)/configure/RELEASE_DEV
+else
+include $(TOP)/configure/RELEASE
+endif
+
+# CONFIG=$(EPICS_BASE)/configure
+# include $(CONFIG)/CONFIG
+
+
+include $(TOP)/configure/CONFIG_REQUIRE
+include $(TOP)/configure/CONFIG_EPICS
+
+ifneq (,$(findstring dev,$(MAKECMDGOALS)))
+include $(TOP)/configure/CONFIG_MODULE_DEV
+else
+include $(TOP)/configure/CONFIG_MODULE
+endif
+
+
+include $(TOP)/configure/CONFIG_E3_MAKEFILE
