@@ -5,7 +5,11 @@
 #
 where_am_I := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-include ${where_am_I}/App/tools/driver.makefile
+# It is easy to maintain RULES_E3 if we use the "repository" makefile
+# instead of the installed makefile.
+include $(where_am_I)/App/tools/driver.makefile
+
+#include $(E3_REQUIRE_TOOLS)/driver.makefile
 
 BUILDCLASSES += Linux
 
@@ -18,9 +22,10 @@ SOURCES += dbLoadTemplate.y
 DBDS    += dbLoadTemplate.dbd
 
 SOURCES_T2 += strdup.c
-SOURCES_vxWorks   += asprintf.c
+SOURCES_vxWorks += asprintf.c
 HEADERS += strdup.h asprintf.h
 HEADERS += require.h
+
 #HEADERS += require_env.h
 
 # We need to find the Linux link.h before the EPICS link.h

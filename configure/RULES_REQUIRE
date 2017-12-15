@@ -1,0 +1,17 @@
+# -*- mode: Makefile;-*-
+
+.PHONY: requireconf
+
+requireconf: 
+	$(QUIET) $(SUDO) install -d -m 755 $(E3_REQUIRE_TOOLS)
+	$(QUIET) $(SUDO) install -d -m 755 $(E3_REQUIRE_BIN)
+	$(QUIET) $(SUDO) install    -m 644 $(E3_MODULE_SRC_PATH)/App/tools/driver.makefile $(E3_REQUIRE_TOOLS)/
+	$(QUIET) $(SUDO) install    -m 755 $(E3_MODULE_SRC_PATH)/App/tools/*.tcl           $(E3_REQUIRE_TOOLS)/
+	$(QUIET) $(SUDO) install    -m 755 $(TOP)/tools/iocsh.bash       $(E3_REQUIRE_BIN)/
+	$(QUIET) $(SUDO) install    -m 644 $(TOP)/tools/ess-env.conf     $(E3_REQUIRE_BIN)/
+	$(QUIET) $(SUDO) install    -m 644 $(TOP)/tools/iocsh_functions  $(E3_REQUIRE_BIN)/
+	$(QUIET) $(SUDO) install    -m 644 $(TOP)/tools/setE3Env.bash    $(E3_REQUIRE_BIN)/
+#	$(QUIET) sed -i 's/^IOCSH_HASH_VERSION=.*/IOCSH_HASH_VERSION=$(IOCSH_HASH_VERSION)/g' $(TOP)/ess-env.conf
+
+
+

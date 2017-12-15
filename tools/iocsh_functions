@@ -122,14 +122,14 @@ function printIocEnv
     var_list+=(LOGNAME);
     var_list+=(EPICS_HOST_ARCH);
     var_list+=(EPICS_BASE);
-    var_list+=(EPICS_LOCATION);
-    var_list+=(EPICS);
-    var_list+=(ESS_EPICS_PATH);
-    var_list+=(REQUIRE);
-    var_list+=(REQUIRE_VERSION);
-    var_list+=(REQUIRE_BIN);
-    var_list+=(REQUIRE_LIB);
-    var_list+=(REQUIRE_DBD);
+#    var_list+=(EPICS_LOCATION);
+#    var_list+=(EPICS);
+#    var_list+=(ESS_EPICS_PATH);
+    var_list+=(E3_REQUIRE);
+    var_list+=(E3_REQUIRE_VERSION);
+    var_list+=(E3_REQUIRE_BIN);
+    var_list+=(E3_REQUIRE_LIB);
+    var_list+=(E3_REQUIRE_DBD);
     var_list+=(EPICS_CA_AUTO_ADDR_LIST);
     var_list+=(EPICS_CA_ADDR_LIST);
     var_list+=(PATH);
@@ -204,10 +204,10 @@ function loadRequire
 {
     local libPrefix=lib
     local libPostfix=.so
-    local libName=${libPrefix}${REQUIRE}${libPostfix}
+    local libName=${libPrefix}${E3_REQUIRE}${libPostfix}
     
-    local require_lib=${REQUIRE_LIB}/${EPICS_HOST_ARCH}/${libName}
-    local require_dbd=${REQUIRE_DBD}/${REQUIRE}.dbd
+    local require_lib=${E3_REQUIRE_LIB}/${EPICS_HOST_ARCH}/${libName}
+    local require_dbd=${E3_REQUIRE_DBD}/${E3_REQUIRE}.dbd
     
     local load_cmd="dlload"
 
@@ -215,7 +215,7 @@ function loadRequire
     printf "# \n";
     printf "${load_cmd} ${require_lib}\n";
     printf "dbLoadDatabase ${require_dbd}\n"
-    printf "${REQUIRE%-*}_registerRecordDeviceDriver\n\n"
+    printf "${E3_REQUIRE%-*}_registerRecordDeviceDriver\n\n"
     printf "# \n";
     printf "# \n";
  
@@ -227,15 +227,15 @@ function check_mandatory_env_settings
 {
     declare -a var_list=();
     var_list+=(EPICS_HOST_ARCH);
-    var_list+=(ESS_EPICS_PATH);
-    var_list+=(EPICS);
+#    var_list+=(ESS_EPICS_PATH);
+#    var_list+=(EPICS);
 #    var_list+=(EPICS_MODULES);
     var_list+=(EPICS_BASE);
-    var_list+=(REQUIRE);
-    var_list+=(REQUIRE_BIN);
-    var_list+=(REQUIRE_LIB);
-    var_list+=(REQUIRE_DBD);
-    var_list+=(REQUIRE_VERSION);
+    var_list+=(E3_REQUIRE);
+    var_list+=(E3_REQUIRE_BIN);
+    var_list+=(E3_REQUIRE_LIB);
+    var_list+=(E3_REQUIRE_DBD);
+    var_list+=(E3_REQUIRE_VERSION);
     for var in ${var_list[@]};  do
 	if [[ $(checkIfVar ${!var}) -eq "$NON_EXIST" ]]; then
 	    die 1 " $var is not defined!. Please source e3-env/setE3Env.bash."

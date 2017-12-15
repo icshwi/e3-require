@@ -1,3 +1,13 @@
+# Keep the same convention with other modules,
+# translate them with E3_REQUIRE_NAME or _VERSION Again
+
+E3_REQUIRE_NAME=$(EPICS_MODULE_NAME)
+E3_REQUIRE_VERSION=$(E3_MODULE_VERSION)
+
+
+#
+# The following VARIABLES are the same as other modules ones.
+#
 
 E3_REQUIRE_LOCATION:=$(EPICS_BASE)/$(E3_REQUIRE_NAME)/$(E3_REQUIRE_VERSION)
 

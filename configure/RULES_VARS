@@ -1,3 +1,4 @@
+# -*- mode: Makefile;-*-
 
 E3_MODULES_VARIABLES:=$(sort $(filter-out $(VARS_EXCLUDES) VARS_EXCLUDES,$(.VARIABLES)))
 
@@ -5,12 +6,13 @@ E3_MODULES_VARIABLES:=$(sort $(filter-out $(VARS_EXCLUDES) VARS_EXCLUDES,$(.VARI
 
 
 vars: header
-        $(foreach v, $(E3_MODULES_VARIABLES), $(info $(v) = $($(v)))) @#noop
-         
+	$(foreach v, $(E3_MODULES_VARIABLES), $(info $(v) = $($(v)))) @#noop
+
 env: vars
 
 header:
-        @echo ""
-        @echo "-------------------------------------------------"
-        @echo "   Current EPICS and E3 Envrionment Variables "
-        @echo "-------------------------------------------------"
+	$(QUIET)echo ""
+	$(QUIET)echo "------------------------------------------------------------"
+	$(QUIET)echo ">>>>     Current EPICS and E3 Envrionment Variables     <<<<"
+	$(QUIET)echo "------------------------------------------------------------"
+	$(QUIET)echo ""

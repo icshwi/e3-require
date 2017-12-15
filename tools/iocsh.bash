@@ -65,8 +65,8 @@ trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
     loadFiles "$@";
 
     printf "epicsEnvSet IOCSH_PS1 \"$IOCSH_PS1\"\n";
-    printf "epicsEnvShow T_A\n";
-    printf "epicsEnvShow EPICS_HOST_ARCH\n";
+#    printf "epicsEnvShow T_A\n";
+#    printf "epicsEnvShow EPICS_HOST_ARCH\n";
     #    printf "var requireDebug 1\n";
 
     if [ "$init" != NO ]; then

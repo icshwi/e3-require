@@ -1,9 +1,9 @@
-
+# -*- mode: Makefile;-*-
 
 ## This RULE should be used in case of inflating DB files
 ## 
 
-# .PHONY: db
+.PHONY: db
 
 ### We have to think how to find $(EPICS_BASE) and
 ### $(EPICS_HOST_ARCH) during driver.makefile
@@ -19,5 +19,5 @@
 ### 5) make install 
 ###   ..... 
 
-#db: conf
-#        $(QUIET) make $(M_OPTIONS) db
+db: conf
+	$(QUIET) $(E3_MODULE_MAKE_CMDS) db

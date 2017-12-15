@@ -1,7 +1,12 @@
-#CONFIG
+# -*- mode: Makefile;-*-
+
+# CONFIG
 # include $(EPICS_BASE)/configure/RULES
 
 include $(TOP)/configure/DEFINES_FT
+
+include $(TOP)/configure/RULES_REQUIRE
+
 include $(TOP)/configure/RULES_E3
 include $(TOP)/configure/RULES_EPICS
 include $(TOP)/configure/RULES_DB
