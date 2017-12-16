@@ -58,7 +58,7 @@ conf:
 
 
 
-.PHONY: init git-submodule-sync$(E3_MODULE_SRC_PATH)  checkout
+.PHONY: init git-submodule-sync $(E3_MODULE_SRC_PATH)  checkout
 
 ## Initialize : $(E3_MODULE_SRC_PATH) 
 init: git-submodule-sync $(E3_MODULE_SRC_PATH)  checkout 
