@@ -4,7 +4,6 @@ E3_MODULES_VARIABLES:=$(sort $(filter-out $(VARS_EXCLUDES) VARS_EXCLUDES,$(.VARI
 
 .PHONY : vars env header
 
-
 vars: header
 	$(foreach v, $(E3_MODULES_VARIABLES), $(info $(v) = $($(v)))) @#noop
 
