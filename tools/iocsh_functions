@@ -130,6 +130,7 @@ function printIocEnv
     var_list+=(E3_REQUIRE_BIN);
     var_list+=(E3_REQUIRE_LIB);
     var_list+=(E3_REQUIRE_DBD);
+    var_list+=(EPICS_DRIVER_PATH);
     var_list+=(EPICS_CA_AUTO_ADDR_LIST);
     var_list+=(EPICS_CA_ADDR_LIST);
     var_list+=(PATH);

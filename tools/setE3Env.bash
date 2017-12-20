@@ -22,31 +22,26 @@
 #   version : 0.0.2
 
 
-unset ESS_ETHERLAB_LIB
-unset ESS_ETHERLAB_BIN
-unset ESS_ETHERLAB_SBIN
+# unset ESS_ETHERLAB_LIB
+# unset ESS_ETHERLAB_BIN
+# unset ESS_ETHERLAB_SBIN
 
 
-unset ESS_LIBS
+# unset ESS_LIBS
 
-unset ESS_OPCUA
-unset ESS_OPCUA_LIB
-unset ESS_OPCUA_BIN
-unset ESS_OPCUA_INC
+# unset ESS_OPCUA
+# unset ESS_OPCUA_LIB
+# unset ESS_OPCUA_BIN
+# unset ESS_OPCUA_INC
 
-unset EPICS_DRIVER_PATH
-unset EPICS_BASE
-unset EPICS_HOST_ARCH
+# unset E3_REQUIRE
+# unset E3_REQUIRE_VERSION
+# unset E3_REQUIRE_LOCATION
+# unset E3_REQUIRE_BIN
+# unset E3_REQUIRE_LIB
+# unset E3_REQUIRE_DBD
 
-unset E3_REQUIRE
-unset E3_REQUIRE_VERSION
-unset E3_REQUIRE_LOCATION
-unset E3_REQUIRE_BIN
-unset E3_REQUIRE_LIB
-unset E3_REQUIRE_DBD
 
-unset PATH
-unset LD_LIBRARY_PATH
 
 
 
@@ -63,7 +58,29 @@ fi
 
 
 
-export EPICS_BASE=/testing/epics/base-3.15.5
+
+unset EPICS_BASE
+unset EPICS_HOST_ARCH
+unset E3_REQUIRE
+unset E3_REQUIRE_VERSION
+unset E3_REQUIRE_LOCATION
+
+unset E3_REQUIRE_BIN
+unset E3_REQUIRE_LIB
+unset E3_REQUIRE_DBD
+
+unset E3_SITE_MODS
+unset E3_SITE_LIBS
+unset E3_SITE_APPS
+unset E3_SITE_STHS
+
+unset EPICS_DRIVER_PATH
+
+
+
+unset PATH
+unset LD_LIBRARY_PATH
+
 
 
 #ESS_LIBS=/opt/ess
@@ -84,30 +101,53 @@ export EPICS_BASE=/testing/epics/base-3.15.5
 # shared libs seach directory by require.c
 #
 # EPICS_DRIVER_PATH
-#export EPICS_DRIVER_PATH=${EPICS_MODULES}:${ESS_ETHERLAB_LIB}
-#export EPICS_BASE=${EPICS}/base-${base_ver}
 
 
-
-# export EPICS_LOCATION=${ESS_EPICS_PATH}/bases
-# export EPICS_MODULES=${ESS_EPICS_PATH}/modules
-
-
-
+EPICS_BASE=/testing/epics/base-3.15.5
 EPICS_HOST_ARCH=$("${EPICS_BASE}/startup/EpicsHostArch.pl")
-export EPICS_HOST_ARCH
+
 
 # Select REQUIRE Environment Variables
 
-export E3_REQUIRE=require
-export E3_REQUIRE_VERSION=${require_ver}
-export E3_REQUIRE_LOCATION=${EPICS_BASE}/${E3_REQUIRE}/${E3_REQUIRE_VERSION}
+E3_REQUIRE=require
+E3_REQUIRE_VERSION=${require_ver}
+E3_REQUIRE_LOCATION=${EPICS_BASE}/${E3_REQUIRE}/${E3_REQUIRE_VERSION}
 
-export E3_REQUIRE_BIN=${E3_REQUIRE_LOCATION}/bin
-export E3_REQUIRE_LIB=${E3_REQUIRE_LOCATION}/lib
-export E3_REQUIRE_DBD=${E3_REQUIRE_LOCATION}/dbd
+E3_REQUIRE_BIN=${E3_REQUIRE_LOCATION}/bin
+E3_REQUIRE_LIB=${E3_REQUIRE_LOCATION}/lib
+E3_REQUIRE_DBD=${E3_REQUIRE_LOCATION}/dbd
+
+E3_SITE_MODS=${E3_REQUIRE_LOCATION}/siteMods
+E3_SITE_LIBS=${E3_REQUIRE_LOCATION}/siteLibs
+E3_SITE_APPS=${E3_REQUIRE_LOCATION}/siteApps
+E3_SITE_STHS=${E3_REQUIRE_LOCATION}/siteSths
+
+EPICS_DRIVER_PATH=${E3_SITE_MODS}:${E3_SITE_LIBS}
+
+
+
+
+export EPICS_BASE
+export EPICS_HOST_ARCH
+export E3_REQUIRE
+export E3_REQUIRE_VERSION
+export E3_REQUIRE_LOCATION
+
+export E3_REQUIRE_BIN
+export E3_REQUIRE_LIB
+export E3_REQUIRE_DBD
+
+export E3_SITE_MODS
+export E3_SITE_LIBS
+export E3_SITE_APPS
+export E3_SITE_STHS
+
+export EPICS_DRIVER_PATH
+
+
+
 
 export PATH=${E3_REQUIRE_BIN}:${EPICS_BASE}/bin/${EPICS_HOST_ARCH}:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/sbin:${HOME}/bin
 
-export LD_LIBRARY_PATH=${EPICS_BASE}/lib/${EPICS_HOST_ARCH}:${E3_REQUIRE_LIB}/${EPICS_HOST_ARCH}:/usr/local/lib:${HOME}/lib
+export LD_LIBRARY_PATH=${EPICS_BASE}/lib/${EPICS_HOST_ARCH}:${E3_REQUIRE_LIB}/${EPICS_HOST_ARCH}:/usr/local/lib:${HOME}/lib:${E3_SITE_LIBS}
 
