@@ -1,7 +1,5 @@
-[submodule "require"]
-	path = require
-	url = https://github.com/paulscherrerinstitute/require
-	ignore = all
 [submodule "require-ess"]
 	path = require-ess
 	url = https://github.com/icshwi/require-ess
+	ignore = all
+	
