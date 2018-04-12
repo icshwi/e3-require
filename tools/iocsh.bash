@@ -27,8 +27,11 @@
 declare -gr SC_SCRIPT="$(realpath "$0")"
 declare -gr SC_SCRIPTNAME=${0##*/}
 declare -gr SC_TOP="$(dirname "$SC_SCRIPT")"
-declare -g  SC_VERSION="v0.2"
+declare -g  SC_VERSION="v0.3"
 declare -g  STARTUP=""
+declare -g  BASECODE=""
+
+
 
 set -a
 . ${SC_TOP}/ess-env.conf
@@ -36,6 +39,8 @@ set +a
 
 . ${SC_TOP}/iocsh_functions
 
+
+BASECODE="$(basecode_generator)"
 
 check_mandatory_env_settings
 
@@ -65,9 +70,6 @@ trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
     loadFiles "$@";
 
     printf "epicsEnvSet IOCSH_PS1 \"$IOCSH_PS1\"\n";
-#    printf "epicsEnvShow T_A\n";
-#    printf "epicsEnvShow EPICS_HOST_ARCH\n";
-    printf "var requireDebug 1\n";
 
     if [ "$init" != NO ]; then
 	printf "iocInit\n"

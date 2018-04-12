@@ -1,17 +1,23 @@
 # -*- mode: Makefile;-*-
 
+# CentOS7.4 and Debian 8, it works
+IOCSH_HASH_VERSION:=$(shell git rev-parse --short HEAD)
+# If git rev-parse returns null, use the EPICS_MODULE_TAG
+IOCSH_HASH_VERSION?=$(EPICS_MODULE_TAG)
 .PHONY: requireconf
 
-requireconf: 
+requireconf:
+
 	$(QUIET) $(SUDO) install -d -m 755 $(E3_REQUIRE_TOOLS)
 	$(QUIET) $(SUDO) install -d -m 755 $(E3_REQUIRE_BIN)
 	$(QUIET) $(SUDO) install    -m 644 $(E3_MODULE_SRC_PATH)/App/tools/driver.makefile $(E3_REQUIRE_TOOLS)/
 	$(QUIET) $(SUDO) install    -m 755 $(E3_MODULE_SRC_PATH)/App/tools/*.tcl           $(E3_REQUIRE_TOOLS)/
+	$(QUIET) sed -i 's/^IOCSH_HASH_VERSION=.*/IOCSH_HASH_VERSION=$(IOCSH_HASH_VERSION)/g' $(TOP)/tools/ess-env.conf
 	$(QUIET) $(SUDO) install    -m 755 $(TOP)/tools/iocsh.bash       $(E3_REQUIRE_BIN)/
 	$(QUIET) $(SUDO) install    -m 644 $(TOP)/tools/ess-env.conf     $(E3_REQUIRE_BIN)/
 	$(QUIET) $(SUDO) install    -m 644 $(TOP)/tools/iocsh_functions  $(E3_REQUIRE_BIN)/
 	$(QUIET) $(SUDO) install    -m 644 $(TOP)/tools/setE3Env.bash    $(E3_REQUIRE_BIN)/
-#	$(QUIET) sed -i 's/^IOCSH_HASH_VERSION=.*/IOCSH_HASH_VERSION=$(IOCSH_HASH_VERSION)/g' $(TOP)/ess-env.conf
+
 
 
 

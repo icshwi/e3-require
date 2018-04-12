@@ -1,5 +1,5 @@
-#  Copyright (c) 2016 - Present  Jeong Han Lee
-#  Copyright (c) 2016            European Spallation Source ERIC
+#  Copyright (c) 2017 - Present  Jeong Han Lee
+#  Copyright (c) 2017 - Present  European Spallation Source ERIC
 #
 #  The program is free software: you can redistribute
 #  it and/or modify it under the terms of the GNU General Public License
@@ -17,31 +17,9 @@
 #   Shell   : setE3Env.bash
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
-#   date    : Monday, December  4 13:25:21 CET 2017
+#   date    : Thursday, April 12 18:10:14 CEST 2018
 #
-#   version : 0.0.2
-
-
-# unset ESS_ETHERLAB_LIB
-# unset ESS_ETHERLAB_BIN
-# unset ESS_ETHERLAB_SBIN
-
-
-# unset ESS_LIBS
-
-# unset ESS_OPCUA
-# unset ESS_OPCUA_LIB
-# unset ESS_OPCUA_BIN
-# unset ESS_OPCUA_INC
-
-# unset E3_REQUIRE
-# unset E3_REQUIRE_VERSION
-# unset E3_REQUIRE_LOCATION
-# unset E3_REQUIRE_BIN
-# unset E3_REQUIRE_LIB
-# unset E3_REQUIRE_DBD
-
-
+#   version : 0.1.0
 
 
 
@@ -58,29 +36,26 @@ fi
 
 
 
-
 unset EPICS_BASE
 unset EPICS_HOST_ARCH
-unset E3_REQUIRE
+unset E3_REQUIRE_NAME
 unset E3_REQUIRE_VERSION
 unset E3_REQUIRE_LOCATION
 
 unset E3_REQUIRE_BIN
 unset E3_REQUIRE_LIB
-unset E3_REQUIRE_DBD
+unset E3_REQUIRE_INC
+unset E3_REQUIRE_DB
 
-unset E3_SITE_MODS
-unset E3_SITE_LIBS
-unset E3_SITE_APPS
-unset E3_SITE_STHS
+unset E3_SITEMODS_PATH
+unset E3_SITELIBS_PATH
+unset E3_SITEAPPS_PATH
+
 
 unset EPICS_DRIVER_PATH
 
-
-
 unset PATH
 unset LD_LIBRARY_PATH
-
 
 
 #ESS_LIBS=/opt/ess
@@ -102,48 +77,49 @@ unset LD_LIBRARY_PATH
 #
 # EPICS_DRIVER_PATH
 
-
 EPICS_BASE=/testing/epics/base-3.15.5
 EPICS_HOST_ARCH=$("${EPICS_BASE}/startup/EpicsHostArch.pl")
 
 
 # Select REQUIRE Environment Variables
 
-E3_REQUIRE=require
+E3_REQUIRE_NAME=require
 E3_REQUIRE_VERSION=${require_ver}
-E3_REQUIRE_LOCATION=${EPICS_BASE}/${E3_REQUIRE}/${E3_REQUIRE_VERSION}
+E3_REQUIRE_LOCATION=${EPICS_BASE}/${E3_REQUIRE_NAME}/${E3_REQUIRE_VERSION}
 
 E3_REQUIRE_BIN=${E3_REQUIRE_LOCATION}/bin
 E3_REQUIRE_LIB=${E3_REQUIRE_LOCATION}/lib
+E3_REQUIRE_INC=${E3_REQUIRE_LOCATION}/include
+E3_REQUIRE_DB=${E3_REQUIRE_LOCATION}/db
 E3_REQUIRE_DBD=${E3_REQUIRE_LOCATION}/dbd
+E3_REQUIRE_TOOLS=${E3_REQUIRE_LOCATION}/tools
 
-E3_SITE_MODS=${E3_REQUIRE_LOCATION}/siteMods
-E3_SITE_LIBS=${E3_REQUIRE_LOCATION}/siteLibs
-E3_SITE_APPS=${E3_REQUIRE_LOCATION}/siteApps
-E3_SITE_STHS=${E3_REQUIRE_LOCATION}/siteSths
+E3_SITEMODS_PATH=${E3_REQUIRE_LOCATION}/siteMods
+E3_SITELIBS_PATH=${E3_REQUIRE_LOCATION}/siteLibs
+E3_SITEAPPS_PATH=${E3_REQUIRE_LOCATION}/siteApps
 
-#EPICS_DRIVER_PATH=${E3_SITE_MODS}:${E3_SITE_LIBS}
-#EPICS_DRIVER_PATH=${E3_SITE_LIBS}
-EPICS_DRIVER_PATH=${E3_SITE_MODS}
+
+EPICS_DRIVER_PATH=${E3_SITEMODS_PATH}
 
 
 export EPICS_BASE
 export EPICS_HOST_ARCH
-export E3_REQUIRE
+export E3_REQUIRE_NAME
 export E3_REQUIRE_VERSION
 export E3_REQUIRE_LOCATION
 
 export E3_REQUIRE_BIN
 export E3_REQUIRE_LIB
+export E3_REQUIRE_INC
+export E3_REQUIRE_DB
 export E3_REQUIRE_DBD
 
-export E3_SITE_MODS
-export E3_SITE_LIBS
-export E3_SITE_APPS
-export E3_SITE_STHS
+export E3_SITEMODS_PATH
+export E3_SITELIBS_PATH
+export E3_SITEAPPS_PATH
+
 
 export EPICS_DRIVER_PATH
-
 
 
 
