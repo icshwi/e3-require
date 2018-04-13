@@ -9,7 +9,6 @@ where_am_I := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 # instead of the installed makefile.
 include $(where_am_I)/App/tools/driver.makefile
 
-#include $(E3_REQUIRE_TOOLS)/driver.makefile
 
 BUILDCLASSES += Linux
 

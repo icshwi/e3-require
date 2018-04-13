@@ -4,9 +4,9 @@
 IOCSH_HASH_VERSION:=$(shell git rev-parse --short HEAD)
 # If git rev-parse returns null, use the EPICS_MODULE_TAG
 IOCSH_HASH_VERSION?=$(EPICS_MODULE_TAG)
-.PHONY: requireconf
+.PHONY: requireconf e3-site-path
 
-requireconf:
+requireconf: e3-site-path
 
 	$(QUIET) $(SUDO) install -d -m 755 $(E3_REQUIRE_TOOLS)
 	$(QUIET) $(SUDO) install -d -m 755 $(E3_REQUIRE_BIN)
@@ -19,5 +19,9 @@ requireconf:
 	$(QUIET) $(SUDO) install    -m 644 $(TOP)/tools/setE3Env.bash    $(E3_REQUIRE_BIN)/
 
 
+# Create SITE PATH
 
-
+e3-site-path:
+	$(QUIET) $(SUDO) install -d -m 755 $(E3_SITELIBS_PATH)
+	$(QUIET) $(SUDO) install -d -m 755 $(E3_SITEMODS_PATH)
+	$(QUIET) $(SUDO) install -d -m 755 $(E3_SITEAPPS_PATH)

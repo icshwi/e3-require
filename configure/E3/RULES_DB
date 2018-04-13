@@ -1,0 +1,9 @@
+# -*- mode: Makefile;-*-
+## This RULE should be used in case of inflating DB files
+## 
+
+.PHONY: db
+
+
+db: conf
+	$(QUIET) $(E3_MODULE_MAKE_CMDS) db

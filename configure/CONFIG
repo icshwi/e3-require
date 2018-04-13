@@ -1,4 +1,3 @@
-
 VARS_EXCLUDES := $(.VARIABLES)
 
 ifneq (,$(findstring dev,$(MAKECMDGOALS)))
@@ -7,12 +6,8 @@ else
 include $(TOP)/configure/RELEASE
 endif
 
-
 # CONFIG=$(EPICS_BASE)/configure
 # include $(CONFIG)/CONFIG
-
-
-include $(TOP)/configure/CONFIG_EPICS
 
 # CONFIG_MODULE should be included before CONFIG_REQUIRE
 #
@@ -22,31 +17,12 @@ else
 include $(TOP)/configure/CONFIG_MODULE
 endif
 
-include $(TOP)/configure/CONFIG_REQUIRE
-
-include $(TOP)/configure/CONFIG_E3_MAKEFILE
 
 
+include $(TOP)/configure/E3/CONFIG_REQUIRE
+include $(TOP)/configure/E3/CONFIG_E3_PATH
+include $(TOP)/configure/E3/CONFIG_E3_MAKEFILE
+include $(TOP)/configure/E3/CONFIG_EPICS
+include $(TOP)/configure/E3/CONFIG_SUDO
+include $(TOP)/configure/E3/CONFIG_EXPORT
 
-# IF EPICS_BASE is not WRITABLE, SUDO and SUDOBASH should be used 
-# SUDO_INFO 1 : SUDO is needed (NOT writable)
-# SUDO_INFO 0 : SUDO is not needed
-SUDO_INFO := $(shell test -w $(EPICS_BASE) 1>&2 2> /dev/null; echo $$?)
-
-ifeq "$(SUDO_INFO)" "1"
-SUDO := sudo
-SUDOBASH = $(SUDO)
-SUDOBASH += -E
-SUDOBASH += bash -c
-endif    
-
-
-# Valid for only Development Mode, because we clone/remove them
-# See RULES_DEV
-# E3_MODULE_SRC_PATH_INFO 1 : the directory is not there
-# E3_MODULE_SRC_PATH_INFO 0 : the directory is there
-E3_MODULE_SRC_PATH_INFO := $(shell test -d $(E3_MODULE_SRC_PATH) 1>&2 2> /dev/null; echo $$?)
-
-ifeq "$(E3_MODULE_SRC_PATH_INFO)" "1"
-INIT_E3_MODULE_SRC = 1
-endif    

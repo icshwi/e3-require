@@ -1,10 +1,6 @@
-
 .DEFAULT_GOAL := help
 
 .PHONY: help default install uninstall build rebuild clean conf
-
-
-default: help
 
 
 # # help is defined in 
@@ -27,14 +23,19 @@ help:
 
 
 
+default: help
+
+
 ## Install : $(E3_MODULE_NAME)
 install: uninstall requireconf
 	$(QUIET) $(SUDOBASH) '$(E3_MODULE_MAKE_CMDS) install'
 
+
+
+
 ## Uninstall : $(E3_MODULE_NAME)
 uninstall: conf
 	$(QUIET) $(SUDOBASH) '$(E3_MODULE_MAKE_CMDS) uninstall'
-
 
 
 ## Build the EPICS Module : $(E3_MODULE_NAME)
@@ -75,11 +76,3 @@ checkout:
 
 
 
-
-
-
-# .PHONY: help2
-
-# ## Show driver.makefile help
-# help2:
-#       $(QUIET) $(E3_MODULE_MAKE_CMD) help
