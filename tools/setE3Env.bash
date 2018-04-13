@@ -17,9 +17,9 @@
 #   Shell   : setE3Env.bash
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
-#   date    : Thursday, April 12 18:10:14 CEST 2018
+#   date    : Friday, April 13 17:28:58 CEST 2018
 #
-#   version : 0.1.0
+#   version : 0.1.1
 
 
 
@@ -125,5 +125,5 @@ export EPICS_DRIVER_PATH
 
 export PATH=${E3_REQUIRE_BIN}:${EPICS_BASE}/bin/${EPICS_HOST_ARCH}:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/sbin:${HOME}/bin
 
-export LD_LIBRARY_PATH=${EPICS_BASE}/lib/${EPICS_HOST_ARCH}:${E3_REQUIRE_LIB}/${EPICS_HOST_ARCH}:/usr/local/lib:${HOME}/lib:${E3_SITE_LIBS}
+export LD_LIBRARY_PATH=${EPICS_BASE}/lib/${EPICS_HOST_ARCH}:${E3_REQUIRE_LIB}/${EPICS_HOST_ARCH}:/usr/local/lib:${E3_SITE_LIBS}
 
