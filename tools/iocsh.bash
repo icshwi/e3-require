@@ -78,7 +78,6 @@ trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
     if [ "$init" != NO ]; then
 	printf "# \n";
 	printf "iocInit\n"
-	printParamShow
     fi
     
 }  > ${IOC_STARTUP}
