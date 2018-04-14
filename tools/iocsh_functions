@@ -22,7 +22,6 @@
 #                     email  : han.lee@esss.se
 #
 #
-#
 
 ROOT_UID=0 
 E_NOTROOT=101
@@ -170,6 +169,7 @@ function version
 };
 
 
+# This function doesn't work
 function printParamShow
 {
     declare -a var_list=();
@@ -179,6 +179,12 @@ function printParamShow
     var_list+=(EPICS_TS_NTP_INET);
     var_list+=(EPICS_AR_PORT);
 
+    var_list+=(EPICS_VERSION_MAJOR);
+    var_list+=(EPICS_VERSION_MIDDLE);
+    var_list+=(EPICS_VERSION_MINOR);
+    var_list+=(EPICS_VERSION_PATCH);
+    var_list+=(EPICS_VERSION_FULL);
+    
     for var in ${var_list[@]};  do
 	printf "# $var=\"${!var}\"\n"
     done
@@ -217,7 +223,7 @@ function printIocEnv
     var_list+=(EPICS_CA_ADDR_LIST);
     var_list+=(PATH);
     var_list+=(LD_LIBRARY_PATH);
-    
+
     printf "#\n";
     printf "# Start at \"$(date +%Y-W%V-%b%d-%H%M-%S-%Z)\"\n"
     printf "#\n";
@@ -320,8 +326,9 @@ function loadRequire
 	# Not sure it works or not.
 	load_cmd="ld"
     fi
-    
-    printf "# Loading the ${E3_REQUIRE_NAME} module ... \n"
+
+    printf "# \n";
+    printf "# Load ${E3_REQUIRE_NAME} module, which has the version ${E3_REQUIRE_VERSION}\n"
     printf "# \n";
     printf "${load_cmd} ${require_lib}\n";
     printf "dbLoadDatabase ${require_dbd}\n"

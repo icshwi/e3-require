@@ -66,15 +66,19 @@ trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
 
 {
     printIocEnv;
+    printf "# Set Require IOC for its internal PVs\n";
     printf "epicsEnvSet REQUIRE_IOC \"${REQUIRE_IOC}\"\n";
     loadRequire;
     loadFiles "$@";
-
+    
+    printf "# Set the IOC Prompt String One \n";
     printf "epicsEnvSet IOCSH_PS1 \"$IOCSH_PS1\"\n";
     
 
     if [ "$init" != NO ]; then
+	printf "# \n";
 	printf "iocInit\n"
+	printParamShow
     fi
     
 }  > ${IOC_STARTUP}
