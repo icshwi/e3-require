@@ -49,9 +49,9 @@ check_mandatory_env_settings
 SC_VERSION+=-${IOCSH_HASH_VERSION}.PID-${BASHPID}
 
 #
-# PS1 is defined as IOCSH Git HASH + HOSTNAME + BASHPID
-IOCSH_PS1=$(iocsh_ps1 "${IOCSH_HASH_VERSION}" "${BASHPID}")
-
+# We define IOCSH Git HASH + HOSTNAME + BASHPID
+IOCSH_PS1=$(iocsh_ps1     "${IOCSH_HASH_VERSION}" "${BASHPID}")
+REQUIRE_IOC=$(require_ioc "${IOCSH_HASH_VERSION}" "${BASHPID}")
 #
 # Default Initial Startup file for REQUIRE and minimal environment
 
@@ -66,10 +66,12 @@ trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
 
 {
     printIocEnv;
+    printf "epicsEnvSet REQUIRE_IOC \"${REQUIRE_IOC}\"\n";
     loadRequire;
     loadFiles "$@";
 
     printf "epicsEnvSet IOCSH_PS1 \"$IOCSH_PS1\"\n";
+    
 
     if [ "$init" != NO ]; then
 	printf "iocInit\n"
