@@ -1,1 +1,7 @@
 EPICS_BASE=/testing/epics/base-3.15.5
+
+
+# The definitions shown below can also be placed in an untracked RELEASE.local
+-include $(TOP)/../RELEASE.local
+-include $(TOP)/configure/RELEASE.local
+

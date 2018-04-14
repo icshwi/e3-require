@@ -11,3 +11,7 @@ E3_MODULE_VERSION:=0.0.0
 E3_MODULE_DEV_GITURL:="https://github.com/icshwi/require-ess"
 
 
+
+# The definitions shown below can also be placed in an untracked CONFIG_MODULE.local
+-include $(TOP)/configure/CONFIG_MODULE_DEV.local
+

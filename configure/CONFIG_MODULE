@@ -9,3 +9,7 @@ E3_MODULE_NAME:=$(EPICS_MODULE_NAME)
 E3_MODULE_VERSION:=0.0.0
 
 
+
+# The definitions shown below can also be placed in an untracked CONFIG_MODULE.local
+-include $(TOP)/configure/CONFIG_MODULE.local
+
