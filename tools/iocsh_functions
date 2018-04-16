@@ -289,19 +289,29 @@ function iocsh_ps1
 };
 
 
-
+# Full Record name is
+# E3REQUIRE:<e3-requre hash id or E3_MODULE_VERSION>:<Uppercase hostname without dot>:*
+# For example,  E3REQUIRE:3900235:ICSLAB-SER03:MOD_VER
+# 
 function require_ioc
 {
-    local require_ioc="";
+    # e3-ioc-hash-hostname-pid fails when host has icslab-ser03
+    # so better to keep simple in case when hostname is long.
+    # And it has the limitation of PV length
+    #  #define PVNAME_STRINGSZ 61 in EPICS_BASE/include/dbDefs.h
+
+    local require_ioc="E3REQUIRE:";
     local hash=$1;
     local pid=$2;
+    local host=$(hostname|tr -d '\r');
+    #
+    # Record name should not have . character, because it is used inside reacord
 
-    require_ioc+="e3-ioc-";
+    # 
+    local host_no_dot=$( echo $host  | tr . _ | tr /a-z/ /A-Z/ );
     require_ioc+=$hash;
-    require_ioc+="-";
-    require_ioc+=$(hostname|tr -d '\r');
-    require_ioc+="-";
-    require_ioc+=$pid;
+    require_ioc+=":";
+    require_ioc+=${host_no_dot}
     
     echo "${require_ioc}"
 };
