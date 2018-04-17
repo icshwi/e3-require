@@ -1,3 +1,4 @@
+#!/bin/bash
 #  Copyright (c) 2017 - Present  Jeong Han Lee
 #  Copyright (c) 2017 - Present  European Spallation Source ERIC
 #
@@ -17,22 +18,9 @@
 #   Shell   : setE3Env.bash
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
-#   date    : Friday, April 13 17:28:58 CEST 2018
+#   date    : Tuesday, April 17 13:53:25 CEST 2018
 #
-#   version : 0.1.1
-
-
-
-base_ver=$1
-require_ver=$2
-
-if [ -z "$require_ver" ]; then
-    require_ver="0.0.0"
-fi
-
-if [ -z "$base_ver" ]; then
-    base_ver="3.15.5"
-fi
+#   version : 0.3.0
 
 
 
@@ -57,6 +45,30 @@ unset EPICS_DRIVER_PATH
 unset PATH
 unset LD_LIBRARY_PATH
 
+unset SCRIPT_DIR
+
+
+
+THIS_SRC=${BASH_SOURCE[0]}
+SRC_PATH=${THIS_SRC%/*}
+SRC_NAME=${THIS_SRC##*/}
+
+
+# e3.cfg will be generated via make e3-site-conf
+# The Global Variables are defined in configure/E3/DEFINES_REQUIRE
+# RULES is defined in configure/E3/RULES_REQUIRE
+#
+# Dynamic Changes according to the time when one installs REQUIRE
+# 
+# declare -g DEFAULT_EPICS_BASE=/epics/base-3.15.5
+# declare -g DEFAULT_REQUIRE_NAME=require
+# declare -g DEFAULT_REQUIRE_VERSION=3.0.0
+
+set -a
+source $SRC_PATH/e3.cfg
+set +a
+
+
 
 #ESS_LIBS=/opt/ess
 #ESS_ETHERLAB=/opt/etherlab
@@ -77,14 +89,12 @@ unset LD_LIBRARY_PATH
 #
 # EPICS_DRIVER_PATH
 
-EPICS_BASE=/testing/epics/base-3.15.5
+
+EPICS_BASE=${DEFAULT_EPICS_BASE}
+E3_REQUIRE_NAME=${DEFAULT_REQUIRE_NAME}
+E3_REQUIRE_VERSION=${DEFAULT_REQUIRE_VERSION}
+
 EPICS_HOST_ARCH=$("${EPICS_BASE}/startup/EpicsHostArch.pl")
-
-
-# Select REQUIRE Environment Variables
-
-E3_REQUIRE_NAME=require
-E3_REQUIRE_VERSION=${require_ver}
 E3_REQUIRE_LOCATION=${EPICS_BASE}/${E3_REQUIRE_NAME}/${E3_REQUIRE_VERSION}
 
 E3_REQUIRE_BIN=${E3_REQUIRE_LOCATION}/bin
@@ -103,9 +113,10 @@ EPICS_DRIVER_PATH=${E3_SITEMODS_PATH}
 
 
 export EPICS_BASE
-export EPICS_HOST_ARCH
 export E3_REQUIRE_NAME
 export E3_REQUIRE_VERSION
+
+export EPICS_HOST_ARCH
 export E3_REQUIRE_LOCATION
 
 export E3_REQUIRE_BIN
@@ -122,8 +133,17 @@ export E3_SITEAPPS_PATH
 export EPICS_DRIVER_PATH
 
 
-
 export PATH=${E3_REQUIRE_BIN}:${EPICS_BASE}/bin/${EPICS_HOST_ARCH}:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/sbin:${HOME}/bin
 
 export LD_LIBRARY_PATH=${EPICS_BASE}/lib/${EPICS_HOST_ARCH}:${E3_REQUIRE_LIB}/${EPICS_HOST_ARCH}:/usr/local/lib:${E3_SITE_LIBS}
+
+
+printf "\nSet the ESS EPICS Environment as follows:\n";
+printf "THIS Source         : %s\n" "${THIS_SRC}"
+printf "EPICS_BASE          : %s\n" "${EPICS_BASE}"
+printf "EPICS_HOST_ARCH     : %s\n" "${EPICS_HOST_ARCH}"
+printf "E3_REQUIRE_LOCATION : %s\n" "${E3_REQUIRE_LOCATION}"
+printf "\n";
+printf "Enjoy E3!\n";
+
 

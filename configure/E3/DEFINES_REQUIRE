@@ -1,0 +1,34 @@
+
+# Generate E3 setE3Env.bash configuration
+
+# Remove the genrated indent
+define G_E3_VAR0
+endef
+
+# EPICS_BASE
+define G_E3_VAR1
+declare -g DEFAULT_EPICS_BASE=$(E3_MODULES_PATH)
+endef
+
+# E3_REQUIRE_NAME
+define G_E3_VAR2
+declare -g DEFAULT_REQUIRE_NAME=$(E3_REQUIRE_NAME)
+endef
+
+
+# E3_REQUIRE_VERSION
+
+define G_E3_VAR3
+declare -g DEFAULT_REQUIRE_VERSION=$(E3_REQUIRE_VERSION)
+endef
+
+define E3_CFG_VARS :=
+$(G_E3_VAR0)
+$(G_E3_VAR1)
+$(G_E3_VAR2)
+$(G_E3_VAR3)
+endef
+
+
+VARS_EXCLUDES+=E3_CFG_VARS
+VARS_EXCLUDES+=G_E3_VAR0

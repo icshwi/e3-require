@@ -13,3 +13,5 @@ core.*
 .#*
 \#*
 *.local
+e3.cfg
+ess-env.conf

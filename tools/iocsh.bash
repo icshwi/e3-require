@@ -27,7 +27,7 @@
 declare -gr SC_SCRIPT="$(realpath "$0")"
 declare -gr SC_SCRIPTNAME=${0##*/}
 declare -gr SC_TOP="$(dirname "$SC_SCRIPT")"
-declare -g  SC_VERSION="v0.3"
+declare -g  SC_VERSION="v0.3.0"
 declare -g  STARTUP=""
 declare -g  BASECODE=""
 
@@ -68,7 +68,9 @@ trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
     printIocEnv;
     printf "# Set Require IOC for its internal PVs\n";
     printf "epicsEnvSet REQUIRE_IOC \"${REQUIRE_IOC}\"\n";
+    
     loadRequire;
+    
     loadFiles "$@";
     
     printf "# Set the IOC Prompt String One \n";
