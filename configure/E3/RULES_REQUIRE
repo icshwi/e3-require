@@ -45,6 +45,13 @@ e3-site-path:
 	$(QUIET) $(SUDO) install -d -m 755 $(E3_SITEAPPS_PATH)
 
 
+
 e3-site-conf:
-	$(QUIET) $(file > $(G_E3_CFG_FILE), $(E3_CFG_VARS))
+# Makefile VERSION > 4.x is needed, DEFINES_REQUIRE can be found in a19eb01
+#	$(QUIET) $(file > $(G_E3_CFG_FILE), $(E3_CFG_VARS))
+	@echo "declare -g DEFAULT_EPICS_BASE=$(E3_MODULES_PATH)"          > $(G_E3_CFG_FILE)
+	@echo "declare -g DEFAULT_REQUIRE_NAME=$(E3_REQUIRE_NAME)"       >> $(G_E3_CFG_FILE)
+	@echo "declare -g DEFAULT_REQUIRE_VERSION=$(E3_REQUIRE_VERSION)" >> $(G_E3_CFG_FILE)
+
+
 

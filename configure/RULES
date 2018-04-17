@@ -2,9 +2,13 @@
 # include $(EPICS_BASE)/configure/RULES
 
 include $(TOP)/configure/E3/DEFINES_FT
-include $(TOP)/configure/E3/DEFINES_REQUIRE
+#
+# We cannot use file operation in CentOS7.4,
+# because Makefile version is 3.8.
+# include $(TOP)/configure/E3/DEFINES_REQUIRE
 include $(TOP)/configure/E3/RULES_E3
 include $(TOP)/configure/E3/RULES_EPICS
+
 
 include $(TOP)/configure/E3/RULES_REQUIRE
 
