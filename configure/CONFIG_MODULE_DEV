@@ -1,6 +1,6 @@
 
 EPICS_MODULE_NAME:=require
-EPICS_MODULE_TAG:=target_path_test
+EPICS_MODULE_TAG:=master
 
 E3_MODULE_SRC_PATH:=$(EPICS_MODULE_NAME)-dev
 E3_MODULE_MAKEFILE:=$(EPICS_MODULE_NAME).Makefile
@@ -8,7 +8,7 @@ E3_MODULE_MAKEFILE:=$(EPICS_MODULE_NAME).Makefile
 E3_MODULE_NAME:=$(EPICS_MODULE_NAME)
 E3_MODULE_VERSION:=0.0.0
 
-E3_MODULE_DEV_GITURL:="https://github.com/icshwi/require-ess"
+E3_MODULE_DEV_GITURL:="https://github.com/jeonghanlee/require-ess"
 
 
 
