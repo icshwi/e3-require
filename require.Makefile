@@ -16,7 +16,7 @@ SOURCES += require.c
 DBDS    += require.dbd
 SOURCES += runScript.c
 DBDS    += runScript.dbd
-SOURCES += expr.c
+#SOURCES += expr.c
 
 SOURCES += dbLoadTemplate.y
 DBDS    += dbLoadTemplate.dbd
@@ -31,7 +31,7 @@ HEADERS += require.h
 # We need to find the Linux link.h before the EPICS link.h
 USR_INCLUDES_Linux=-idirafter $(EPICS_BASE)/include 
 
-USR_CFLAGS += -DT_A='"${T_A}"'
+#USR_CFLAGS += -DT_A='"${T_A}"'
 
 # This should really go into some global WIN32 config file
 USR_CFLAGS_WIN32 += /D_WIN32_WINNT=0x501
