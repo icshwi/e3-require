@@ -18,9 +18,9 @@
 #   Shell   : setE3Env.bash
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
-#   date    : Tuesday, April 17 13:53:25 CEST 2018
+#   date    : Wednesday, May 23 15:00:58 CEST 2018
 #
-#   version : 0.3.0
+#   version : 0.4.1
 
 
 
@@ -132,10 +132,24 @@ export E3_SITEAPPS_PATH
 
 export EPICS_DRIVER_PATH
 
+PATH="${E3_REQUIRE_BIN}:${EPICS_BASE}/bin/${EPICS_HOST_ARCH}:/usr/local/bin:/usr/bin:/bin:/sbin:${HOME}/bin"
 
-export PATH=${E3_REQUIRE_BIN}:${EPICS_BASE}/bin/${EPICS_HOST_ARCH}:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/sbin:${HOME}/bin
+# We have a problem, if we have the multiple versions of one module, we have the same executable file names.
+# "echo" selects the lower version number by default. And if the version is used with a string,
+# we don't rely upon echo result.
+# Rethink how we handle each binary files within a module
+# 
+E3_SITELIBS_BINS=`echo ${E3_SITELIBS_PATH}/*_bin`;
 
-export LD_LIBRARY_PATH=${EPICS_BASE}/lib/${EPICS_HOST_ARCH}:${E3_REQUIRE_LIB}/${EPICS_HOST_ARCH}:/usr/local/lib:${E3_SITE_LIBS}
+for each_bins in ${E3_SITELIBS_BINS}; do
+    PATH="${PATH}:$each_bins/${EPICS_HOST_ARCH}"
+#    echo $each_bins
+done
+
+export PATH
+
+
+export LD_LIBRARY_PATH=${EPICS_BASE}/lib/${EPICS_HOST_ARCH}:${E3_REQUIRE_LIB}/${EPICS_HOST_ARCH}:/usr/local/lib:${E3_SITELIBS_PATH}/${EPICS_HOST_ARCH}
 
 
 printf "\nSet the ESS EPICS Environment as follows:\n";
