@@ -22,12 +22,14 @@
 #                     email  : han.lee@esss.se
 #
 #
-# 
+#
+#  Add IOCSH_TOP in order to access where the iocsh.bash is executed
+#  Thursday, May 31 00:04:07 CEST 2018, jhlee
 
 declare -gr SC_SCRIPT="$(realpath "$0")"
 declare -gr SC_SCRIPTNAME=${0##*/}
 declare -gr SC_TOP="$(dirname "$SC_SCRIPT")"
-declare -g  SC_VERSION="v0.3.0"
+declare -g  SC_VERSION="v0.3.1"
 declare -g  STARTUP=""
 declare -g  BASECODE=""
 
@@ -57,6 +59,10 @@ REQUIRE_IOC=$(require_ioc "${IOCSH_HASH_VERSION}" "${BASHPID}")
 
 IOC_STARTUP=/tmp/${SC_SCRIPTNAME}-${SC_VERSION}-startup
 
+
+# To get the absolute path where iocsh.bash is executed
+IOCSH_TOP=${PWD}
+
 # EPICS_DRIVER_PATH defined in iocsh and startup.script_common
 # Remember, driver is equal to module, so EPICS_DRIVER_PATH is the module directory
 # In our jargon. It is the same as ${EPICS_MODULES}
@@ -68,6 +74,7 @@ trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
     printIocEnv;
     printf "# Set Require IOC for its internal PVs\n";
     printf "epicsEnvSet REQUIRE_IOC \"${REQUIRE_IOC}\"\n";
+    printf "epicsEnvSet E3_IOCSH_TOP \"${IOCSH_TOP}\"\n";
     
     loadRequire;
     
