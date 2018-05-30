@@ -342,7 +342,6 @@ function loadRequire
     printf "dbLoadDatabase ${require_dbd}\n"
     printf "${E3_REQUIRE_NAME%-*}_registerRecordDeviceDriver\n\n"
     printf "# \n";
-    printf "# \n";
  
 };
 
@@ -373,7 +372,7 @@ function loadFiles
     while [ "$#" -gt 0 ]; do
 	
 	file=$1
-	
+
 	case $file in
 	    ( -h | "-?" | -help | --help )
 	    help
@@ -381,8 +380,8 @@ function loadFiles
 	    ( -v | -ver | --ver | -version | --version )
 	    version
 	    ;;
-	    ( @* )              
-	    loadFiles $(cat ${file#@})
+	    ( @* )
+  	    loadFiles $(cat ${file#@})
 	    ;;
 	    ( *=* )
 	    echo -n $file | awk -F '=' '{printf "epicsEnvSet %s '\''%s'\''\n", $1, $2}'
@@ -452,6 +451,7 @@ function loadFiles
                 echo "dbLoadDatabase '$file','$DBD','$subst'"
                 ;;
 		( * )
+		set_e3_cmd_top "$file";
 		# iocshLoad introduced from 3.15.0.2
 		if [[ ${BASECODE} -ge 03150002  ]]; then
 		    echo "iocshLoad '$file','$subst'"
@@ -470,6 +470,27 @@ function loadFiles
 	esac
 	shift
     done
+
+
+};
+
+
+function set_e3_cmd_top
+{
+    local file=$1
+    local file_path=""
+    local file_top=""
+    local file_name=""
+    
+    if [ -f "$file" ]; then
+	file_path="$(realpath "$file")"
+	file_top="${file_path%/*}"
+	file_name=${file##*/}
+	printf "# Set E3_CMD_TOP for the absolute path where %s exists\n" "$file_name";
+	printf "epicsEnvSet E3_CMD_TOP \"$file_top\"\n";
+	printf "#\n";
+	
+    fi
 };
 
 

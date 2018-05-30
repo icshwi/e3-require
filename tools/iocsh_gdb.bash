@@ -21,14 +21,12 @@
 #  ESS specific iocsh author : Jeong Han Lee
 #                     email  : han.lee@esss.se
 #
-#
-#
 #  Add IOCSH_TOP in order to access where the iocsh.bash is executed
 #  Thursday, May 31 00:04:07 CEST 2018, jhlee
 
 declare -gr SC_SCRIPT="$(realpath "$0")"
 declare -gr SC_SCRIPTNAME=${0##*/}
-declare -gr SC_TOP="$(dirname "$SC_SCRIPT")"
+declare -gr SC_TOP="${SC_SCRIPT%/*}"
 declare -g  SC_VERSION="v0.3.1-gdb"
 declare -g  STARTUP=""
 declare -g  BASECODE=""
@@ -71,17 +69,20 @@ trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
 
 {
     printIocEnv;
-    printf "# Set Require IOC for its internal PVs\n";
+    printf "# Set REQUIRE_IOC for its internal PVs\n";
     printf "epicsEnvSet REQUIRE_IOC \"${REQUIRE_IOC}\"\n";
+    printf "#\n";
+    printf "# Set E3_IOCSH_TOP for the absolute path where %s is executed.\n" "${SC_SCRIPTNAME}"
     printf "epicsEnvSet E3_IOCSH_TOP \"${IOCSH_TOP}\"\n";
+    printf "#\n";
     
     loadRequire;
-    
+
     loadFiles "$@";
-    
+
     printf "# Set the IOC Prompt String One \n";
     printf "epicsEnvSet IOCSH_PS1 \"$IOCSH_PS1\"\n";
-    
+    printf "#\n";
 
     if [ "$init" != NO ]; then
 	printf "# \n";
