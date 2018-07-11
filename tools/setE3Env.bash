@@ -18,9 +18,9 @@
 #   Shell   : setE3Env.bash
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
-#   date    : Thursday, July 12 00:11:46 CEST 2018
+#   date    : Thursday, July 12 00:37:30 CEST 2018
 #
-#   version : 0.5.0
+#   version : 0.5.1
 
 
 # the following function drop_from_path was copied from
@@ -105,7 +105,7 @@ unset SCRIPT_DIR
 
 
 THIS_SRC=${BASH_SOURCE[0]}
-SRC_PATH=${THIS_SRC%/*}
+SRC_PATH="$( cd -P "$( dirname "$THIS_SRC" )" && pwd )"
 SRC_NAME=${THIS_SRC##*/}
 
 
@@ -194,20 +194,12 @@ export PATH
 old_ld_path=${LD_LIBRARY_PATH}
 E3_LD_LIBRARY_PATH="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}:${E3_REQUIRE_LIB}/${EPICS_HOST_ARCH}:${E3_SITELIBS_PATH}/${EPICS_HOST_ARCH}"
 
-
-if [ -z "$old_ld_lib_path" ]; then
-    new_ld_path=${E3_LD_LIBRARY_PATH}
-else
-    dropped_e3_ld_path=$(drop_from_path ${$old_ld_lib_path} ${E3_LD_LIBRARY_PATH})
-    new_ld_path=${E3_LD_LIBRARY_PATH}:${dropped_e3_ld_path}
-fi
-
-
 LD_LIBRARY_PATH=$(set_variable "${old_ld_path}" "${E3_LD_LIBRARY_PATH}")
 export LD_LIBRARY_PATH
 
 printf "\nSet the ESS EPICS Environment as follows:\n";
-printf "THIS Source         : %s\n" "${THIS_SRC}"
+printf "THIS Source NAME    : %s\n" "${SRC_NAME}"
+printf "THIS Source PATH    : %s\n" "${SRC_PATH}"
 printf "EPICS_BASE          : %s\n" "${EPICS_BASE}"
 printf "EPICS_HOST_ARCH     : %s\n" "${EPICS_HOST_ARCH}"
 printf "E3_REQUIRE_LOCATION : %s\n" "${E3_REQUIRE_LOCATION}"
