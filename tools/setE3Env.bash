@@ -18,9 +18,63 @@
 #   Shell   : setE3Env.bash
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
-#   date    : Wednesday, May 23 15:00:58 CEST 2018
+#   date    : Thursday, July 12 00:11:46 CEST 2018
 #
-#   version : 0.4.1
+#   version : 0.5.0
+
+
+# the following function drop_from_path was copied from
+# the ROOT build system in ${ROOTSYS}/bin/, and modified
+# a little to return its result
+# Wednesday, July 11 23:19:00 CEST 2018, jhlee 
+function drop_from_path
+{
+    #
+    # Assert that we got enough arguments
+    if test $# -ne 2 ; then
+	echo "drop_from_path: needs 2 arguments"
+	return 1
+    fi
+
+    local p=$1
+    local drop=$2
+
+    local new_path=`echo $p | sed -e "s;:${drop}:;:;g" \
+                 -e "s;:${drop};;g"   \
+                 -e "s;${drop}:;;g"   \
+                 -e "s;${drop};;g";`
+    echo ${new_path}
+}
+
+
+function set_variable
+{
+    if test $# -ne 2 ; then
+	echo "set_variable: needs 2 arguments"
+	return 1
+    fi
+
+    local old_path="$1"
+    local add_path="$2"
+
+    local new_path=""
+    local system_old_path=""
+
+    if [ -z "$old_path" ]; then
+	new_path=${add_path}
+    else
+	system_old_path=$(drop_from_path ${old_path} ${add_path})
+	if [ -z "$system_old_path" ]; then
+	    new_path=${add_path}
+	else
+	    new_path=${add_path}:${system_old_path}
+	fi
+   
+    fi
+
+    echo "${new_path}"
+    
+}
 
 
 
@@ -42,8 +96,9 @@ unset E3_SITEAPPS_PATH
 
 unset EPICS_DRIVER_PATH
 
-unset PATH
-unset LD_LIBRARY_PATH
+
+#unset PATH
+#unset LD_LIBRARY_PATH
 
 unset SCRIPT_DIR
 
@@ -67,22 +122,6 @@ SRC_NAME=${THIS_SRC##*/}
 set -a
 source $SRC_PATH/e3.cfg
 set +a
-
-
-
-#ESS_LIBS=/opt/ess
-#ESS_ETHERLAB=/opt/etherlab
-#ESS_OPCUA=${ESS_LIBS}/opcUa
-#ESS_ETHERLAB=${ESS_LIBS}/etherlab
-
-#export ESS_OPCUA_LIB=${ESS_OPCUA}/lib
-#export ESS_OPCUA_INC=${ESS_OPCUA}/include
-#export ESS_OPCUA_BIN=${ESS_OPCUA}/bin
-
-
-# export ESS_ETHERLAB_LIB=${ESS_ETHERLAB}/lib
-# export ESS_ETHERLAB_BIN=${ESS_ETHERLAB}/bin
-# export ESS_ETHERLAB_SBIN=${ESS_ETHERLAB}/sbin
 
 
 # shared libs seach directory by require.c
@@ -132,31 +171,48 @@ export E3_SITEAPPS_PATH
 
 export EPICS_DRIVER_PATH
 
-PATH="${E3_REQUIRE_BIN}:${EPICS_BASE}/bin/${EPICS_HOST_ARCH}:/usr/local/bin:/usr/bin:/bin:/sbin:${HOME}/bin"
 
-# We have a problem, if we have the multiple versions of one module, we have the same executable file names.
-# "echo" selects the lower version number by default. And if the version is used with a string,
-# we don't rely upon echo result.
-# Rethink how we handle each binary files within a module
-# 
-E3_SITELIBS_BINS=`echo ${E3_SITELIBS_PATH}/*_bin`;
+old_path=${PATH}
+E3_PATH="${E3_REQUIRE_BIN}:${EPICS_BASE}/bin/${EPICS_HOST_ARCH}"
 
-for each_bins in ${E3_SITELIBS_BINS}; do
-    PATH="${PATH}:$each_bins/${EPICS_HOST_ARCH}"
-#    echo $each_bins
-done
+PATH=$(set_variable "${old_path}" "${E3_PATH}")
+
+# # We have a problem, if we have the multiple versions of one module, we have the same executable file names.
+# # "echo" selects the lower version number by default. And if the version is used with a string,
+# # we don't rely upon echo result.
+# # Rethink how we handle each binary files within a module
+# # 
+# E3_SITELIBS_BINS=`echo ${E3_SITELIBS_PATH}/*_bin`;
+
+# for each_bins in ${E3_SITELIBS_BINS}; do
+#     PATH="${PATH}:$each_bins/${EPICS_HOST_ARCH}"
+# #    echo $each_bins
+# done
 
 export PATH
 
+old_ld_path=${LD_LIBRARY_PATH}
+E3_LD_LIBRARY_PATH="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}:${E3_REQUIRE_LIB}/${EPICS_HOST_ARCH}:${E3_SITELIBS_PATH}/${EPICS_HOST_ARCH}"
 
-export LD_LIBRARY_PATH=${EPICS_BASE}/lib/${EPICS_HOST_ARCH}:${E3_REQUIRE_LIB}/${EPICS_HOST_ARCH}:/usr/local/lib:${E3_SITELIBS_PATH}/${EPICS_HOST_ARCH}
 
+if [ -z "$old_ld_lib_path" ]; then
+    new_ld_path=${E3_LD_LIBRARY_PATH}
+else
+    dropped_e3_ld_path=$(drop_from_path ${$old_ld_lib_path} ${E3_LD_LIBRARY_PATH})
+    new_ld_path=${E3_LD_LIBRARY_PATH}:${dropped_e3_ld_path}
+fi
+
+
+LD_LIBRARY_PATH=$(set_variable "${old_ld_path}" "${E3_LD_LIBRARY_PATH}")
+export LD_LIBRARY_PATH
 
 printf "\nSet the ESS EPICS Environment as follows:\n";
 printf "THIS Source         : %s\n" "${THIS_SRC}"
 printf "EPICS_BASE          : %s\n" "${EPICS_BASE}"
 printf "EPICS_HOST_ARCH     : %s\n" "${EPICS_HOST_ARCH}"
 printf "E3_REQUIRE_LOCATION : %s\n" "${E3_REQUIRE_LOCATION}"
+printf "PATH                : %s\n" "${PATH}"
+printf "LD_LIBRARY_PATH     : %s\n" "${LD_LIBRARY_PATH}"
 printf "\n";
 printf "Enjoy E3!\n";
 
