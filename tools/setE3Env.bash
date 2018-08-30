@@ -18,9 +18,9 @@
 #   Shell   : setE3Env.bash
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
-#   date    : Tuesday, August 28 00:03:07 CEST 2018
+#   date    : Friday, August 31 01:28:10 CEST 2018
 #
-#   version : 0.6.0
+#   version : 0.6.1
 
 
 # the following function drop_from_path was copied from
@@ -75,7 +75,6 @@ function set_variable
     echo "${new_path}"
     
 }
-
 
 
 # Reset all EPICS, E3, and EEE related PRE-EXIST VARIABLES
@@ -181,7 +180,13 @@ fi
 
 
 THIS_SRC=${BASH_SOURCE[0]}
-SRC_PATH="$( cd -P "$( dirname "$THIS_SRC" )" && pwd )"
+
+if [ -L $THIS_SRC ]; then
+    SRC_PATH="$( cd -P "$( dirname $(readlink -f "$THIS_SRC") )" && pwd )"
+else
+    SRC_PATH="$( cd -P "$( dirname "$THIS_SRC" )" && pwd )"
+fi
+
 SRC_NAME=${THIS_SRC##*/}
 
 
