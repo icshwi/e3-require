@@ -12,6 +12,7 @@ IOCSH_HASH_VERSION?=$(EPICS_MODULE_TAG)
 
 E3_IOC_SHELL_FILE:=$(TOP)/tools/iocsh.bash
 E3_IOC_SHELL_GDB_FILE:=$(TOP)/tools/iocsh_gdb.bash
+E3_IOC_SHELL_NICE_FILE:=$(TOP)/tools/iocsh_nice.bash
 E3_IOC_FUNC_FILE:=$(TOP)/tools/iocsh_functions
 E3_IOC_ENVCFG_FILE:=$(TOP)/tools/ess-env.conf
 # The following file will be generated in $(TOP),
@@ -35,6 +36,7 @@ requireconf: e3-site-path e3-site-conf
 	$(QUIET) $(SUDO) install    -m 644 $(E3_IOC_ENVCFG_FILE)         $(E3_REQUIRE_BIN)/
 	$(QUIET) $(SUDO) install    -m 755 $(E3_IOC_SHELL_FILE)          $(E3_REQUIRE_BIN)/
 	$(QUIET) $(SUDO) install    -m 755 $(E3_IOC_SHELL_GDB_FILE)      $(E3_REQUIRE_BIN)/
+	$(QUIET) $(SUDO) install    -m 755 $(E3_IOC_SHELL_NICE_FILE)     $(E3_REQUIRE_BIN)/
 	$(QUIET) $(SUDO) install    -m 644 $(G_E3_CFG_FILE)              $(E3_REQUIRE_BIN)/
 	$(QUIET) $(SUDO) install    -m 644 $(G_E3_ENV_FILE)              $(E3_REQUIRE_BIN)/
 
