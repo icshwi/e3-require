@@ -21,6 +21,7 @@ devuninstall: nonexists
 devdistclean: nonexists
 devconf: nonexists
 devrequireconf: nonexists
+devexistent: nonexists
 nonexists:
 	$(QUIET)echo ""
 	$(QUIET)echo "------------------------------------------------------------"
@@ -40,4 +41,5 @@ devrequireconf: requireconf
 devdistclean: clean
 	$(QUIET)echo "Removing $(E3_MODULE_SRC_PATH) ......... "
 	rm -rf $(E3_MODULE_SRC_PATH)
+devexistent: existent
 endif
