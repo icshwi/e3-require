@@ -10,7 +10,7 @@ E3_MODULE_VERSION:=${E3_REQUIRE_VERSION}
 #
 #
 #
-E3_MODULE_DEV_GITURL:="https://github.com/jeonghanlee/require-ess"
+E3_MODULE_DEV_GITURL:="https://github.com/icshwi/require-ess"
 
 
 
