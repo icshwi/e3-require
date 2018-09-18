@@ -17,5 +17,7 @@ E3_MODULE_VERSION:=${E3_REQUIRE_VERSION}
 #
 
 # The definitions shown below can also be placed in an untracked CONFIG_MODULE.local
+-include $(TOP)/../../REQUIRE_CONFIG_MODULE.local
+-include $(TOP)/../REQUIRE_CONFIG_MODULE.local
 -include $(TOP)/configure/CONFIG_MODULE.local
 
