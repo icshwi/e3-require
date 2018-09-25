@@ -21,6 +21,7 @@ E3_IOC_ENVCFG_FILE:=$(TOP)/tools/ess-env.conf
 #
 G_E3_CFG_FILE:=$(TOP)/tools/e3.cfg
 G_E3_ENV_FILE:=$(TOP)/tools/setE3Env.bash
+G_E3_EXCLUDE_FLAGS:=$(TOP)/tools/excludeflags.mk
 
 
 
@@ -30,6 +31,7 @@ requireconf: e3-site-path e3-site-conf
 	$(QUIET) $(SUDO) install -d -m 755 $(E3_REQUIRE_TOOLS)
 	$(QUIET) $(SUDO) install -d -m 755 $(E3_REQUIRE_BIN)
 	$(QUIET) $(SUDO) install    -m 644 $(E3_MODULE_SRC_PATH)/App/tools/driver.makefile $(E3_REQUIRE_TOOLS)/
+	$(QUIET) $(SUDO) install    -m 644 $(G_E3_EXCLUDE_FLAGS)   $(E3_REQUIRE_TOOLS)/
 	$(QUIET) $(SUDO) install    -m 755 $(E3_MODULE_SRC_PATH)/App/tools/*.tcl           $(E3_REQUIRE_TOOLS)/
 	$(QUIET) sed -i 's/^IOCSH_HASH_VERSION=.*/IOCSH_HASH_VERSION=$(IOCSH_HASH_VERSION)/g' $(E3_IOC_ENVCFG_FILE)
 	$(QUIET) $(SUDO) install    -m 644 $(E3_IOC_FUNC_FILE)           $(E3_REQUIRE_BIN)/
@@ -39,6 +41,8 @@ requireconf: e3-site-path e3-site-conf
 	$(QUIET) $(SUDO) install    -m 755 $(E3_IOC_SHELL_NICE_FILE)     $(E3_REQUIRE_BIN)/
 	$(QUIET) $(SUDO) install    -m 644 $(G_E3_CFG_FILE)              $(E3_REQUIRE_BIN)/
 	$(QUIET) $(SUDO) install    -m 644 $(G_E3_ENV_FILE)              $(E3_REQUIRE_BIN)/
+	$(QUIET) $(SUDO) install -d -m 755 $(E3_REQUIRE_LOCATION)/configure
+	$(QUIET) $(SUDO) install -m 644 $(TOP)/configure/modules/* $(E3_REQUIRE_LOCATION)/configure/
 
 
 # Create SITE PATH
