@@ -18,16 +18,16 @@
 #   Shell   : setE3Env.bash
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
-#   date    : Wednesday, September  5 12:26:51 CEST 2018
+#   date    : Tuesday, October  2 18:14:08 CEST 2018
 #
-#   version : 0.6.2
+#   version : 0.6.3
 
 
 # the following function drop_from_path was copied from
 # the ROOT build system in ${ROOTSYS}/bin/, and modified
 # a little to return its result
 # Wednesday, July 11 23:19:00 CEST 2018, jhlee 
-function drop_from_path
+drop_from_path ()
 {
     #
     # Assert that we got enough arguments
@@ -47,7 +47,7 @@ function drop_from_path
 }
 
 
-function set_variable
+set_variable ()
 {
     if test $# -ne 2 ; then
 	echo "set_variable: needs 2 arguments"
