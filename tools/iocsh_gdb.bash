@@ -23,11 +23,13 @@
 #
 #  Add IOCSH_TOP in order to access where the iocsh.bash is executed
 #  Thursday, May 31 00:04:07 CEST 2018, jhlee
+#  Add PVA support to call softIOCPVA if BASE >= 7.0.1.1
+#  Tuesday, October  2 14:26:49 CEST 2018, jhlee
 
 declare -gr SC_SCRIPT="$(realpath "$0")"
 declare -gr SC_SCRIPTNAME=${0##*/}
 declare -gr SC_TOP="${SC_SCRIPT%/*}"
-declare -g  SC_VERSION="v0.3.1-gdb"
+declare -g  SC_VERSION="v0.3.2-gdb"
 declare -g  STARTUP=""
 declare -g  BASECODE=""
 
@@ -97,5 +99,13 @@ ulimit -c unlimited
 # PREFIX:exit & PREFIX:BaseVersion PVs are added to softIoc
 # We can end this IOC via caput PREFIX:exit 1
 
-gdb --eval-command run --args softIoc -D ${EPICS_BASE}/dbd/softIoc.dbd "${IOC_STARTUP}" 2>&1
+
+if [[ ${BASECODE} -ge  07000101 ]]; then
+    _PVA_="PVA"
+else
+    _PVA_=""
+fi
+
+
+gdb --eval-command run --args softIoc${_PVA_} -D ${EPICS_BASE}/dbd/softIoc${_PVA_}.dbd "${IOC_STARTUP}" 2>&1
 
