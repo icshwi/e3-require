@@ -277,10 +277,11 @@ function iocsh_ps1
     local iocsh_ps1="";
     local hash=$1;
     local pid=$2;
- 
+    local host=$(hostname|tr -d '\r');
+
     iocsh_ps1+=$hash;
     iocsh_ps1+=".";
-    iocsh_ps1+=$(hostname|tr -d '\r');
+    iocsh_ps1+=${host:0:30};
     iocsh_ps1+=".";
     iocsh_ps1+=$pid;
     iocsh_ps1+=" > ";
@@ -290,8 +291,7 @@ function iocsh_ps1
 
 
 # Full Record name is
-# E3:<Uppercase hostname without dot>:*
-# For example,  E3R:IOCUSER-VIRTUALBOX:MOD_VER
+# REQUIRE-hash:<Uppercase hostname without dot with 30>-pid:MODULES*
 # 
 function require_ioc
 {
@@ -300,16 +300,18 @@ function require_ioc
     # And it has the limitation of PV length
     #  #define PVNAME_STRINGSZ 61 in EPICS_BASE/include/dbDefs.h
 
-    local require_ioc="E3R";
-    #    local hash=$1;
-    #    local pid=$2;
+    local require_ioc=""
+    local hash=$1;
+    local pid=$2;
     local host=${HOSTNAME//./_};
-    #  host=${host//-/_};
-    #
     # Record name should not have . character, because it is used inside reacord
-    # require_ioc+=$( echo $hash | tr /a-z/ /A-Z/ );
+    local hostname=$( echo $host | tr /a-z/ /A-Z/ );
+
+    require_ioc="REQUIRE-${hash}";
     require_ioc+=":";
-    require_ioc+=$( echo $host | tr /a-z/ /A-Z/ );
+    require_ioc+=${hostname:0:30};
+    require_ioc+="-";
+    require_ioc+=${pid}
     
     echo "${require_ioc}"
 };

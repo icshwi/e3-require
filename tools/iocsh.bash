@@ -27,10 +27,14 @@
 #  Add PVA support to call softIOCPVA if BASE >= 7.0.1.1
 #  Tuesday, October  2 14:26:49 CEST 2018, jhlee
 
+#  Tweak REQUIRE PVs to be an unique per a single IOC in OS
+#  Set Hostname up to 30 chars
+#  Thursday, October  4 17:00:53 CEST 2018, jhlee
+#
 declare -gr SC_SCRIPT="$(realpath "$0")"
 declare -gr SC_SCRIPTNAME=${0##*/}
 declare -gr SC_TOP="${SC_SCRIPT%/*}"
-declare -g  SC_VERSION="v0.3.2"
+declare -g  SC_VERSION="v0.3.3"
 declare -g  STARTUP=""
 declare -g  BASECODE=""
 

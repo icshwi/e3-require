@@ -14,5 +14,5 @@ core.*
 \#*
 *.local
 e3.cfg
-ess-env.conf
-tools/ess-env.conf
+*ess-env.conf
+*tools/ess-env.conf
