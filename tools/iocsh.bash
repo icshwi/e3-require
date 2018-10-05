@@ -34,7 +34,7 @@
 declare -gr SC_SCRIPT="$(realpath "$0")"
 declare -gr SC_SCRIPTNAME=${0##*/}
 declare -gr SC_TOP="${SC_SCRIPT%/*}"
-declare -g  SC_VERSION="v0.3.3"
+declare -g  SC_VERSION="v0.3.4"
 declare -g  STARTUP=""
 declare -g  BASECODE=""
 
