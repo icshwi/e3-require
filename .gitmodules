@@ -1,5 +1,5 @@
 [submodule "require-ess"]
 	path = require-ess
 	url = https://github.com/icshwi/require-ess
-	ignore = all
+	ignore = dirty
 	
