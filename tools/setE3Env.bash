@@ -221,7 +221,14 @@ else
     E3_REQUIRE_NAME=${DEFAULT_REQUIRE_NAME}
     E3_REQUIRE_VERSION=${DEFAULT_REQUIRE_VERSION}
 
-    EPICS_HOST_ARCH=$("${EPICS_BASE}/startup/EpicsHostArch.pl")
+
+    epics_host_arch_file="${EPICS_BASE}/startup/EpicsHostArch.pl"
+    if [ -e "$epics_host_arch_file" ]; then
+	EPICS_HOST_ARCH=$("${EPICS_BASE}/startup/EpicsHostArch.pl")
+    else
+	EPICS_HOST_ARCH=$(perl ${EPICS_BASE}/lib/perl/EpicsHostArch.pl)
+    fi
+
     E3_REQUIRE_LOCATION=${EPICS_BASE}/${E3_REQUIRE_NAME}/${E3_REQUIRE_VERSION}
 
     E3_REQUIRE_BIN=${E3_REQUIRE_LOCATION}/bin
