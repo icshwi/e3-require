@@ -281,7 +281,7 @@ function iocsh_ps1
 
     iocsh_ps1+=$hash;
     iocsh_ps1+=".";
-    iocsh_ps1+=${host:0:20};
+    iocsh_ps1+=${host:0:16};
     iocsh_ps1+=".";
     iocsh_ps1+=$pid;
     iocsh_ps1+=" > ";
@@ -301,15 +301,17 @@ function require_ioc
     #  #define PVNAME_STRINGSZ 61 in EPICS_BASE/include/dbDefs.h
 
     local require_ioc=""
-    local hash="$1";
+    local hashin="$1";
+    local hash=$( echo $hashin | tr /a-z/ /A-Z/ );
     local pid="$2";
     local host=${HOSTNAME//./_};
     # Record name should not have . character, because it is used inside reacord
     local hostname=$( echo $host | tr /a-z/ /A-Z/ );
 
-    require_ioc="REQUIRE-${hash}";
+    require_ioc="IOCREQ-";
+    require_ioc+=$hash
     require_ioc+=":";
-    require_ioc+=${hostname:0:20};
+    require_ioc+=${hostname:0:16};
     require_ioc+="-";
     require_ioc+=${pid}
     
