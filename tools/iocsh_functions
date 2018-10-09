@@ -281,7 +281,7 @@ function iocsh_ps1
 
     iocsh_ps1+=$hash;
     iocsh_ps1+=".";
-    iocsh_ps1+=${host:0:16};
+    iocsh_ps1+=${host:0:8};
     iocsh_ps1+=".";
     iocsh_ps1+=$pid;
     iocsh_ps1+=" > ";
@@ -311,7 +311,7 @@ function require_ioc
     require_ioc="IOCREQ-";
     require_ioc+=$hash
     require_ioc+=":";
-    require_ioc+=${hostname:0:16};
+    require_ioc+=${hostname:0:8};
     require_ioc+="-";
     require_ioc+=${pid}
     
