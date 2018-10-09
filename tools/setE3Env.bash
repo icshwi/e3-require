@@ -1,4 +1,5 @@
 #!/bin/bash
+#
 #  Copyright (c) 2017 - Present  Jeong Han Lee
 #  Copyright (c) 2017 - Present  European Spallation Source ERIC
 #
@@ -18,14 +19,15 @@
 #   Shell   : setE3Env.bash
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
-#   date    : Tuesday, October  2 18:14:08 CEST 2018
+#   date    : 2018-10-09 15:35
 #
-#   version : 0.6.3
-
+#   version : 0.6.4
+#
+#
 
 # the following function drop_from_path was copied from
 # the ROOT build system in ${ROOTSYS}/bin/, and modified
-# a little to return its result
+# a little to return its result 
 # Wednesday, July 11 23:19:00 CEST 2018, jhlee 
 drop_from_path ()
 {
@@ -151,21 +153,30 @@ if [ -n "$EPICS_BASE" ]; then
     # If EPICS_ENV_PATH, it is EEE
     if [ -n "$EPICS_ENV_PATH" ]; then
 
+	# Decouple PATH from EPICS_ENV_PATH
 	eee_path=${PATH}
 	PATH=$(drop_from_path "${eee_path}" "${EPICS_ENV_PATH}")
 	export PATH
 
+	# Decouple PATH from pvAccessCPP
 	eee_pvaccess_path=${PATH}
-	drop_eee_pvaccess_path="${EPICS_MODULES_PATH}/pvAccessCPP/5.0.0/${BASE}/bin/${EPICS_HOST_ARCH}"
-	
+	drop_eee_pvaccess_path="${EPICS_MODULES_PATH}/pvAccessCPP/5.0.0/${BASE}/bin/${EPICS_HOST_ARCH}"	
 	PATH=$(drop_from_path "${eee_pvaccess_path}" "${drop_eee_pvaccess_path}")
 	export PATH
+
+	# Decouple PYTHONPATH from pyaPy
+	eee_python_path=${PYTHONPATH}
+	drop_eee_python_path="${EPICS_MODULES_PATH}/pvaPy/0.6.0/${BASE}/lib/${EPICS_HOST_ARCH}"
+	PYTHONPATH=$(drop_from_path "${eee_python_path}" "${drop_eee_python_path}")
+	export PYTHONPATH
+
 	
-	unset EPICS_BASES_PATH
-	unset EPICS_MODULES_PATH
+	# Unset all unique EEE variables
 	unset BASE
+	unset EPICS_BASES_PATH
+	unset EPICS_DB_INCLUDE_PATH
+	unset EPICS_MODULES_PATH
 	unset EPICS_ENV_PATH
-	unset PYTHONPATH
     fi
     
     unset EPICS_BASE
