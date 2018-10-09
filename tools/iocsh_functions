@@ -289,10 +289,19 @@ function iocsh_ps1
     echo "${iocsh_ps1}"
 };
 
+# Please look at the limitation in require.c in  registerModule()
+# /* 
+#    Require DB has the following four PVs: 
+#    - $(REQUIRE_IOC):$(MODULE)_VER
+#    - $(REQUIRE_IOC):MOD_VER
+#    - $(REQUIRE_IOC):VERSIONS
+#    - $(REQUIRE_IOC):MODULES
+#    We reserved 30 chars for :$(MODULE)_VER, so MODULE has the maximum 24 chars.
+#    And we've reserved for 30 chars for $(REQUIRE_IOC).
+#    So, the whole PV and record name in moduleversion.template has 59 + 1. 
+#  */
 
-# Full Record name is
-# REQUIRE-hash:<Uppercase hostname without dot with 30>-pid:MODULES*
-# 
+
 function require_ioc
 {
     # e3-ioc-hash-hostname-pid fails when host has icslab-ser03 and IOCUSER-VIRTUALBOX
@@ -308,13 +317,13 @@ function require_ioc
     # Record name should not have . character, because it is used inside reacord
     local hostname=$( echo $host | tr /a-z/ /A-Z/ );
 
-    require_ioc="IOCREQ-";
-    require_ioc+=$hash
-    require_ioc+=":";
-    require_ioc+=${hostname:0:8};
-    require_ioc+="-";
-    require_ioc+=${pid}
-    
+    require_ioc="REQMOD-";         # char 7 ( 7)
+    require_ioc+=$hash;            # char 7 (14),  703250D
+    require_ioc+=":";              # char 1 (15)  
+    require_ioc+=${hostname:0:6};  # char 7 (22)
+    require_ioc+="-";              # char 1 (23)
+    require_ioc+=${pid}            # char 7 (30),  max pid in  64 bit  4194304 (7),
+  
     echo "${require_ioc}"
 };
 

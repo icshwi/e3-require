@@ -31,10 +31,13 @@
 #  Set Hostname up to 30 chars
 #  Thursday, October  4 17:00:53 CEST 2018, jhlee
 #
+#  0.3.5 : Set the proper limitation of REQUIRE PV name
+#  Tuesday, October  9 14:36:56 CEST 2018, jhlee
+#
 declare -gr SC_SCRIPT="$(realpath "$0")"
 declare -gr SC_SCRIPTNAME=${0##*/}
 declare -gr SC_TOP="${SC_SCRIPT%/*}"
-declare -g  SC_VERSION="v0.3.4"
+declare -g  SC_VERSION="v0.3.5"
 declare -g  STARTUP=""
 declare -g  BASECODE=""
 
