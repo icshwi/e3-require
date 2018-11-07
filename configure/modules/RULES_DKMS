@@ -1,0 +1,33 @@
+
+SUDO2:=sudo -E bash -c
+DKMS:=/usr/sbin/dkms
+DKMS_ARGS:=-m $(E3_MODULE_NAME) -v $(E3_MODULE_VERSION)
+
+.PHONY: dkms_build dkms_remove dkms_install dkms_uninstall
+
+
+dkms_build:
+	$(SUDO) $(DKMS) build $(DKMS_ARGS)
+
+
+dkms_remove:
+	$(SUDO) $(DKMS) remove $(E3_MODULE_NAME)/$(E3_MODULE_VERSION) --all
+	$(SUDO) rm -rf /usr/src/$(E3_MODULE_NAME)-$(E3_MODULE_VERSION)
+
+
+dkms_install:
+	$(SUDO) $(DKMS) install $(DKMS_ARGS)
+	$(QUIET)$(SUDO) depmod
+
+dkms_uninstall:
+	$(SUDO) $(DKMS) uninstall $(DKMS_ARGS)
+	$(QUIET)$(SUDO) depmod	
+
+.PHONY: dkms_build dkms_install dkms_remove dkms_uninstall
+
+
+
+VARS_EXCLUDES+=KMOD_NAME
+VARS_EXCLUDES+=DKMS_ARGS
+VARS_EXCLUDES+=DKMS
+VARS_EXCLUDES+=SUDO2

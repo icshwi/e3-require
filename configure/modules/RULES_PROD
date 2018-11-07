@@ -1,0 +1,9 @@
+PROD_BIN_PATH:=$(E3_MODULES_INSTALL_LOCATION_BIN_LINK)/$(EPICS_HOST_ARCH)
+
+.PHONY: prod_env
+
+prod_env:
+	$(QUIET) echo " -------- In most case, you can run the following export in a terminal --------"
+	$(QUIET) echo "export PATH=$(PROD_BIN_PATH):$${PATH}"
+	$(QUIET) echo " ------------------------------------------------------------------------------"
+

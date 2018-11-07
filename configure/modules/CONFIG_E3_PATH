@@ -1,5 +1,14 @@
-E3_MODULES_PATH:=$(E3_REQUIRE_LOCATION)/siteMods
-E3_SITEMODS_PATH:=$(E3_MODULES_PATH)
+## If E3_MODULES_PATH is not defined, we will use the
+## siteMods as the module path. This is valid for the
+## EPICS or E3 Modules
+## E3 Application should define in its own
+## E3_MODULES_PATH := $(E3_REQUIRE_LOCATION)/siteApps
+## in configure/CONFIG
+
+E3_MODULES_PATH?=$(E3_REQUIRE_LOCATION)/siteMods
+
+
+E3_SITEMODS_PATH:=$(E3_REQUIRE_LOCATION)/siteMods
 E3_SITELIBS_PATH:=$(E3_REQUIRE_LOCATION)/siteLibs
 E3_SITEAPPS_PATH:=$(E3_REQUIRE_LOCATION)/siteApps
 

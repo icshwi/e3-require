@@ -19,9 +19,9 @@
 #   Shell   : setE3Env.bash
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
-#   date    : 2018-10-09 15:35
+#   date    : Wednesday, November  7 16:54:32 CET 2018
 #
-#   version : 0.6.4
+#   version : 0.7.0
 #
 #
 
@@ -254,7 +254,7 @@ else
     E3_SITEAPPS_PATH=${E3_REQUIRE_LOCATION}/siteApps
 
 
-    EPICS_DRIVER_PATH=${E3_SITEMODS_PATH}
+    EPICS_DRIVER_PATH=${E3_SITEMODS_PATH}:${E3_SITEAPPS_PATH}
 
 
     export EPICS_BASE
