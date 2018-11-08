@@ -1,6 +1,5 @@
 # -*- mode: Makefile;-*-
 
-
 # The following VARIABLES are defined in RULES_REQUIRE instead of CONFIG_REQUIRE,
 # because they are used in ONLY RULES_REQUIRE. It is easy to understand them. 
 #
@@ -10,42 +9,33 @@ IOCSH_HASH_VERSION:=$(shell git rev-parse --short HEAD)
 # If git rev-parse returns null, use the EPICS_MODULE_TAG
 IOCSH_HASH_VERSION?=$(EPICS_MODULE_TAG)
 
-E3_IOC_SHELL_FILE:=$(TOP)/tools/iocsh.bash
-E3_IOC_SHELL_GDB_FILE:=$(TOP)/tools/iocsh_gdb.bash
-E3_IOC_SHELL_NICE_FILE:=$(TOP)/tools/iocsh_nice.bash
-E3_IOC_FUNC_FILE:=$(TOP)/tools/iocsh_functions
-E3_IOC_ENVCFG_FILE:=$(TOP)/tools/ess-env.conf
-# The following file will be generated in $(TOP),
-# and move to $(E3_REQUIRE_BIN), and will be
-# used in $(E3_REQUIRE_BIN)/setE3Env.bash
+FILE_FILTER:= %~ %\#
+E3_ESSENVCFG_FILE := $(TOP)/tools/ess-env.conf
+E3_CONFIG_FILE    := $(TOP)/tools/e3.cfg
 #
-G_E3_CFG_FILE:=$(TOP)/tools/e3.cfg
-G_E3_ENV_FILE:=$(TOP)/tools/setE3Env.bash
-G_E3_EXCLUDE_FLAGS:=$(TOP)/tools/excludeflags.mk
-
+E3_SHELL_FILES    := $(wildcard $(TOP)/tools/iocsh*.bash)
+E3_IOC_CFG_FILES  := $(TOP)/tools/iocsh_functions
+E3_IOC_CFG_FILES  += $(E3_ESSENVCFG_FILE)
+E3_IOC_CFG_FILES  += $(E3_CONFIG_FILE)
+E3_IOC_CFG_FILES  += $(TOP)/tools/setE3Env.bash
+E3_REQUIRE_CONF_FILES := $(filter-out $(FILE_FILTER), $(wildcard $(TOP)/configure/modules/*))
 
 
 .PHONY: e3-site-conf  e3-site-path requireconf
 
-requireconf: e3-site-path e3-site-conf
+requireconf: e3-site-path e3-site-conf e3-require-path
+	$(QUIET) $(SUDO) install    -m 755 $(wildcard $(E3_MODULE_SRC_PATH)/App/tools/*.tcl)  $(E3_REQUIRE_TOOLS)/
+	$(QUIET) $(SUDO) install    -m 644 $(E3_MODULE_SRC_PATH)/App/tools/driver.makefile    $(E3_REQUIRE_TOOLS)/
+	$(QUIET) $(SUDO) install    -m 755 $(E3_SHELL_FILES)             $(E3_REQUIRE_BIN)/
+	$(QUIET) $(SUDO) install    -m 644 $(E3_IOC_CFG_FILES)           $(E3_REQUIRE_BIN)/
+	$(QUIET) $(SUDO) install    -m 644 $(E3_REQUIRE_CONF_FILES)      $(E3_REQUIRE_CONFIG)/
+
+
+e3-require-path:
 	$(QUIET) $(SUDO) install -d -m 755 $(E3_REQUIRE_TOOLS)
 	$(QUIET) $(SUDO) install -d -m 755 $(E3_REQUIRE_BIN)
-	$(QUIET) $(SUDO) install    -m 644 $(E3_MODULE_SRC_PATH)/App/tools/driver.makefile $(E3_REQUIRE_TOOLS)/
-	$(QUIET) $(SUDO) install    -m 644 $(G_E3_EXCLUDE_FLAGS)   $(E3_REQUIRE_TOOLS)/
-	$(QUIET) $(SUDO) install    -m 755 $(E3_MODULE_SRC_PATH)/App/tools/*.tcl           $(E3_REQUIRE_TOOLS)/
-	$(QUIET) sed -i 's/^IOCSH_HASH_VERSION=.*/IOCSH_HASH_VERSION=$(IOCSH_HASH_VERSION)/g' $(E3_IOC_ENVCFG_FILE)
-	$(QUIET) $(SUDO) install    -m 644 $(E3_IOC_FUNC_FILE)           $(E3_REQUIRE_BIN)/
-	$(QUIET) $(SUDO) install    -m 644 $(E3_IOC_ENVCFG_FILE)         $(E3_REQUIRE_BIN)/
-	$(QUIET) $(SUDO) install    -m 755 $(E3_IOC_SHELL_FILE)          $(E3_REQUIRE_BIN)/
-	$(QUIET) $(SUDO) install    -m 755 $(E3_IOC_SHELL_GDB_FILE)      $(E3_REQUIRE_BIN)/
-	$(QUIET) $(SUDO) install    -m 755 $(E3_IOC_SHELL_NICE_FILE)     $(E3_REQUIRE_BIN)/
-	$(QUIET) $(SUDO) install    -m 644 $(G_E3_CFG_FILE)              $(E3_REQUIRE_BIN)/
-	$(QUIET) $(SUDO) install    -m 644 $(G_E3_ENV_FILE)              $(E3_REQUIRE_BIN)/
-	$(QUIET) $(SUDO) install -d -m 755 $(E3_REQUIRE_LOCATION)/configure
-	$(QUIET) $(SUDO) install -m 644 $(TOP)/configure/modules/* $(E3_REQUIRE_LOCATION)/configure/
+	$(QUIET) $(SUDO) install -d -m 755 $(E3_REQUIRE_CONFIG)	
 
-
-# Create SITE PATH
 
 e3-site-path:
 	$(QUIET) $(SUDO) install -d -m 755 $(E3_SITELIBS_PATH)
@@ -53,13 +43,20 @@ e3-site-path:
 	$(QUIET) $(SUDO) install -d -m 755 $(E3_SITEAPPS_PATH)
 
 
-
 e3-site-conf:
 # Makefile VERSION > 4.x is needed, DEFINES_REQUIRE can be found in a19eb01
 #	$(QUIET) $(file > $(G_E3_CFG_FILE), $(E3_CFG_VARS))
-	@echo "declare -g DEFAULT_EPICS_BASE=$(E3_MODULES_PATH)"          > $(G_E3_CFG_FILE)
-	@echo "declare -g DEFAULT_REQUIRE_NAME=$(E3_REQUIRE_NAME)"       >> $(G_E3_CFG_FILE)
-	@echo "declare -g DEFAULT_REQUIRE_VERSION=$(E3_REQUIRE_VERSION)" >> $(G_E3_CFG_FILE)
+	$(QUIET)echo "declare -g DEFAULT_EPICS_BASE=$(E3_MODULES_PATH)"          > $(E3_CONFIG_FILE)
+	$(QUIET)echo "declare -g DEFAULT_REQUIRE_NAME=$(E3_REQUIRE_NAME)"       >> $(E3_CONFIG_FILE)
+	$(QUIET)echo "declare -g DEFAULT_REQUIRE_VERSION=$(E3_REQUIRE_VERSION)" >> $(E3_CONFIG_FILE)
+	$(QUIET)sed -i 's/^IOCSH_HASH_VERSION=.*/IOCSH_HASH_VERSION=$(IOCSH_HASH_VERSION)/g' $(E3_ESSENVCFG_FILE)
 
 
+
+VARS_EXCLUDES+=FILE_FILTER
+VARS_EXCLUDES+=E3_SHELL_FILES
+VARS_EXCLUDES+=E3_IOC_CFG_FILES
+VARS_EXCLUDES+=E3_REQUIRE_CONF_FILES
+VARS_EXCLUDES+=E3_ESSENVCFG_FILE
+VARS_EXCLUDES+=E3_CONFIG_FILE
 
