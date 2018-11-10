@@ -1,0 +1,2 @@
+DKMS:=/usr/sbin/dkms
+DKMS_ARGS:=-m $(E3_MODULE_NAME) -v $(E3_MODULE_VERSION)

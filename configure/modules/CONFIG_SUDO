@@ -12,6 +12,7 @@ SUDO :=
 SUDOBASH = bash -c
 endif    
 
+SUDO2 := $(SUDO) -E bash -c
 
 # Valid for only Development Mode, because we clone/remove them
 # See RULES_DEV

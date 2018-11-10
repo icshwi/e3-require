@@ -1,8 +1,4 @@
 
-SUDO2:=sudo -E bash -c
-DKMS:=/usr/sbin/dkms
-DKMS_ARGS:=-m $(E3_MODULE_NAME) -v $(E3_MODULE_VERSION)
-
 .PHONY: dkms_build dkms_remove dkms_install dkms_uninstall
 
 
