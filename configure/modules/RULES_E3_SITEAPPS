@@ -4,5 +4,5 @@
 .PHONY: install_links 
 
 # GNU find 
-install_links: 
+install_links: hdrs
 

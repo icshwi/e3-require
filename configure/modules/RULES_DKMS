@@ -21,9 +21,3 @@ dkms_uninstall:
 
 .PHONY: dkms_build dkms_install dkms_remove dkms_uninstall
 
-
-
-VARS_EXCLUDES+=KMOD_NAME
-VARS_EXCLUDES+=DKMS_ARGS
-VARS_EXCLUDES+=DKMS
-VARS_EXCLUDES+=SUDO2
