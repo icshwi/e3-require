@@ -29,8 +29,6 @@ EXIST=1
 NON_EXIST=0
 
 
-
-
 function pushd { builtin pushd "$@" > /dev/null; }
 function popd  { builtin popd  "$@" > /dev/null; }
 
@@ -510,32 +508,31 @@ function set_e3_cmd_top
 function help
 {
     {
-	printf "USAGE: iocsh.bash [startup files]\n"
-	printf "Start an ESS EPICS iocsh.bash and load startup scripts\n"
-	printf
-	printf "Options:"
-	printf " -?, -h, --help  Show this page and exit.\n"
-	printf " -v, --version   Show version and exit\n."
-	printf " -c 'cmd args'   Ioc shell command.\n"
-	printf " -s 'prog m=v'   Sequencer program (and arguments), run with 'seq'.\n"
-	printf "                 This forces an 'iocInit' before running the program.\n"
-	printf " -r module[,ver] Modue (optionally with version) loaded via 'require'.\n"
-	printf " @file           More arguments are read from file.\n"
-	printf "\n"
-	printf "Supported filetypes:\n"
-	printf " *.db, *.dbt, *.template  loaded via 'dbLoadRecords'\n"
-	printf " *.subs, *.subst          loaded via 'dbLoadTemplate'\n"
+	printf "\n";
+	printf "USAGE: iocsh.bash [startup files]\n";
+	printf "\n";
+	printf "Start the ESS iocsh.bash and load startup scripts.\n\n";
+	printf "Options:\n\n";
+	printf "  -?, -h, --help   Show this page and exit.\n";
+	printf "  -v, --version    Show version and exit.\n";
+	printf "  -c 'cmd args'    Ioc shell command.\n";
+	printf "  -s 'prog m=v'    Sequencer program (and arguments), run with 'seq'.\n";
+	printf "                   This forces an 'iocInit' before running the program.\n";
+	printf "  -r module[,ver]  Modue (optionally with version) loaded via 'require'.\n";
+	printf "  @file            More arguments are read from file.\n\n";
+	printf "Supported filetypes:\n\n";
+	printf " *.db, *.dbt, *.template  loaded via 'dbLoadRecords'\n";
+	printf " *.subs, *.subst          loaded via 'dbLoadTemplate'\n";
 	printf " *.dbd                    loaded via 'dbLoadDatabase'\n"
-	printf " *.so                     loaded via 'dlload' (or 'ld' before 3.14.11)\n"
-	printf "\n"
-	printf "All other files are executed as startup scripts by the EPICS shell.\n"
-	printf "After a file you can specify substitutions like m1=v1 m2=v1 for that file.\n"
-	printf "\n"
+	printf " *.so                     loaded via 'dlload'\n";
+	printf "\n";
+	printf "All other files are executed as startup scripts by the EPICS shell.\n";
+	printf "After a file you can specify substitutions like m1=v1 m2=v1 for that file.\n\n";
 	printf "Examples:\n"
 	printf "  iocsh.bash st.cmd\n"
 	printf "  iocsh.bash my_database.template P=XY M=3\n"
 	printf "  iocsh.bash -r my_module,version -c 'initModule()'\n"
-	printf "  iocsh.bash -c 'var requireDebug 1' st.cmd\n"
+	printf "  iocsh.bash -c 'var requireDebug 1' st.cmd\n\n"
 	
     } >&2
     exit
