@@ -2,6 +2,8 @@
 
 E3_MODULES_VARIABLES:=$(sort $(filter-out $(VARS_EXCLUDES) VARS_EXCLUDES,$(.VARIABLES)))
 
+LEVEL?=2
+
 .PHONY : vars env header
 
 vars: header
@@ -17,4 +19,4 @@ header:
 	$(QUIET)echo ""
 
 existent:
-	$(QUIET)tree -L 2 $(E3_MODULES_PATH)/$(E3_MODULE_NAME)
+	$(QUIET)tree -L $(LEVEL) $(E3_MODULES_PATH)/$(E3_MODULE_NAME)

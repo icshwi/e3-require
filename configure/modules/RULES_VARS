@@ -1,9 +1,10 @@
-
+# -*- mode: Makefile;-*-
 
 E3_MODULES_VARIABLES:=$(sort $(filter-out $(VARS_EXCLUDES) VARS_EXCLUDES,$(.VARIABLES)))
 
-.PHONY : env vars header
+LEVEL?=2
 
+.PHONY : env vars header
 
 ## Print interesting VARIABLES
 env: vars
@@ -20,4 +21,5 @@ header:
 
 
 existent:
-	$(QUIET)tree -L 2 $(E3_MODULES_PATH)/$(E3_MODULE_NAME)
+	$(QUIET)tree -L $(LEVEL) $(E3_MODULES_PATH)/$(E3_MODULE_NAME)
+
