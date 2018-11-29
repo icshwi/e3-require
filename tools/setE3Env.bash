@@ -19,9 +19,9 @@
 #   Shell   : setE3Env.bash
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
-#   date    : Wednesday, November  7 16:54:32 CET 2018
+#   date    : Thursday, November 29 22:49:11 CET 2018
 #
-#   version : 0.7.0
+#   version : 0.7.1
 #
 #
 
@@ -190,6 +190,7 @@ fi
 
 THIS_SRC=${BASH_SOURCE[0]}
 
+
 if [ -L $THIS_SRC ]; then
     SRC_PATH="$( cd -P "$( dirname $(readlink -f "$THIS_SRC") )" && pwd )"
 else
@@ -212,107 +213,115 @@ SRC_NAME=${THIS_SRC##*/}
 GENERATED_E3_CFG=$SRC_PATH/e3.cfg
 
 
+# don't install e3.cfg when make install is executed,
+# so all varaibles are found according to the existent location
+# the symbolic link path doesn't work
+# 
 if [ ! -f ${GENERATED_E3_CFG} ]; then
 
-    printf "\nWhoops! The %s is missing.\n" "${GENERATED_E3_CFG}";
-    printf "\n";
-    printf "One should build require before sourcing %s\n\n" "$SRC_NAME";
+    e3_REQUIRE_BIN_NAME=${SRC_PATH##*/}
+    E3_REQUIRE_LOCATION=${SRC_PATH%/*}
+    E3_REQUIRE_VERSION=${E3_REQUIRE_LOCATION##*/}
+    e3_REQUIRE_PATH=${E3_REQUIRE_LOCATION%/*}
+    E3_REQUIRE_NAME=${e3_REQUIRE_PATH##*/}
+    EPICS_BASE=${e3_REQUIRE_PATH%/*}
     
 else
+
+    # in e3-require/tools
+    # in case, source within e3-require
     set -a
     source $GENERATED_E3_CFG
     set +a
 
-    # shared libs seach directory by require.c
-    #
-    # EPICS_DRIVER_PATH
-
-
     EPICS_BASE=${DEFAULT_EPICS_BASE}
     E3_REQUIRE_NAME=${DEFAULT_REQUIRE_NAME}
     E3_REQUIRE_VERSION=${DEFAULT_REQUIRE_VERSION}
-
-
-    epics_host_arch_file="${EPICS_BASE}/startup/EpicsHostArch.pl"
-    if [ -e "$epics_host_arch_file" ]; then
-	EPICS_HOST_ARCH=$("${EPICS_BASE}/startup/EpicsHostArch.pl")
-    else
-	EPICS_HOST_ARCH=$(perl ${EPICS_BASE}/lib/perl/EpicsHostArch.pl)
-    fi
-
     E3_REQUIRE_LOCATION=${EPICS_BASE}/${E3_REQUIRE_NAME}/${E3_REQUIRE_VERSION}
 
-    E3_REQUIRE_BIN=${E3_REQUIRE_LOCATION}/bin
-    E3_REQUIRE_LIB=${E3_REQUIRE_LOCATION}/lib
-    E3_REQUIRE_INC=${E3_REQUIRE_LOCATION}/include
-    E3_REQUIRE_DB=${E3_REQUIRE_LOCATION}/db
-    E3_REQUIRE_DBD=${E3_REQUIRE_LOCATION}/dbd
-
-
-    E3_SITEMODS_PATH=${E3_REQUIRE_LOCATION}/siteMods
-    E3_SITELIBS_PATH=${E3_REQUIRE_LOCATION}/siteLibs
-    E3_SITEAPPS_PATH=${E3_REQUIRE_LOCATION}/siteApps
-
-
-    EPICS_DRIVER_PATH=${E3_SITEMODS_PATH}:${E3_SITEAPPS_PATH}
-
-
-    export EPICS_BASE
-    export E3_REQUIRE_NAME
-    export E3_REQUIRE_VERSION
-
-    export EPICS_HOST_ARCH
-    export E3_REQUIRE_LOCATION
-
-    export E3_REQUIRE_BIN
-    export E3_REQUIRE_LIB
-    export E3_REQUIRE_INC
-    export E3_REQUIRE_DB
-    export E3_REQUIRE_DBD
-
-    export E3_SITEMODS_PATH
-    export E3_SITELIBS_PATH
-    export E3_SITEAPPS_PATH
-
-
-    export EPICS_DRIVER_PATH
-
-
-    old_path=${PATH}
-    E3_PATH="${E3_REQUIRE_BIN}:${EPICS_BASE}/bin/${EPICS_HOST_ARCH}"
-
-    PATH=$(set_variable "${old_path}" "${E3_PATH}")
-
-    # # We have a problem, if we have the multiple versions of one module, we have the same executable file names.
-    # # "echo" selects the lower version number by default. And if the version is used with a string,
-    # # we don't rely upon echo result.
-    # # Rethink how we handle each binary files within a module
-    # # 
-    # E3_SITELIBS_BINS=`echo ${E3_SITELIBS_PATH}/*_bin`;
-
-    # for each_bins in ${E3_SITELIBS_BINS}; do
-    #     PATH="${PATH}:$each_bins/${EPICS_HOST_ARCH}"
-    # #    echo $each_bins
-    # done
-
-    export PATH
-
-    old_ld_path=${LD_LIBRARY_PATH}
-    E3_LD_LIBRARY_PATH="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}:${E3_REQUIRE_LIB}/${EPICS_HOST_ARCH}:${E3_SITELIBS_PATH}/${EPICS_HOST_ARCH}"
-
-    LD_LIBRARY_PATH=$(set_variable "${old_ld_path}" "${E3_LD_LIBRARY_PATH}")
-    export LD_LIBRARY_PATH
-
-    printf "\nSet the ESS EPICS Environment as follows:\n";
-    printf "THIS Source NAME    : %s\n" "${SRC_NAME}"
-    printf "THIS Source PATH    : %s\n" "${SRC_PATH}"
-    printf "EPICS_BASE          : %s\n" "${EPICS_BASE}"
-    printf "EPICS_HOST_ARCH     : %s\n" "${EPICS_HOST_ARCH}"
-    printf "E3_REQUIRE_LOCATION : %s\n" "${E3_REQUIRE_LOCATION}"
-    printf "PATH                : %s\n" "${PATH}"
-    printf "LD_LIBRARY_PATH     : %s\n" "${LD_LIBRARY_PATH}"
-    printf "\n";
-    printf "Enjoy E3!\n";
-
-
 fi
+
+epics_host_arch_file="${EPICS_BASE}/startup/EpicsHostArch.pl"
+if [ -e "$epics_host_arch_file" ]; then
+    EPICS_HOST_ARCH=$("${EPICS_BASE}/startup/EpicsHostArch.pl")
+else
+    EPICS_HOST_ARCH=$(perl ${EPICS_BASE}/lib/perl/EpicsHostArch.pl)
+fi
+
+
+
+E3_REQUIRE_BIN=${E3_REQUIRE_LOCATION}/bin
+E3_REQUIRE_LIB=${E3_REQUIRE_LOCATION}/lib
+E3_REQUIRE_INC=${E3_REQUIRE_LOCATION}/include
+E3_REQUIRE_DB=${E3_REQUIRE_LOCATION}/db
+E3_REQUIRE_DBD=${E3_REQUIRE_LOCATION}/dbd
+
+
+E3_SITEMODS_PATH=${E3_REQUIRE_LOCATION}/siteMods
+E3_SITELIBS_PATH=${E3_REQUIRE_LOCATION}/siteLibs
+E3_SITEAPPS_PATH=${E3_REQUIRE_LOCATION}/siteApps
+
+
+# shared libs seach directory by require.c
+#
+# EPICS_DRIVER_PATH
+EPICS_DRIVER_PATH=${E3_SITEMODS_PATH}:${E3_SITEAPPS_PATH}
+
+
+export EPICS_BASE
+export E3_REQUIRE_NAME
+export E3_REQUIRE_VERSION
+
+export EPICS_HOST_ARCH
+export E3_REQUIRE_LOCATION
+
+export E3_REQUIRE_BIN
+export E3_REQUIRE_LIB
+export E3_REQUIRE_INC
+export E3_REQUIRE_DB
+export E3_REQUIRE_DBD
+
+export E3_SITEMODS_PATH
+export E3_SITELIBS_PATH
+export E3_SITEAPPS_PATH
+
+
+export EPICS_DRIVER_PATH
+
+
+old_path=${PATH}
+E3_PATH="${E3_REQUIRE_BIN}:${EPICS_BASE}/bin/${EPICS_HOST_ARCH}"
+
+PATH=$(set_variable "${old_path}" "${E3_PATH}")
+
+# # We have a problem, if we have the multiple versions of one module, we have the same executable file names.
+# # "echo" selects the lower version number by default. And if the version is used with a string,
+# # we don't rely upon echo result.
+# # Rethink how we handle each binary files within a module
+# # 
+# E3_SITELIBS_BINS=`echo ${E3_SITELIBS_PATH}/*_bin`;
+
+# for each_bins in ${E3_SITELIBS_BINS}; do
+#     PATH="${PATH}:$each_bins/${EPICS_HOST_ARCH}"
+# #    echo $each_bins
+# done
+
+export PATH
+
+old_ld_path=${LD_LIBRARY_PATH}
+E3_LD_LIBRARY_PATH="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}:${E3_REQUIRE_LIB}/${EPICS_HOST_ARCH}:${E3_SITELIBS_PATH}/${EPICS_HOST_ARCH}"
+
+LD_LIBRARY_PATH=$(set_variable "${old_ld_path}" "${E3_LD_LIBRARY_PATH}")
+export LD_LIBRARY_PATH
+
+printf "\nSet the ESS EPICS Environment as follows:\n";
+printf "THIS Source NAME    : %s\n" "${SRC_NAME}"
+printf "THIS Source PATH    : %s\n" "${SRC_PATH}"
+printf "EPICS_BASE          : %s\n" "${EPICS_BASE}"
+printf "EPICS_HOST_ARCH     : %s\n" "${EPICS_HOST_ARCH}"
+printf "E3_REQUIRE_LOCATION : %s\n" "${E3_REQUIRE_LOCATION}"
+printf "PATH                : %s\n" "${PATH}"
+printf "LD_LIBRARY_PATH     : %s\n" "${LD_LIBRARY_PATH}"
+printf "\n";
+printf "Enjoy E3!\n";
+
