@@ -16,7 +16,7 @@ E3_CONFIG_FILE    := $(TOP)/tools/e3.cfg
 E3_SHELL_FILES    := $(wildcard $(TOP)/tools/iocsh*.bash)
 E3_IOC_CFG_FILES  := $(TOP)/tools/iocsh_functions
 E3_IOC_CFG_FILES  += $(E3_ESSENVCFG_FILE)
-E3_IOC_CFG_FILES  += $(E3_CONFIG_FILE)
+#E3_IOC_CFG_FILES  += $(E3_CONFIG_FILE)
 E3_IOC_CFG_FILES  += $(TOP)/tools/setE3Env.bash
 E3_REQUIRE_CONF_FILES := $(filter-out $(FILE_FILTER), $(wildcard $(TOP)/configure/modules/*))
 
@@ -28,7 +28,7 @@ requireconf: e3-site-path e3-site-conf e3-require-path
 	$(QUIET) $(SUDO) install    -m 644 $(E3_MODULE_SRC_PATH)/App/tools/driver.makefile    $(E3_REQUIRE_TOOLS)/
 	$(QUIET) $(SUDO) install    -m 755 $(E3_SHELL_FILES)             $(E3_REQUIRE_BIN)/
 	$(QUIET) $(SUDO) install    -m 644 $(E3_IOC_CFG_FILES)           $(E3_REQUIRE_BIN)/
-#	$(QUIET) $(SUDO) install    -m 644 $(E3_REQUIRE_CONF_FILES)      $(E3_REQUIRE_CONFIG)/
+	$(QUIET) $(SUDO) install    -m 644 $(E3_REQUIRE_CONF_FILES)      $(E3_REQUIRE_CONFIG)/
 
 
 e3-require-path:
