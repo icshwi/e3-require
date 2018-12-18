@@ -19,9 +19,9 @@
 #   Shell   : setE3Env.bash
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
-#   date    : Thursday, November 29 22:49:11 CET 2018
+#   date    : Tuesday, December 18 16:03:06 CET 2018
 #
-#   version : 0.7.1
+#   version : 0.7.2
 #
 #
 
@@ -38,10 +38,10 @@ drop_from_path ()
 	return 1
     fi
 
-    local p=$1
-    local drop=$2
+    local p="$1"
+    local drop="$2"
 
-    local new_path=`echo $p | sed -e "s;:${drop}:;:;g" \
+    local new_path=`echo "$p" | sed -e "s;:${drop}:;:;g" \
                  -e "s;:${drop};;g"   \
                  -e "s;${drop}:;;g"   \
                  -e "s;${drop};;g";`
@@ -65,7 +65,7 @@ set_variable ()
     if [ -z "$old_path" ]; then
 	new_path=${add_path}
     else
-	system_old_path=$(drop_from_path ${old_path} ${add_path})
+	system_old_path=$(drop_from_path "${old_path}" "${add_path}")
 	if [ -z "$system_old_path" ]; then
 	    new_path=${add_path}
 	else
