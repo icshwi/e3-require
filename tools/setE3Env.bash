@@ -84,8 +84,8 @@ print_env ()
 
     local disabled="$1";shift;
 
-    if [ -n "$EPICS_EXTENSIONS"]; then
-	printf "\n# Set the ESS EPICS Environment internally.";
+    if [ "$disabled" == "no_msg" ]; then
+	printf "\n# Set the ESS EPICS Environment internally.\n";
     else
 	printf "\nSet the ESS EPICS Environment as follows:\n";
 	printf "THIS Source NAME    : %s\n" "${SRC_NAME}"
