@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-#  Copyright (c) 2017 - Present  Jeong Han Lee
-#  Copyright (c) 2017 - Present  European Spallation Source ERIC
+#  Copyright (c) 2017 - 2018     Jeong Han Lee
+#  Copyright (c) 2017 - 2019     European Spallation Source ERIC
 #
 #  The program is free software: you can redistribute
 #  it and/or modify it under the terms of the GNU General Public License
@@ -19,9 +19,9 @@
 #   Shell   : setE3Env.bash
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
-#   date    : Tuesday, December 18 16:03:06 CET 2018
+#   date    : Tuesday, January  8 10:06:14 CET 2019
 #
-#   version : 0.7.2
+#   version : 0.7.3
 #
 #
 
@@ -78,6 +78,27 @@ set_variable ()
     
 }
 
+
+print_env ()
+{
+
+    local disabled="$1";shift;
+
+    if [ -n "$EPICS_EXTENSIONS"]; then
+	printf "\n# Set the ESS EPICS Environment internally.";
+    else
+	printf "\nSet the ESS EPICS Environment as follows:\n";
+	printf "THIS Source NAME    : %s\n" "${SRC_NAME}"
+	printf "THIS Source PATH    : %s\n" "${SRC_PATH}"
+	printf "EPICS_BASE          : %s\n" "${EPICS_BASE}"
+	printf "EPICS_HOST_ARCH     : %s\n" "${EPICS_HOST_ARCH}"
+	printf "E3_REQUIRE_LOCATION : %s\n" "${E3_REQUIRE_LOCATION}"
+	printf "PATH                : %s\n" "${PATH}"
+	printf "LD_LIBRARY_PATH     : %s\n" "${LD_LIBRARY_PATH}"
+	printf "\n";
+	printf "Enjoy E3!\n";
+    fi
+}
 
 # Reset all EPICS, E3, and EEE related PRE-EXIST VARIABLES
 # Remove them from PATH and LD_LIBRARY_PATH
@@ -314,14 +335,6 @@ E3_LD_LIBRARY_PATH="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}:${E3_REQUIRE_LIB}/${EPI
 LD_LIBRARY_PATH=$(set_variable "${old_ld_path}" "${E3_LD_LIBRARY_PATH}")
 export LD_LIBRARY_PATH
 
-printf "\nSet the ESS EPICS Environment as follows:\n";
-printf "THIS Source NAME    : %s\n" "${SRC_NAME}"
-printf "THIS Source PATH    : %s\n" "${SRC_PATH}"
-printf "EPICS_BASE          : %s\n" "${EPICS_BASE}"
-printf "EPICS_HOST_ARCH     : %s\n" "${EPICS_HOST_ARCH}"
-printf "E3_REQUIRE_LOCATION : %s\n" "${E3_REQUIRE_LOCATION}"
-printf "PATH                : %s\n" "${PATH}"
-printf "LD_LIBRARY_PATH     : %s\n" "${LD_LIBRARY_PATH}"
-printf "\n";
-printf "Enjoy E3!\n";
+
+print_env "$1"
 

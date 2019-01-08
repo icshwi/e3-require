@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 #  Copyright (c) 2004 - 2017    Paul Scherrer Institute 
-#  Copyright (c) 2017 - Present European Spallation Source ERIC
+#  Copyright (c) 2017 - 2019    European Spallation Source ERIC
 #
 #  The program is free software: you can redistribute
 #  it and/or modify it under the terms of the GNU General Public License
@@ -34,10 +34,12 @@
 #  0.3.5 : Set the proper limitation of REQUIRE PV name
 #  Tuesday, October  9 14:36:56 CEST 2018, jhlee
 #
+#  0.3.6 : In case, we know where $0 is, sourcing setE3Env.bash by itself
+# 
 declare -gr SC_SCRIPT="$(realpath "$0")"
 declare -gr SC_SCRIPTNAME=${0##*/}
 declare -gr SC_TOP="${SC_SCRIPT%/*}"
-declare -g  SC_VERSION="v0.3.5"
+declare -g  SC_VERSION="v0.3.6"
 declare -g  STARTUP=""
 declare -g  BASECODE=""
 
@@ -48,6 +50,15 @@ set -a
 set +a
 
 . ${SC_TOP}/iocsh_functions
+
+
+# The most unique environment variable for e3 is EPICS_DRIVER_PATH
+#
+if [[ $(checkIfVar ${EPICS_DRIVER_PATH}) -eq "$NON_EXIST" ]]; then
+    set -a
+    . ${SC_TOP}/setE3Env.bash "no_msg"
+    set +a
+fi
 
 
 BASECODE="$(basecode_generator)"
