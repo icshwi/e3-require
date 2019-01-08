@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 #  Copyright (c) 2004 - 2017    Paul Scherrer Institute 
-#  Copyright (c) 2017 - Present European Spallation Source ERIC
+#  Copyright (c) 2017 - 2019    European Spallation Source ERIC
 #
 #  The program is free software: you can redistribute
 #  it and/or modify it under the terms of the GNU General Public License
@@ -21,16 +21,11 @@
 #  ESS specific iocsh author : Jeong Han Lee
 #                     email  : han.lee@esss.se
 #
-#  Add IOCSH_TOP in order to access where the iocsh.bash is executed
-#  Thursday, May 31 00:04:07 CEST 2018, jhlee
-#
-#  Add PVA support to call softIOCPVA if BASE >= 7.0.1.1
-#  Tuesday, October  2 14:26:49 CEST 2018, jhlee
 
 declare -gr SC_SCRIPT="$(realpath "$0")"
 declare -gr SC_SCRIPTNAME=${0##*/}
 declare -gr SC_TOP="${SC_SCRIPT%/*}"
-declare -g  SC_VERSION="v0.3.2-nice"
+declare -g  SC_VERSION="v0.3.6-nice"
 declare -g  STARTUP=""
 declare -g  BASECODE=""
 
@@ -40,7 +35,13 @@ set +a
 
 . ${SC_TOP}/iocsh_functions
 
-
+# The most unique environment variable for e3 is EPICS_DRIVER_PATH
+#
+if [[ $(checkIfVar ${EPICS_DRIVER_PATH}) -eq "$NON_EXIST" ]]; then
+    set -a
+    . ${SC_TOP}/setE3Env.bash "no_msg"
+    set +a
+fi
 
 BASECODE="$(basecode_generator)"
 
