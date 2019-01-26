@@ -87,4 +87,13 @@ pvaClient_VERSION=
 
 
 opcua_VERSION=
+snmp_VERSION=
 
+
+# In addition to decouple the existent e3 module,
+# We use this opportunatiy in order to apply global configuration
+# space. For example, common compiler options
+#
+#ifeq ($(T_A),linux-x86_64)
+#USR_LDFLAGS += -Wl,--compress-debug-sections=zlib
+#endif
