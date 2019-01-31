@@ -62,6 +62,7 @@ ADSupport_VERSION=
 ADCore_VERSION=
 NDDriverStdArrays_VERSION=
 ADSimDetector_VERSION=
+ADCSimDetector_VERSION=
 ADAndor_VERSION=
 ADAndor3_VERSION=
 ADPointGrey_VERSION=
@@ -88,7 +89,7 @@ pvaClient_VERSION=
 
 opcua_VERSION=
 snmp_VERSION=
-
+admisc_VERSION=
 
 # In addition to decouple the existent e3 module,
 # We use this opportunatiy in order to apply global configuration
