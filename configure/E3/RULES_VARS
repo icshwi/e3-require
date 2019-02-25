@@ -19,4 +19,9 @@ header:
 	$(QUIET)echo ""
 
 existent:
+ifeq (, $(shell which tree))
+	$(QUIET)ls -d $(E3_MODULES_PATH)/$(E3_MODULE_NAME)
+	$(QUIET)find $(E3_MODULES_PATH)/$(E3_MODULE_NAME)/ -maxdepth $(LEVEL) | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/:---\1/"
+else
 	$(QUIET)tree -L $(LEVEL) $(E3_MODULES_PATH)/$(E3_MODULE_NAME)
+endif
