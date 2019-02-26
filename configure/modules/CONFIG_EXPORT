@@ -3,9 +3,9 @@
 EPICS_HOST_ARCH:=$(shell $(EPICS_BASE)/startup/EpicsHostArch.pl 2> /dev/null)
 
 # In near future, BASE may drop "startup" directory, so
-#
+# Note that the following line is not the same as e3-base, CONFIG_EXPORT
 ifeq ($(strip $(EPICS_HOST_ARCH)),)
-EPICS_HOST_ARCH:=$(shell perl $(EPICS_BASE)/src/tools/EpicsHostArch.pl 2> /dev/null)
+EPICS_HOST_ARCH:=$(shell perl $(EPICS_BASE)/lib/perl/EpicsHostArch.pl 2> /dev/null)
 endif
 
 MSI:=$(EPICS_BASE)/bin/$(EPICS_HOST_ARCH)/msi
