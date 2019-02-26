@@ -4,9 +4,14 @@
 SUDO_INFO := $(shell test -w $(EPICS_BASE) 1>&2 2> /dev/null; echo $$?)
 
 ifeq "$(SUDO_INFO)" "1"
-SUDO := sudo
-SUDOBASH = $(SUDO) -E
-SUDOBASH += bash -c
+SUDO_CMD := $(shell which sudo)
+ifneq (,$(findstring devtoolset,$(SUDO_CMD)))
+# Found, devtoolset-{7,8} has -E option within sudo shell
+SUDO = $(SUDO_CMD)
+else
+SUDO = $(SUDO_CMD) -E
+endif
+SUDOBASH := $(SUDO) bash -c
 else
 SUDO :=
 SUDOBASH = bash -c
@@ -21,4 +26,14 @@ E3_MODULE_SRC_PATH_INFO := $(shell test -d $(E3_MODULE_SRC_PATH) 1>&2 2> /dev/nu
 
 ifeq "$(E3_MODULE_SRC_PATH_INFO)" "1"
 INIT_E3_MODULE_SRC = 1
-endif    
+endif
+
+
+
+
+VARS_EXCLUDES+=SUDO
+VARS_EXCLUDES+=SUDOBASH
+VARS_EXCLUDES+=SUDO_INFO
+VARS_EXCLUDES+=SUDO_CMD
+VARS_EXCLUDES+=E3_MODULE_SRC_PATH_INFO
+
