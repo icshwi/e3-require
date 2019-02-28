@@ -91,6 +91,8 @@ opcua_VERSION=
 snmp_VERSION=
 admisc_VERSION=
 
+huginn_VERSION=
+
 # In addition to decouple the existent e3 module,
 # We use this opportunatiy in order to apply global configuration
 # space. For example, common compiler options
