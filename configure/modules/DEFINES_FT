@@ -23,7 +23,7 @@ endef
 
 define patch_revert_site
 for i in $(wildcard $(TOP)/patch/Site/$(E3_MODULE_VERSION)-*.p0.patch); do\
-	printf "\nPatching %s with the file : %s\n" "$(E3_MODULE_SRC_PATH)" "$$i"; \
+	printf "\nReverting applied patch %s with the file : %s\n" "$(E3_MODULE_SRC_PATH)" "$$i"; \
 	patch -R -d $(E3_MODULE_SRC_PATH) --ignore-whitespace -p0 < $$i;\
 done
 
