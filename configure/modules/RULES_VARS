@@ -6,6 +6,8 @@ DEP_MODULES:=$(filter %_DEP_VERSION, $(E3_MODULES_VARIABLES))
 #LOWER_DEP_MODULES:=$(shell echo $(DEP_MODULES) | tr A-Z a-z)
 #DEP_MODULES_NAME:=$(subst _DEP_VERSION, "", $(DEP_MODULES))
 
+
+
 LEVEL?=2
 
 GENERATED_DEP_FILE:=$(E3_MODULES_INSTALL_LOCATION_LIB_LINK)/$(EPICS_HOST_ARCH)/$(E3_MODULE_NAME).dep
@@ -45,5 +47,9 @@ _dep2: _dep1
 	$(foreach v, $(DEP_MODULES), $(info $(v) = $($(v)))) @#noop
 
 _dep1:
-	$(QUIET)echo require $(E3_MODULE_NAME),$(E3_MODULE_VERSION)
+	$(QUIET)echo "require $(E3_MODULE_NAME),$(E3_MODULE_VERSION)"
 	$(QUIET)echo "< configured ..."
+
+vers:
+	$(QUIET)echo "EPICS_MODULE_TAG:=$(EPICS_MODULE_TAG)"
+	$(QUIET)echo "E3_MODULE_VERSION:=$(E3_MODULE_VERSION)"
