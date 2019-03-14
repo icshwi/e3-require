@@ -84,7 +84,7 @@ print_env ()
 
     local disabled="$1";shift;
 
-    if [ "$disabled" == "no_msg" ]; then
+    if [ "$disabled" = "no_msg" ]; then
 	printf "\n# Set the ESS EPICS Environment internally.\n";
     else
 	printf "\nSet the ESS EPICS Environment as follows:\n";
@@ -209,7 +209,7 @@ fi
 
 
 
-THIS_SRC=${BASH_SOURCE[0]}
+THIS_SRC=${BASH_SOURCE[0]:-${0}}
 
 
 if [ -L $THIS_SRC ]; then
