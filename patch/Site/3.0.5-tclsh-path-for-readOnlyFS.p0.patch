@@ -1,0 +1,12 @@
+diff --git App/tools/expandDBD.tcl App/tools/expandDBD.tcl
+index 0539876..747208b 100755
+--- App/tools/expandDBD.tcl
++++ App/tools/expandDBD.tcl
+@@ -1,4 +1,6 @@
+-#!/usr/bin/tclsh
++#!/bin/sh
++# the next line restarts using tclsh \
++exec tclsh "$0" "$@"
+ 
+ package require Tclx
+ 
