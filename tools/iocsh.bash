@@ -35,11 +35,13 @@
 #  Tuesday, October  9 14:36:56 CEST 2018, jhlee
 #
 #  0.3.6 : In case, we know where $0 is, sourcing setE3Env.bash by itself
+#
+#  0.3.7 : Introduce the local mode with -l
 # 
 declare -gr SC_SCRIPT="$(realpath "$0")"
 declare -gr SC_SCRIPTNAME=${0##*/}
 declare -gr SC_TOP="${SC_SCRIPT%/*}"
-declare -g  SC_VERSION="v0.3.6"
+declare -g  SC_VERSION="v0.3.7"
 declare -g  STARTUP=""
 declare -g  BASECODE=""
 

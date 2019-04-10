@@ -424,6 +424,10 @@ function loadFiles
 	    shift
 	    echo "require $1"
 	    ;;
+	    ( -l )        
+	    shift
+	    printf "epicsEnvSet EPICS_DRIVER_PATH ${EPICS_DRIVER_PATH}:%s\n", $1
+	    ;;
 	    ( -* )
 	    printf "Unknown option $1\n\n" >&2
 	    help
