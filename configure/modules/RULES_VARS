@@ -28,3 +28,4 @@ else
 	$(QUIET)tree -L $(LEVEL) $(E3_MODULES_PATH)/$(E3_MODULE_NAME)
 endif
 
+cellvars: vars

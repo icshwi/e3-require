@@ -426,7 +426,7 @@ function loadFiles
 	    ;;
 	    ( -l )        
 	    shift
-	    printf "epicsEnvSet EPICS_DRIVER_PATH ${EPICS_DRIVER_PATH}:%s\n", $1
+	    printf "epicsEnvSet EPICS_DRIVER_PATH %s:${EPICS_DRIVER_PATH}\n", $1
 	    ;;
 	    ( -* )
 	    printf "Unknown option $1\n\n" >&2

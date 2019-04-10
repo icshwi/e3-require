@@ -37,9 +37,9 @@ uninstall: conf
 	$(QUIET) $(SUDOBASH) '$(E3_MODULE_MAKE_CMDS) uninstall'
 	$(SUDO) find $(E3_SITELIBS_PATH) -xtype l -delete 
 
-localinstall: install_module
+cellinstall: install_module
 
-localuninstall: conf
+celluninstall: conf
 	$(QUIET) $(SUDOBASH) '$(E3_MODULE_MAKE_CMDS) uninstall'
 	$(SUDO) rm -rf $(E3_MODULES_PATH)
 
