@@ -2,9 +2,17 @@
 
 E3_MODULES_VARIABLES:=$(sort $(filter-out $(VARS_EXCLUDES) VARS_EXCLUDES,$(.VARIABLES)))
 
+DEP_MODULES:=$(filter %_DEP_VERSION, $(E3_MODULES_VARIABLES))
+#LOWER_DEP_MODULES:=$(shell echo $(DEP_MODULES) | tr A-Z a-z)
+#DEP_MODULES_NAME:=$(subst _DEP_VERSION, "", $(DEP_MODULES))
+
+
+
 LEVEL?=2
 
-.PHONY : env vars header
+GENERATED_DEP_FILE:=$(E3_MODULES_INSTALL_LOCATION_LIB)/$(EPICS_HOST_ARCH)/$(E3_MODULE_NAME).dep
+
+.PHONY : env vars header dep _dep1 _dep2
 
 ## Print interesting VARIABLES
 env: vars
@@ -29,3 +37,21 @@ else
 endif
 
 cellvars: vars
+
+dep: _dep2
+ifneq ("$(wildcard $(GENERATED_DEP_FILE))","")
+	$(QUIET)echo "> generated ..."
+	$(QUIET)tail -n+2 $(GENERATED_DEP_FILE) 
+endif
+
+_dep2: _dep1
+	$(foreach v, $(DEP_MODULES), $(info $(v) = $($(v)))) @#noop
+
+_dep1:
+	$(QUIET)echo "require $(E3_MODULE_NAME),$(E3_MODULE_VERSION)"
+	$(QUIET)echo "< configured ..."
+
+vers:
+	$(QUIET)echo "EPICS_MODULE_TAG:=$(EPICS_MODULE_TAG)"
+	$(QUIET)echo "E3_MODULE_VERSION:=$(E3_MODULE_VERSION)"
+

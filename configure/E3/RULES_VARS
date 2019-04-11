@@ -2,6 +2,8 @@
 
 E3_MODULES_VARIABLES:=$(sort $(filter-out $(VARS_EXCLUDES) VARS_EXCLUDES,$(.VARIABLES)))
 
+DEP_MODULES:=$(filter %_DEP_VERSION, $(E3_MODULES_VARIABLES))
+
 LEVEL?=2
 
 .PHONY : vars env header
@@ -25,3 +27,6 @@ ifeq (, $(shell which tree))
 else
 	$(QUIET)tree -L $(LEVEL) $(E3_MODULES_PATH)/$(E3_MODULE_NAME)
 endif
+
+dep:
+	$(foreach v, $(DEP_MODULES), $(info $(v) = $($(v)))) @#noop

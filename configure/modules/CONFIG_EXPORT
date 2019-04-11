@@ -23,6 +23,7 @@ EXPORT_VARS+=QUIET
 EXPORT_VARS+=$(filter %_DEP_VERSION,$(.VARIABLES))
 EXPORT_VARS+=$(filter WITH_%,$(.VARIABLES))
 EXPORT_VARS+=$(filter SUDO%,$(.VARIABLES))
+EXPORT_VARS+=$(filter %_EXTERNAL,$(.VARIABLES))
 
 export_version=$(eval export $1)
 $(eval $(foreach v,$(EXPORT_VARS),$(call export_version,$v)))
