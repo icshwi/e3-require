@@ -76,7 +76,7 @@ IOCSH_PS1=$(iocsh_ps1     "${IOCSH_HASH_VERSION}" "${BASHPID}")
 REQUIRE_IOC=$(require_ioc "${IOCSH_HASH_VERSION}" "${BASHPID}")
 #
 # Default Initial Startup file for REQUIRE and minimal environment
-IOC_STARTUP=$(mktemp -q --suffix=_iocsh_${SC_VERSION}) || die 1 "$0 CANNOT create the startup file, please check the disk space";
+IOC_STARTUP=$(mktemp -q --suffix=_iocsh_${SC_VERSION}) || die 1 "${SC_SCRIPTNAME} CANNOT create the startup file, please check the disk space";
 #
 # To get the absolute path where iocsh.bash is executed
 IOCSH_TOP=${PWD}
