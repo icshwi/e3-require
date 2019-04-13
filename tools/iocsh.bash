@@ -37,15 +37,15 @@
 #  0.3.6 : In case, we know where $0 is, sourcing setE3Env.bash by itself
 #
 #  0.3.7 : Introduce the local mode with -l
-# 
+#
+#  0.3.8 : Use mktemp, and protect iocsh.bash when there is no diskspace
+#
 declare -gr SC_SCRIPT="$(realpath "$0")"
 declare -gr SC_SCRIPTNAME=${0##*/}
 declare -gr SC_TOP="${SC_SCRIPT%/*}"
 declare -g  SC_VERSION="v0.3.7"
 declare -g  STARTUP=""
 declare -g  BASECODE=""
-
-
 
 set -a
 . ${SC_TOP}/ess-env.conf
@@ -70,16 +70,14 @@ check_mandatory_env_settings
 #
 # IOCSH_HASH_VERSION is defined when doing 'make install'
 SC_VERSION+=-${IOCSH_HASH_VERSION}.PID-${BASHPID}
-
 #
 # We define IOCSH Git HASH + HOSTNAME + BASHPID
 IOCSH_PS1=$(iocsh_ps1     "${IOCSH_HASH_VERSION}" "${BASHPID}")
 REQUIRE_IOC=$(require_ioc "${IOCSH_HASH_VERSION}" "${BASHPID}")
 #
 # Default Initial Startup file for REQUIRE and minimal environment
-
-IOC_STARTUP=/tmp/${SC_SCRIPTNAME}-${SC_VERSION}-startup
-
+IOC_STARTUP=$(mktemp -q --suffix=_iocsh_${SC_VERSION}) || die 1 "$0 CANNOT create the startup file, please check the disk space";
+#
 # To get the absolute path where iocsh.bash is executed
 IOCSH_TOP=${PWD}
 
@@ -88,7 +86,6 @@ IOCSH_TOP=${PWD}
 # In our jargon. It is the same as ${EPICS_MODULES}
 
 trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
-
 
 {
     printIocEnv;
@@ -107,7 +104,6 @@ trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
     printf "epicsEnvSet IOCSH_PS1 \"$IOCSH_PS1\"\n";
     printf "#\n";
     
-
     if [ "$init" != NO ]; then
 	printf "# \n";
 	printf "iocInit\n"
@@ -121,14 +117,13 @@ ulimit -c unlimited
 # PREFIX:exit & PREFIX:BaseVersion PVs are added to softIoc
 # We can end this IOC via caput PREFIX:exit 1
 
-
-
 if [[ ${BASECODE} -ge  07000101 ]]; then
     _PVA_="PVA"
 else
     _PVA_=""
 fi
 
-
+#
+#
 softIoc${_PVA_} -D ${EPICS_BASE}/dbd/softIoc${_PVA_}.dbd "${IOC_STARTUP}" 2>&1
 
