@@ -520,6 +520,7 @@ function help
 	printf "  -?, -h, --help   Show this page and exit.\n";
 	printf "  -v, --version    Show version and exit.\n";
 	printf "  -c 'cmd args'    Ioc shell command.\n";
+	printf "  -l 'cell path'   Run Ioc with a cell path.\n";
 	printf "  -s 'prog m=v'    Sequencer program (and arguments), run with 'seq'.\n";
 	printf "                   This forces an 'iocInit' before running the program.\n";
 	printf "  -r module[,ver]  Modue (optionally with version) loaded via 'require'.\n";
