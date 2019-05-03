@@ -27,7 +27,7 @@ ROOT_UID=0
 E_NOTROOT=101
 EXIST=1
 NON_EXIST=0
-
+REALTIME=
 
 function pushd { builtin pushd "$@" > /dev/null; }
 function popd  { builtin popd  "$@" > /dev/null; }
@@ -390,6 +390,9 @@ function loadFiles
 	    ;; 
 	    ( -v | -ver | --ver | -version | --version )
 	    version
+	    ;;
+	    ( -rt | -RT | -realtime | --realtime )
+	    REALTIME="RT"
 	    ;;
 	    ( @* )
   	    loadFiles $(cat ${file#@})

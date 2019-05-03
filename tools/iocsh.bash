@@ -32,20 +32,18 @@
 #  Thursday, October  4 17:00:53 CEST 2018, jhlee
 #
 #  0.3.5 : Set the proper limitation of REQUIRE PV name
-#  Tuesday, October  9 14:36:56 CEST 2018, jhlee
-#
 #  0.3.6 : In case, we know where $0 is, sourcing setE3Env.bash by itself
-#
 #  0.3.7 : Introduce the local mode with -l
-#
 #  0.3.8 : Use mktemp, and protect iocsh.bash when there is no diskspace
+#  0.3.9 : LD_BIND_NOW=1 for resolving symbols at startup.
 #
-declare -gr SC_SCRIPT="$(realpath "$0")"
-declare -gr SC_SCRIPTNAME=${0##*/}
-declare -gr SC_TOP="${SC_SCRIPT%/*}"
-declare -g  SC_VERSION="v0.3.7"
-declare -g  STARTUP=""
-declare -g  BASECODE=""
+declare -gr SC_SCRIPT="$(realpath "$0")";
+declare -gr SC_SCRIPTNAME=${0##*/};
+declare -gr SC_TOP="${SC_SCRIPT%/*}";
+declare -g  SC_VERSION="v0.3.9";
+declare -g  STARTUP="";
+declare -g  BASECODE="";
+
 
 set -a
 . ${SC_TOP}/ess-env.conf
@@ -103,6 +101,10 @@ trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
     printf "# Set the IOC Prompt String One \n";
     printf "epicsEnvSet IOCSH_PS1 \"$IOCSH_PS1\"\n";
     printf "#\n";
+
+    if [ "$REALTIME" == "RT" ]; then
+	printf "# Real Time \"$REALTIME\"\n";
+    fi
     
     if [ "$init" != NO ]; then
 	printf "# \n";
@@ -113,17 +115,26 @@ trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
 
 ulimit -c unlimited
 
-# -x "PREFIX"
-# PREFIX:exit & PREFIX:BaseVersion PVs are added to softIoc
-# We can end this IOC via caput PREFIX:exit 1
+if [ "$REALTIME" == "RT" ]; then
+    export LD_BIND_NOW=1;
+    __CHRT__="chrt --fifo 1 ";
+    printf "## \n";
+    printf "## Better support for Real-Time IOC Application.\n"
+    printf "## Now we set 'export LD_BIND_NOW=%s'\n" "$LD_BIND_NOW";
+    printf "## If one may meet the 'Operation not permitted' message, \n";
+    printf "## please run %s without the real-time option\n" "$SC_SCRIPTNAME";
+    printf "##\n";
+else
+    __CHRT__="";
+fi
 
 if [[ ${BASECODE} -ge  07000101 ]]; then
-    _PVA_="PVA"
+    __PVA__="PVA"
 else
-    _PVA_=""
+    __PVA__=""
 fi
 
 #
 #
-softIoc${_PVA_} -D ${EPICS_BASE}/dbd/softIoc${_PVA_}.dbd "${IOC_STARTUP}" 2>&1
+${__CHRT__}softIoc${__PVA__} -D ${EPICS_BASE}/dbd/softIoc${_PVA_}.dbd "${IOC_STARTUP}" 2>&1
 
