@@ -1,0 +1,15 @@
+# TOP is e3-MODULENAME
+ifneq (,$(findstring cell,$(MAKECMDGOALS)))
+## Default is e3-MODULENAME/cellMods
+E3_CELL_PATH=$(TOP)/cellMods
+##
+## Allow local file in $(TOP)/configure
+##       local file in $(TOP)/../
+##
+## Useful if one would like to install many different modules in
+## a specific directory for massive debugging purpose
+## 
+-include $(TOP)/../CONFIG_CELL.local
+-include $(TOP)/configure/CONFIG_CELL.local
+E3_MODULES_PATH=$(E3_CELL_PATH)
+endif

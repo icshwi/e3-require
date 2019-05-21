@@ -36,6 +36,7 @@ else
 	$(QUIET)tree -L $(LEVEL) $(E3_MODULES_PATH)/$(E3_MODULE_NAME)
 endif
 
+cellvars: vars
 
 dep: _dep2
 ifneq ("$(wildcard $(GENERATED_DEP_FILE))","")
@@ -53,3 +54,4 @@ _dep1:
 vers:
 	$(QUIET)echo "EPICS_MODULE_TAG:=$(EPICS_MODULE_TAG)"
 	$(QUIET)echo "E3_MODULE_VERSION:=$(E3_MODULE_VERSION)"
+
