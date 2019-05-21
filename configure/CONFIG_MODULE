@@ -3,7 +3,7 @@
 # However, it also could be overrided in CONFIG_MODULE.local.
 # Be careful to touch this file
 #
-EPICS_MODULE_TAG:=tags/v3.0.5
+EPICS_MODULE_TAG:=tags/v3.1.0-rc1
 #
 EPICS_MODULE_NAME:=${E3_REQUIRE_NAME}
 #

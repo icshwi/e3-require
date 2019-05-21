@@ -6,7 +6,7 @@ DEP_MODULES:=$(filter %_DEP_VERSION, $(E3_MODULES_VARIABLES))
 
 LEVEL?=2
 
-.PHONY : vars env header
+.PHONY : vars env header  vers dep _dep1
 
 vars: header
 	$(foreach v, $(E3_MODULES_VARIABLES), $(info $(v) = $($(v)))) @#noop
@@ -28,5 +28,15 @@ else
 	$(QUIET)tree -L $(LEVEL) $(E3_MODULES_PATH)/$(E3_MODULE_NAME)
 endif
 
-dep:
+dep: _dep1
 	$(foreach v, $(DEP_MODULES), $(info $(v) = $($(v)))) @#noop
+
+_dep1:
+	$(QUIET)echo "require $(E3_MODULE_NAME),$(E3_MODULE_VERSION)"
+	$(QUIET)echo "< configured ..."
+
+
+vers:
+	$(QUIET)echo "EPICS_MODULE_TAG:=$(EPICS_MODULE_TAG)"
+	$(QUIET)echo "E3_MODULE_VERSION:=$(E3_MODULE_VERSION)"
+
