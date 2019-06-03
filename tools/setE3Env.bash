@@ -19,9 +19,9 @@
 #   Shell   : setE3Env.bash
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
-#   date    : Tuesday, January  8 10:06:14 CET 2019
+#   date    : Monday, June  3 16:46:48 CEST 2019
 #
-#   version : 0.7.3
+#   version : 0.8.0
 #
 #
 
@@ -165,8 +165,9 @@ if [ -n "$EPICS_BASE" ]; then
 	unset E3_SITEMODS_PATH
 	unset E3_SITELIBS_PATH
 	unset E3_SITEAPPS_PATH
-        
+
 	unset EPICS_DRIVER_PATH
+
 	unset SCRIPT_DIR
 	
     fi
@@ -283,10 +284,11 @@ E3_SITELIBS_PATH=${E3_REQUIRE_LOCATION}/siteLibs
 E3_SITEAPPS_PATH=${E3_REQUIRE_LOCATION}/siteApps
 
 
-# shared libs seach directory by require.c
-#
-# EPICS_DRIVER_PATH
-EPICS_DRIVER_PATH=${E3_SITEMODS_PATH}:${E3_SITEAPPS_PATH}
+if [ -n "${SITE_SYSTEMAPPS_PATH}" ]; then
+    EPICS_DRIVER_PATH=${E3_SITEMODS_PATH}:${E3_SITEAPPS_PATH}:${SITE_SYSTEMAPPS_PATH}
+else
+    EPICS_DRIVER_PATH=${E3_SITEMODS_PATH}:${E3_SITEAPPS_PATH}
+fi
 
 
 export EPICS_BASE
@@ -305,7 +307,6 @@ export E3_REQUIRE_DBD
 export E3_SITEMODS_PATH
 export E3_SITELIBS_PATH
 export E3_SITEAPPS_PATH
-
 
 export EPICS_DRIVER_PATH
 
