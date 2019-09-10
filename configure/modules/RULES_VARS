@@ -12,7 +12,7 @@ LEVEL?=2
 
 GENERATED_DEP_FILE:=$(E3_MODULES_INSTALL_LOCATION_LIB)/$(EPICS_HOST_ARCH)/$(E3_MODULE_NAME).dep
 
-.PHONY : env vars header dep _dep1 _dep2
+.PHONY: env vars header dep _dep1 _dep2
 
 ## Print interesting VARIABLES
 env: vars
@@ -46,7 +46,6 @@ endif
 
 _dep2: _dep1
 	$(foreach v, $(DEP_MODULES), $(info $(v) = $($(v)))) @#noop
-
 _dep1:
 	$(QUIET)echo "require $(E3_MODULE_NAME),$(E3_MODULE_VERSION)"
 	$(QUIET)echo "< configured ..."
@@ -55,3 +54,57 @@ vers:
 	$(QUIET)echo "EPICS_MODULE_TAG:=$(EPICS_MODULE_TAG)"
 	$(QUIET)echo "E3_MODULE_VERSION:=$(E3_MODULE_VERSION)"
 
+
+
+### The following dependency plot generator rules do NOT cover all
+### dependency information, BUT cover only within this module. 
+DEP0:=$(patsubst %_DEP_VERSION,%,$(DEP_MODULES))
+
+define generate_gv_file
+$(QUIET)printf "digraph $(E3_MODULE_NAME) {\n" > $@
+$(QUIET)printf "node [shape=record];\n" >> $@
+$(QUIET)printf "base [label=\"base $(EPICS_VERSION_NUMBER)\"]\n" >> $@
+$(QUIET)printf "$(E3_REQUIRE_NAME) [label=\"$(E3_REQUIRE_NAME) $(E3_REQUIRE_VERSION)\"]\n" >> $@
+$(foreach v, $(DEP0), $(QUIET)echo "$(v) [label=\"$(v) $($(v)_DEP_VERSION)\"]">> $@ )
+$(QUIET)printf "$(E3_MODULE_NAME) [label=\"$(E3_MODULE_NAME) $(E3_MODULE_VERSION)\"]\n" >> $@
+$(QUIET)printf "base -> $(E3_REQUIRE_NAME) "  >> $@
+## From this point, we have to think how we handle other dependency out of this repository
+## by using rank, subgraph, and so on later.
+## Tuesday, September 10 12:49:41 CEST 2019, han.lee@esss.se
+## https://renenyffenegger.ch/notes/tools/Graphviz/examples/index
+$(foreach v, $(DEP0), $(QUIET)echo -n "-> $(v)" >> $@ )
+##
+$(QUIET)echo " -> $(E3_MODULE_NAME)">> $@
+$(QUIET)printf "}\n" >> $@
+endef
+
+
+define print_gv_file
+$(QUIET)printf "digraph $(E3_MODULE_NAME) {\n"
+$(QUIET)printf "node [shape=record];\n"
+$(QUIET)printf "base [label=\"base $(EPICS_VERSION_NUMBER)\"]\n" 
+$(QUIET)printf "$(E3_REQUIRE_NAME) [label=\"$(E3_REQUIRE_NAME) $(E3_REQUIRE_VERSION)\"]\n"
+$(foreach v, $(DEP0), $(QUIET)echo "$(v) [label=\"$(v) $($(v)_DEP_VERSION)\"]" )
+$(QUIET)printf "$(E3_MODULE_NAME) [label=\"$(E3_MODULE_NAME) $(E3_MODULE_VERSION)\"]\n" 
+$(QUIET)printf "base -> $(E3_REQUIRE_NAME) " 
+$(foreach v, $(DEP0), $(QUIET)echo -n "-> $(v)"  )
+$(QUIET)echo " -> $(E3_MODULE_NAME)"
+$(QUIET)printf "}\n\n"
+endef
+
+.PHONY: plotdep $(E3_MODULE_NAME).gv showgv
+
+FILETYPE?=svg
+
+plotdep: $(E3_MODULE_NAME).gv
+	dot -T$(FILETYPE) $@ -o $(E3_MODULE_NAME).$(FILETYPE)
+	display $(E3_MODULE_NAME).png&
+
+$(E3_MODULE_NAME).gv:
+	$(generate_gv_file)
+
+showgv:
+	$(QUIET)echo "*** Warning this output isn't 100% correct. Please look at them carefully! *** \n"
+	$(print_gv_file)
+
+.DELETE_ON_ERROR:

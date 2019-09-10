@@ -40,3 +40,5 @@ vers:
 	$(QUIET)echo "EPICS_MODULE_TAG:=$(EPICS_MODULE_TAG)"
 	$(QUIET)echo "E3_MODULE_VERSION:=$(E3_MODULE_VERSION)"
 
+dep3: 
+	$(foreach v, $(DEP_MODULES), $(info $(v) = $($(v)))) @#noop
