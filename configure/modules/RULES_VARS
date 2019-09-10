@@ -97,9 +97,17 @@ endef
 FILETYPE?=svg
 
 plotdep: $(E3_MODULE_NAME).gv
-	dot -T$(FILETYPE) $@ -o $(E3_MODULE_NAME).$(FILETYPE)
-	display $(E3_MODULE_NAME).png&
-
+ifeq (, $(shell which dot))
+	$(QUIET)echo "One should install graphviz in order to run this rule."
+else
+	dot -T$(FILETYPE) $^ -o $(E3_MODULE_NAME).$(FILETYPE)
+endif
+ifeq (, $(shell which dot))
+	$(QUIET)echo "One should install ImageMagick."
+	ls $(E3_MODULE_NAME).$(FILETYPE)
+else
+	display $(E3_MODULE_NAME).$(FILETYPE)&
+endif
 $(E3_MODULE_NAME).gv:
 	$(generate_gv_file)
 
