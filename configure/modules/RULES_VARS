@@ -81,36 +81,74 @@ vers:
 ## Tuesday, September 10 12:49:41 CEST 2019, han.lee@esss.se
 ## https://renenyffenegger.ch/notes/tools/Graphviz/examples/index
 
-
-define generate_gv_file
-$(QUIET)printf "digraph $(E3_MODULE_NAME) {\n" > $@
-$(QUIET)printf "node [shape=record];\n" >> $@
-$(QUIET)printf "base [label=\"base $(EPICS_VERSION_NUMBER)\"]\n" >> $@
-$(QUIET)printf "$(E3_REQUIRE_NAME) [label=\"$(E3_REQUIRE_NAME) $(E3_REQUIRE_VERSION)\"]\n" >> $@
-$(foreach v, $(DEP_NAMES), $(newline)$(tab)$(QUIET)echo $(v) [label=\"$(v) $($(v)_DEP_VERSION)\"]  >> $@)
-$(QUIET)printf "$(E3_MODULE_NAME) [label=\"$(E3_MODULE_NAME) $(E3_MODULE_VERSION)\"]\n" >> $@
-$(QUIET)printf "base -> $(E3_REQUIRE_NAME) -> { "  >> $@
-$(QUIET)printf "$(COMMA_DEP_NAMES)" >> $@
-$(QUIET)echo -n " }-> $(E3_MODULE_NAME)">> $@
-$(QUIET)printf "}\n" >> $@
-endef
-
-define print_gv_file
-$(QUIET)printf "digraph $(E3_MODULE_NAME) {\n"
-$(QUIET)printf "node [shape=record];\n"
+define a_gv
+$(QUIET)printf "digraph $(E3_MODULE_NAME) {\n" 
+$(QUIET)printf "node [shape=record];\n" 
 $(QUIET)printf "base [label=\"base $(EPICS_VERSION_NUMBER)\"]\n" 
-$(QUIET)printf "$(E3_REQUIRE_NAME) [label=\"$(E3_REQUIRE_NAME) $(E3_REQUIRE_VERSION)\"]\n"
-$(foreach v, $(DEP_NAMES), $(newline)$(tab)$(QUIET)echo $(v) [label=\"$(v) $($(v)_DEP_VERSION)\"])
-$(QUIET)printf "$(E3_MODULE_NAME) [label=\"$(E3_MODULE_NAME) $(E3_MODULE_VERSION)\"]\n" 
-$(QUIET)printf "base -> $(E3_REQUIRE_NAME) -> { "
-$(QUIET)printf "$(COMMA_DEP_NAMES) "
-$(QUIET)echo -n "} -> {$(E3_MODULE_NAME)}"
-$(QUIET)printf "}\n\n"
+$(QUIET)printf "$(E3_REQUIRE_NAME) [label=\"$(E3_REQUIRE_NAME) $(E3_REQUIRE_VERSION)\"]\n" 
+$(QUIET)$(foreach v, $(DEP_NAMES), $(newline)$(tab)$(QUIET)echo $(v) [label=\"$(v) $($(v)_DEP_VERSION)\"]) 
+$(QUIET)printf "$(E3_MODULE_NAME) [label=\"$(E3_MODULE_NAME) $(E3_MODULE_VERSION)\"]\n"  
+$(QUIET)printf "base -> $(E3_REQUIRE_NAME) " 
 endef
 
-.PHONY: plotdep $(E3_MODULE_NAME).gv showgv
+define b_gv
+$(QUIET)printf " $(E3_MODULE_NAME) "
+endef
+
+
+define a_gv_file
+$(QUIET)printf "digraph $(E3_MODULE_NAME) {\n" > $@
+$(QUIET)printf "node [shape=record];\n"  >> $@
+$(QUIET)printf "base [label=\"base $(EPICS_VERSION_NUMBER)\"]\n"  >> $@
+$(QUIET)printf "$(E3_REQUIRE_NAME) [label=\"$(E3_REQUIRE_NAME) $(E3_REQUIRE_VERSION)\"]\n"  >> $@
+$(QUIET)$(foreach v, $(DEP_NAMES), $(newline)$(tab)$(QUIET)echo $(v) [label=\"$(v) $($(v)_DEP_VERSION)\"]  >> $@) 
+$(QUIET)printf "$(E3_MODULE_NAME) [label=\"$(E3_MODULE_NAME) $(E3_MODULE_VERSION)\"]\n"   >> $@
+$(QUIET)printf "base -> $(E3_REQUIRE_NAME) "  >> $@
+endef
+
+define b_gv_file
+$(QUIET)printf " $(E3_MODULE_NAME) "  >> $@
+endef
+
+
+
+.PHONY: showgv plotdep $(E3_MODULE_NAME).gv closeplot
 
 FILETYPE?=svg
+
+showgv:
+	$(QUIET)echo "/*** Warning this output isn't 100% correct. Please look at them carefully! ***/ \n"
+	$(a_gv)
+ifneq ($(strip $(DEP_MODULES)),)
+	$(QUIET)echo -n "-> { $(COMMA_DEP_NAMES) } ";
+endif
+	$(QUIET)echo -n "-> ";
+ifneq ($(strip $(DEP_MODULES)),)
+	$(QUIET)echo -n " { ";
+endif
+	$(b_gv)
+ifneq ($(strip $(DEP_MODULES)),)
+	$(QUIET)echo -n " } ";
+endif
+	$(QUIET)echo "\n} \n";
+
+
+$(E3_MODULE_NAME).gv:
+	$(QUIET) rm -f $@
+	$(QUIET) $(a_gv_file)
+ifneq ($(strip $(DEP_MODULES)),)
+	$(QUIET)echo -n "-> { $(COMMA_DEP_NAMES) } " >> $@
+endif
+	$(QUIET)echo -n "-> " >> $@
+ifneq ($(strip $(DEP_MODULES)),)
+	$(QUIET)echo -n " { " >> $@
+endif
+	$(QUIET) $(b_gv_file)
+ifneq ($(strip $(DEP_MODULES)),)
+	$(QUIET)echo -n " } ">> $@
+endif
+	$(QUIET)echo "\n} \n">> $@
+
 
 plotdep: $(E3_MODULE_NAME).gv
 ifeq (, $(shell which dot))
@@ -124,12 +162,13 @@ ifeq (, $(shell which dot))
 else
 	display $(E3_MODULE_NAME).$(FILETYPE)&
 endif
-$(E3_MODULE_NAME).gv:
-	$(generate_gv_file)
 
-showgv:
-	$(QUIET)echo "*** Warning this output isn't 100% correct. Please look at them carefully! *** \n"
-	$(print_gv_file)
+closeplot:
+ifneq ($(strip $(shell ps aux |grep -E 'display.*$(FILETYPE)' | grep -v grep | awk '{print $$2}')),)
+	$(QUIET)ps aux |grep -E 'display.*$(FILETYPE)' | grep -v grep | awk '{print $$2}' | xargs $(SUDO) kill -9
+endif
+
+
 
 # https://www.cmcrossroads.com/article/printing-value-makefile-variable
 print-%:
