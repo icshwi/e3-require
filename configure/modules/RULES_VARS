@@ -3,6 +3,24 @@
 E3_MODULES_VARIABLES:=$(sort $(filter-out $(VARS_EXCLUDES) VARS_EXCLUDES,$(.VARIABLES)))
 
 DEP_MODULES:=$(filter %_DEP_VERSION, $(E3_MODULES_VARIABLES))
+DEP_NAMES:=$(patsubst %_DEP_VERSION,%,$(DEP_MODULES))
+
+
+COMMA := ,
+EMPTY :=
+SPACE := $(EMPTY) $(EMPTY)
+
+COMMA_DEP_NAMES:=$(subst $(SPACE),$(COMMA),$(DEP_NAMES))
+
+
+blank :=
+define newline
+
+$(blank)
+endef
+
+
+
 #LOWER_DEP_MODULES:=$(shell echo $(DEP_MODULES) | tr A-Z a-z)
 #DEP_MODULES_NAME:=$(subst _DEP_VERSION, "", $(DEP_MODULES))
 
@@ -58,37 +76,35 @@ vers:
 
 ### The following dependency plot generator rules do NOT cover all
 ### dependency information, BUT cover only within this module. 
-DEP0:=$(patsubst %_DEP_VERSION,%,$(DEP_MODULES))
+## From this point, we have to think how we handle other dependency out of this repository
+## by using rank, subgraph, and so on later.
+## Tuesday, September 10 12:49:41 CEST 2019, han.lee@esss.se
+## https://renenyffenegger.ch/notes/tools/Graphviz/examples/index
+
 
 define generate_gv_file
 $(QUIET)printf "digraph $(E3_MODULE_NAME) {\n" > $@
 $(QUIET)printf "node [shape=record];\n" >> $@
 $(QUIET)printf "base [label=\"base $(EPICS_VERSION_NUMBER)\"]\n" >> $@
 $(QUIET)printf "$(E3_REQUIRE_NAME) [label=\"$(E3_REQUIRE_NAME) $(E3_REQUIRE_VERSION)\"]\n" >> $@
-$(foreach v, $(DEP0), $(QUIET)echo "$(v) [label=\"$(v) $($(v)_DEP_VERSION)\"]">> $@ )
+$(foreach v, $(DEP_NAMES), $(newline)$(tab)$(QUIET)echo $(v) [label=\"$(v) $($(v)_DEP_VERSION)\"]  >> $@)
 $(QUIET)printf "$(E3_MODULE_NAME) [label=\"$(E3_MODULE_NAME) $(E3_MODULE_VERSION)\"]\n" >> $@
-$(QUIET)printf "base -> $(E3_REQUIRE_NAME) "  >> $@
-## From this point, we have to think how we handle other dependency out of this repository
-## by using rank, subgraph, and so on later.
-## Tuesday, September 10 12:49:41 CEST 2019, han.lee@esss.se
-## https://renenyffenegger.ch/notes/tools/Graphviz/examples/index
-$(foreach v, $(DEP0), $(QUIET)echo -n "-> $(v)" >> $@ )
-##
-$(QUIET)echo " -> $(E3_MODULE_NAME)">> $@
+$(QUIET)printf "base -> $(E3_REQUIRE_NAME) -> { "  >> $@
+$(QUIET)printf "$(COMMA_DEP_NAMES)" >> $@
+$(QUIET)echo -n " }-> $(E3_MODULE_NAME)">> $@
 $(QUIET)printf "}\n" >> $@
 endef
-
 
 define print_gv_file
 $(QUIET)printf "digraph $(E3_MODULE_NAME) {\n"
 $(QUIET)printf "node [shape=record];\n"
 $(QUIET)printf "base [label=\"base $(EPICS_VERSION_NUMBER)\"]\n" 
 $(QUIET)printf "$(E3_REQUIRE_NAME) [label=\"$(E3_REQUIRE_NAME) $(E3_REQUIRE_VERSION)\"]\n"
-$(foreach v, $(DEP0), $(QUIET)echo "$(v) [label=\"$(v) $($(v)_DEP_VERSION)\"]" )
+$(foreach v, $(DEP_NAMES), $(newline)$(tab)$(QUIET)echo $(v) [label=\"$(v) $($(v)_DEP_VERSION)\"])
 $(QUIET)printf "$(E3_MODULE_NAME) [label=\"$(E3_MODULE_NAME) $(E3_MODULE_VERSION)\"]\n" 
-$(QUIET)printf "base -> $(E3_REQUIRE_NAME) " 
-$(foreach v, $(DEP0), $(QUIET)echo -n "-> $(v)"  )
-$(QUIET)echo " -> $(E3_MODULE_NAME)"
+$(QUIET)printf "base -> $(E3_REQUIRE_NAME) -> { "
+$(QUIET)printf "$(COMMA_DEP_NAMES) "
+$(QUIET)echo -n "} -> {$(E3_MODULE_NAME)}"
 $(QUIET)printf "}\n\n"
 endef
 
@@ -115,4 +131,7 @@ showgv:
 	$(QUIET)echo "*** Warning this output isn't 100% correct. Please look at them carefully! *** \n"
 	$(print_gv_file)
 
-.DELETE_ON_ERROR:
+# https://www.cmcrossroads.com/article/printing-value-makefile-variable
+print-%:
+	@echo $* = $($*)
+	@echo $*\'s origin is $(origin $*)

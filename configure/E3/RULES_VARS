@@ -42,3 +42,9 @@ vers:
 
 dep3: 
 	$(foreach v, $(DEP_MODULES), $(info $(v) = $($(v)))) @#noop
+
+
+# https://www.cmcrossroads.com/article/printing-value-makefile-variable
+print-%:
+	@echo $* = $($*)
+	@echo $*\'s origin is $(origin $*)
