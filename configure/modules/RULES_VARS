@@ -68,9 +68,10 @@ _dep1:
 	$(QUIET)echo "require $(E3_MODULE_NAME),$(E3_MODULE_VERSION)"
 	$(QUIET)echo "< configured ..."
 
+
 vers:
-	$(QUIET)echo "EPICS_MODULE_TAG:=$(EPICS_MODULE_TAG)"
-	$(QUIET)echo "E3_MODULE_VERSION:=$(E3_MODULE_VERSION)"
+	$(QUIET)echo "EPICS_MODULE_TAG:=$(EPICS_MODULE_TAG), origin : $(origin EPICS_MODULE_TAG)"
+	$(QUIET)echo "E3_MODULE_VERSION:=$(E3_MODULE_VERSION), origin : $(origin E3_MODULE_VERSION)"
 
 
 
@@ -114,7 +115,7 @@ endef
 
 .PHONY: showgv plotdep $(E3_MODULE_NAME).gv closeplot
 
-FILETYPE?=svg
+FILETYPE?=png
 
 showgv:
 	$(QUIET)echo "/*** Warning this output isn't 100% correct. Please look at them carefully! ***/ \n"
@@ -133,7 +134,7 @@ endif
 	$(QUIET)echo "\n} \n";
 
 
-$(E3_MODULE_NAME).gv:
+$(TOP)/docs/$(E3_MODULE_NAME).gv:| outputPath
 	$(QUIET) rm -f $@
 	$(QUIET) $(a_gv_file)
 ifneq ($(strip $(DEP_MODULES)),)
@@ -150,24 +151,26 @@ endif
 	$(QUIET)echo "\n} \n">> $@
 
 
-plotdep: $(E3_MODULE_NAME).gv
+plotdep: $(TOP)/docs/$(E3_MODULE_NAME).gv 
 ifeq (, $(shell which dot))
 	$(QUIET)echo "One should install graphviz in order to run this rule."
 else
-	dot -T$(FILETYPE) $^ -o $(E3_MODULE_NAME).$(FILETYPE)
+	dot -T$(FILETYPE) $^ -o $(TOP)/docs/$(E3_MODULE_NAME).$(FILETYPE)
 endif
 ifeq (, $(shell which dot))
 	$(QUIET)echo "One should install ImageMagick."
-	ls $(E3_MODULE_NAME).$(FILETYPE)
+	ls $(TOP)/docs/$(E3_MODULE_NAME).$(FILETYPE)
 else
-	display $(E3_MODULE_NAME).$(FILETYPE)&
+	display $(TOP)/docs/$(E3_MODULE_NAME).$(FILETYPE)&
 endif
 
 closeplot:
 ifneq ($(strip $(shell ps aux |grep -E 'display.*$(FILETYPE)' | grep -v grep | awk '{print $$2}')),)
-	$(QUIET)ps aux |grep -E 'display.*$(FILETYPE)' | grep -v grep | awk '{print $$2}' | xargs $(SUDO) kill -9
+	$(QUIET)ps aux |grep -E 'display.*$(FILETYPE)' | grep -v grep | awk '{print $$2}' | xargs kill -9
 endif
 
+outputPath:
+	$(QUIET)mkdir -p $(TOP)/docs
 
 
 # https://www.cmcrossroads.com/article/printing-value-makefile-variable
