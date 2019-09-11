@@ -36,6 +36,8 @@
 #  0.3.7 : Introduce the local mode with -l
 #  0.3.8 : Use mktemp, and protect iocsh.bash when there is no diskspace
 #  0.3.9 : LD_BIND_NOW=1 for resolving symbols at startup.
+#  0.4.0 : fixed registryJLinkAdd failed pva error from base 7.0.3
+#          Wednesday, September 11 17:27:59 CEST 2019
 #
 declare -gr SC_SCRIPT="$(realpath "$0")";
 declare -gr SC_SCRIPTNAME=${0##*/};
@@ -136,5 +138,5 @@ fi
 
 #
 #
-${__CHRT__}${EPICS_BASE}/bin/${EPICS_HOST_ARCH}/softIoc${__PVA__} -D ${EPICS_BASE}/dbd/softIoc${_PVA_}.dbd "${IOC_STARTUP}" 2>&1
+${__CHRT__}${EPICS_BASE}/bin/${EPICS_HOST_ARCH}/softIoc${__PVA__} -D ${EPICS_BASE}/dbd/softIoc${__PVA__}.dbd "${IOC_STARTUP}" 2>&1
 
