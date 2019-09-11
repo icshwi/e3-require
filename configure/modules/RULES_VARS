@@ -134,8 +134,8 @@ endif
 	$(QUIET)echo "\n} \n";
 
 
-$(TOP)/docs/$(E3_MODULE_NAME).gv:| outputPath
-	$(QUIET) rm -f $@
+$(TOP)/docs/$(E3_MODULE_NAME).gv:FORCE | outputPath
+	rm -f $@
 	$(QUIET) $(a_gv_file)
 ifneq ($(strip $(DEP_MODULES)),)
 	$(QUIET)echo -n "-> { $(COMMA_DEP_NAMES) } " >> $@
@@ -177,3 +177,5 @@ outputPath:
 print-%:
 	@echo $* = $($*)
 	@echo $*\'s origin is $(origin $*)
+
+FORCE:
