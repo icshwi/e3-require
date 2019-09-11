@@ -36,13 +36,14 @@
 #  0.3.7 : Introduce the local mode with -l
 #  0.3.8 : Use mktemp, and protect iocsh.bash when there is no diskspace
 #  0.3.9 : LD_BIND_NOW=1 for resolving symbols at startup.
-#  0.4.0 : fixed registryJLinkAdd failed pva error from base 7.0.3
-#          Wednesday, September 11 17:27:59 CEST 2019
+#  0.4.0 : - Fixed registryJLinkAdd failed pva error from base 7.0.3
+#          - Enable an exit subroutine for sotfioc
+#            Wednesday, September 11 17:27:59 CEST 2019
 #
 declare -gr SC_SCRIPT="$(realpath "$0")";
 declare -gr SC_SCRIPTNAME=${0##*/};
 declare -gr SC_TOP="${SC_SCRIPT%/*}";
-declare -g  SC_VERSION="v0.3.9";
+declare -g  SC_VERSION="v0.4.0";
 declare -g  STARTUP="";
 declare -g  BASECODE="";
 
@@ -91,6 +92,9 @@ trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
     printIocEnv;
     printf "# Set REQUIRE_IOC for its internal PVs\n";
     printf "epicsEnvSet REQUIRE_IOC \"${REQUIRE_IOC}\"\n";
+    printf "#\n";
+    printf "# Enable an exit subroutine for sotfioc\n";
+    printf "dbLoadRecords \"${EPICS_BASE}/db/softIocExit.db\" \"IOC=${REQUIRE_IOC}\"\n";
     printf "#\n";
     printf "# Set E3_IOCSH_TOP for the absolute path where %s is executed.\n" "${SC_SCRIPTNAME}"
     printf "epicsEnvSet E3_IOCSH_TOP \"${IOCSH_TOP}\"\n";
