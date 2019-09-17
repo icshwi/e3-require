@@ -3,16 +3,15 @@
 # The only way to exclude header files is....
 
 ess_VERSION=
-caPutLog_VERSION=
 iocStats_VERSION=
 autosave_VERSION=
+caPutLog_VERSION=
 asyn_VERSION=
 busy_VERSION=
 modbus_VERSION=
 ipmiComm_VERSION=
 sequencer_VERSION=
 sscan_VERSION=
-
 std_VERSION=
 ip_VERSION=
 calc_VERSION=
@@ -31,6 +30,7 @@ motor_VERSION=
 ecmc_VERSION=
 EthercatMC_VERSION=
 ecmctraining_VERSION=
+ecmccfg_VERSION=
 
 keypress_VERSION=
 sysfs_VERSION=
@@ -41,6 +41,7 @@ i2cDev_VERSION=
 
 tosca_VERSION=
 tsclib_VERSION=
+ifcdaqdrv_VERSION=
 ifcdaqdrv2_VERSION=
 
 ## The main issue is nds3, it is mandatory to disable it
@@ -69,6 +70,9 @@ ADPointGrey_VERSION=
 ADProsilica_VERSION=
 ADPluginEdge_VERSION=
 ADPluginCalib_VERSION=
+ADGenICam_VERSION=
+ADSpinnaker_VERSION=
+
 
 
 amcpico8_VERSION=
@@ -90,8 +94,13 @@ pvaClient_VERSION=
 opcua_VERSION=
 snmp_VERSION=
 admisc_VERSION=
+ethmod_VERSION=
 
 huginn_VERSION=
+
+rs_nrp_VERSION=
+mebtemudaq_VERSION=
+
 
 # In addition to decouple the existent e3 module,
 # We use this opportunatiy in order to apply global configuration
