@@ -33,6 +33,7 @@ EthercatMC_VERSION=
 ecmctraining_VERSION=
 ecmccfg_VERSION=
 ads_VERSION=
+BeckhoffADS_VERSION=
 
 keypress_VERSION=
 sysfs_VERSION=
