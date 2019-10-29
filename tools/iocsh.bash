@@ -39,11 +39,12 @@
 #  0.4.0 : - Fixed registryJLinkAdd failed pva error from base 7.0.3
 #          - Enable an exit subroutine for sotfioc
 #            Wednesday, September 11 17:27:59 CEST 2019
+#  0.4.1 : - Use the one BASHPID for iocsh.bash
 #
 declare -gr SC_SCRIPT="$(realpath "$0")";
 declare -gr SC_SCRIPTNAME=${0##*/};
 declare -gr SC_TOP="${SC_SCRIPT%/*}";
-declare -g  SC_VERSION="v0.4.0";
+declare -g  SC_VERSION="0.4.1";
 declare -g  STARTUP="";
 declare -g  BASECODE="";
 
@@ -68,13 +69,15 @@ BASECODE="$(basecode_generator)"
 
 check_mandatory_env_settings
 
+# ${BASHPID} returns iocsh.bash PID
+iocsh_bash_id=${BASHPID}
 #
 # IOCSH_HASH_VERSION is defined when doing 'make install'
-SC_VERSION+=-${IOCSH_HASH_VERSION}.PID-${BASHPID}
+SC_VERSION+=-${IOCSH_HASH_VERSION}.PID-${iocsh_bash_id}
 #
-# We define IOCSH Git HASH + HOSTNAME + BASHPID
-IOCSH_PS1=$(iocsh_ps1     "${IOCSH_HASH_VERSION}" "${BASHPID}")
-REQUIRE_IOC=$(require_ioc "${IOCSH_HASH_VERSION}" "${BASHPID}")
+# We define IOCSH Git HASH + HOSTNAME + iocsh_bash_id
+IOCSH_PS1=$(iocsh_ps1     "${IOCSH_HASH_VERSION}" "${iocsh_bash_id}")
+REQUIRE_IOC=$(require_ioc "${IOCSH_HASH_VERSION}" "${iocsh_bash_id}")
 #
 # Default Initial Startup file for REQUIRE and minimal environment
 IOC_STARTUP=$(mktemp -q --suffix=_iocsh_${SC_VERSION}) || die 1 "${SC_SCRIPTNAME} CANNOT create the startup file, please check the disk space";

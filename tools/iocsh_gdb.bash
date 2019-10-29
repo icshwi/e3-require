@@ -22,12 +22,12 @@
 #                     email  : han.lee@esss.se
 #
 
-declare -gr SC_SCRIPT="$(realpath "$0")"
-declare -gr SC_SCRIPTNAME=${0##*/}
-declare -gr SC_TOP="${SC_SCRIPT%/*}"
-declare -g  SC_VERSION="v0.3.6-gdb"
-declare -g  STARTUP=""
-declare -g  BASECODE=""
+declare -gr SC_SCRIPT="$(realpath "$0")";
+declare -gr SC_SCRIPTNAME=${0##*/};
+declare -gr SC_TOP="${SC_SCRIPT%/*}";
+declare -g  SC_VERSION="v0.3.7-gdb";
+declare -g  STARTUP="";
+declare -g  BASECODE="";
 
 
 
@@ -49,18 +49,19 @@ BASECODE="$(basecode_generator)"
 
 check_mandatory_env_settings
 
+# ${BASHPID} returns iocsh.bash PID
+iocsh_bash_id=${BASHPID}
 #
 # IOCSH_HASH_VERSION is defined when doing 'make install'
-SC_VERSION+=-${IOCSH_HASH_VERSION}.PID-${BASHPID}
+SC_VERSION+=-${IOCSH_HASH_VERSION}.PID-${iocsh_bash_id}
 
 #
-# We define IOCSH Git HASH + HOSTNAME + BASHPID
-IOCSH_PS1=$(iocsh_ps1     "${IOCSH_HASH_VERSION}" "${BASHPID}")
-REQUIRE_IOC=$(require_ioc "${IOCSH_HASH_VERSION}" "${BASHPID}")
+# We define IOCSH Git HASH + HOSTNAME + iocsh_bash_id
+IOCSH_PS1=$(iocsh_ps1     "${IOCSH_HASH_VERSION}" "${iocsh_bash_id}")
+REQUIRE_IOC=$(require_ioc "${IOCSH_HASH_VERSION}" "${iocsh_bash_id}")
 #
 # Default Initial Startup file for REQUIRE and minimal environment
-
-IOC_STARTUP=/tmp/${SC_SCRIPTNAME}-${SC_VERSION}-startup
+IOC_STARTUP=$(mktemp -q --suffix=_iocsh_${SC_VERSION}) || die 1 "${SC_SCRIPTNAME} CANNOT create the startup file, please check the disk space";
 
 # To get the absolute path where iocsh.bash is executed
 IOCSH_TOP=${PWD}
@@ -70,7 +71,6 @@ IOCSH_TOP=${PWD}
 # In our jargon. It is the same as ${EPICS_MODULES}
 
 trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
-
 
 {
     printIocEnv;
