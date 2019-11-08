@@ -144,6 +144,25 @@ if [ -n "$EPICS_BASE" ]; then
 	
 	PATH=$(drop_from_path "${e3_path}" "${E3_REQUIRE_BIN}")
 	export PATH
+
+
+	# If CONDA_EXE, it is trouble to find the correct tclsh
+	if [ -n "$CONDA_EXE" ]; then
+	    
+	    # Decouple PATH from ESS Conda Env1 due to tclsh
+	    ess_conda_path1=${PATH}
+	    drop_ess_conda_path1="/opt/conda/envs/python37/bin"
+	    PATH=$(drop_from_path "${ess_conda_path1}" "${drop_ess_conda_path1}")
+	    export PATH
+	    
+	    # Decouple PATH from ESS Conda Env2 due to tclsh
+	    ess_conda_path2=${PATH}
+	    drop_ess_conda_path2="/opt/conda/condabin"
+	    PATH=$(drop_from_path "${ess_conda_path2}" "${drop_ess_conda_path2}")
+	    export PATH
+
+	fi
+
 	
 	e3_ld_path=${LD_LIBRARY_PATH}
 	drop_e3_ld_path1="${E3_REQUIRE_LIB}/${EPICS_HOST_ARCH}"
@@ -172,22 +191,7 @@ if [ -n "$EPICS_BASE" ]; then
 	
     fi
 
-    # If CONDA_EXE, it is trouble to find the correct tclsh
-    if [ -n "$CONDA_EXE" ]; then
-	
-	# Decouple PATH from ESS Conda Env1 due to tclsh
-	ess_conda_path1=${PATH}
-	drop_ess_conda_path1="/opt/conda/envs/python37"
-	PATH=$(drop_from_path "${ess_conda_path1}" "${drop_ess_conda_path1}")
-	export PATH
-	
-	# Decouple PATH from ESS Conda Env1 due to tclsh
-	ess_conda_path2=${PATH}
-	drop_ess_conda_path2="/opt/conda/condabin"
-	PATH=$(drop_from_path "${ess_conda_path2}" "${drop_ess_conda_path2}")
-	export PATH
-	
-    fi
+
     
     # If EPICS_ENV_PATH, it is EEE
     if [ -n "$EPICS_ENV_PATH" ]; then
