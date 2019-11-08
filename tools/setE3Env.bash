@@ -19,9 +19,9 @@
 #   Shell   : setE3Env.bash
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
-#   date    : Monday, June  3 16:46:48 CEST 2019
+#   date    : Friday, November  8 22:48:29 CET 2019
 #
-#   version : 0.8.0
+#   version : 0.8.1
 #
 #
 
@@ -186,6 +186,18 @@ if [ -n "$EPICS_BASE" ]; then
 	PATH=$(drop_from_path "${eee_pvaccess_path}" "${drop_eee_pvaccess_path}")
 	export PATH
 
+	# Decouple PATH from ESS Conda Env1 due to tclsh
+	ess_conda_path1=${PATH}
+	drop_ess_conda_path1="/opt/conda/envs/python37"
+	PATH=$(drop_from_path "${ess_conda_path1}" "${drop_ess_conda_path1}")
+	export PATH
+	
+	# Decouple PATH from ESS Conda Env1 due to tclsh
+	ess_conda_path2=${PATH}
+	drop_ess_conda_path2="/opt/conda/condabin"
+	PATH=$(drop_from_path "${ess_conda_path2}" "${drop_ess_conda_path2}")
+	export PATH
+	
 	# Decouple PYTHONPATH from pyaPy
 	eee_python_path=${PYTHONPATH}
 	drop_eee_python_path="${EPICS_MODULES_PATH}/pvaPy/0.6.0/${BASE}/lib/${EPICS_HOST_ARCH}"
