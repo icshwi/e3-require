@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  Copyright (c) 2017 - 2018     Jeong Han Lee
+#  Copyright (c) 2017 - 2019     Jeong Han Lee
 #  Copyright (c) 2017 - 2019     European Spallation Source ERIC
 #
 #  The program is free software: you can redistribute
@@ -171,6 +171,23 @@ if [ -n "$EPICS_BASE" ]; then
 	unset SCRIPT_DIR
 	
     fi
+
+    # If CONDA_EXE, it is trouble to find the correct tclsh
+    if [ -n "$CONDA_EXE" ]; then
+	
+	# Decouple PATH from ESS Conda Env1 due to tclsh
+	ess_conda_path1=${PATH}
+	drop_ess_conda_path1="/opt/conda/envs/python37"
+	PATH=$(drop_from_path "${ess_conda_path1}" "${drop_ess_conda_path1}")
+	export PATH
+	
+	# Decouple PATH from ESS Conda Env1 due to tclsh
+	ess_conda_path2=${PATH}
+	drop_ess_conda_path2="/opt/conda/condabin"
+	PATH=$(drop_from_path "${ess_conda_path2}" "${drop_ess_conda_path2}")
+	export PATH
+	
+    fi
     
     # If EPICS_ENV_PATH, it is EEE
     if [ -n "$EPICS_ENV_PATH" ]; then
@@ -186,18 +203,6 @@ if [ -n "$EPICS_BASE" ]; then
 	PATH=$(drop_from_path "${eee_pvaccess_path}" "${drop_eee_pvaccess_path}")
 	export PATH
 
-	# Decouple PATH from ESS Conda Env1 due to tclsh
-	ess_conda_path1=${PATH}
-	drop_ess_conda_path1="/opt/conda/envs/python37"
-	PATH=$(drop_from_path "${ess_conda_path1}" "${drop_ess_conda_path1}")
-	export PATH
-	
-	# Decouple PATH from ESS Conda Env1 due to tclsh
-	ess_conda_path2=${PATH}
-	drop_ess_conda_path2="/opt/conda/condabin"
-	PATH=$(drop_from_path "${ess_conda_path2}" "${drop_ess_conda_path2}")
-	export PATH
-	
 	# Decouple PYTHONPATH from pyaPy
 	eee_python_path=${PYTHONPATH}
 	drop_eee_python_path="${EPICS_MODULES_PATH}/pvaPy/0.6.0/${BASE}/lib/${EPICS_HOST_ARCH}"
@@ -218,9 +223,7 @@ if [ -n "$EPICS_BASE" ]; then
     
 fi
 
-
-
-
+ 
 
 THIS_SRC=${BASH_SOURCE[0]:-${0}}
 
