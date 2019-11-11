@@ -18,6 +18,7 @@ E3_IOC_CFG_FILES  := $(TOP)/tools/iocsh_functions
 E3_IOC_CFG_FILES  += $(E3_ESSENVCFG_FILE)
 #E3_IOC_CFG_FILES  += $(E3_CONFIG_FILE)
 E3_IOC_CFG_FILES  += $(TOP)/tools/setE3Env.bash
+E3_IOC_CFG_FILES  += $(TOP)/tools/promptE3Env.bash
 E3_REQUIRE_CONF_FILES := $(filter-out $(FILE_FILTER), $(wildcard $(TOP)/configure/modules/*))
 
 
