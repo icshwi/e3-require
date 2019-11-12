@@ -40,13 +40,16 @@
 #          - Enable an exit subroutine for sotfioc
 #            Wednesday, September 11 17:27:59 CEST 2019
 #  0.4.1 : - Use the one BASHPID for iocsh.bash
+#  0.4.2 : - Use the secure path within tmp, but it may create "disk full" in the long
+#            term if each IOC cannot be closed properly
 #
 declare -gr SC_SCRIPT="$(realpath "$0")";
 declare -gr SC_SCRIPTNAME=${0##*/};
 declare -gr SC_TOP="${SC_SCRIPT%/*}";
-declare -g  SC_VERSION="0.4.1";
+declare -g  SC_VERSION="0.4.2";
 declare -g  STARTUP="";
 declare -g  BASECODE="";
+declare -gr TMP_PATH="/tmp/systemd-private-e3-iocsh";
 
 
 set -a
@@ -80,7 +83,12 @@ IOCSH_PS1=$(iocsh_ps1     "${IOCSH_HASH_VERSION}" "${iocsh_bash_id}")
 REQUIRE_IOC=$(require_ioc "${IOCSH_HASH_VERSION}" "${iocsh_bash_id}")
 #
 # Default Initial Startup file for REQUIRE and minimal environment
-IOC_STARTUP=$(mktemp -q --suffix=_iocsh_${SC_VERSION}) || die 1 "${SC_SCRIPTNAME} CANNOT create the startup file, please check the disk space";
+# Create TMP_PATH path in order to keep tmp files secure until
+# an IOC will be closed. 
+
+mkdir -p ${TMP_PATH}
+
+IOC_STARTUP=$(mktemp -p ${TMP_PATH} -q --suffix=_iocsh_${SC_VERSION}) || die 1 "${SC_SCRIPTNAME} CANNOT create the startup file, please check the disk space";
 #
 # To get the absolute path where iocsh.bash is executed
 IOCSH_TOP=${PWD}
