@@ -3,7 +3,7 @@
 
 .DEFAULT_GOAL := help
 
-.PHONY: help default install uninstall build rebuild clean conf
+.PHONY: help default install uninstall build rebuild clean conf all
 
 default: help
 
@@ -60,6 +60,7 @@ rebuild: clean build install
 clean: conf
 	$(QUIET) $(E3_MODULE_MAKE_CMDS) clean
 
+all: init patch rebuild
 
 ## Copy $(E3_MODULE_MAKEFILE) into $(E3_MODULE_SRC_PATH)
 conf: 
