@@ -3,7 +3,7 @@
 
 .DEFAULT_GOAL := help
 
-.PHONY: help default install uninstall build rebuild clean conf
+.PHONY: help default install uninstall build rebuild clean conf all
 
 
 # # help is defined in 
@@ -50,6 +50,7 @@ build: conf checkout
 ## Clean, build, and install the EPICS Module : $(E3_MODULE_NAME)
 rebuild: clean build install
 
+all: init patch rebuild
 
 ## Clean : $(E3_MODULE_NAME)
 clean: conf
