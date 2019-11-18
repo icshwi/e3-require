@@ -1,7 +1,7 @@
 # -*- mode: sh -*-
 #
 #  Copyright (c) 2004 - 2017    Paul Scherrer Institute 
-#  Copyright (c) 2017 - Present European Spallation Source ERIC
+#  Copyright (c) 2017 - 2019    European Spallation Source ERIC
 #
 #  The program is free software: you can redistribute
 #  it and/or modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@
 #                     email  : han.lee@esss.se
 #
 #
+#                
 
 ROOT_UID=0 
 E_NOTROOT=101
@@ -278,9 +279,9 @@ function iocsh_ps1
     local host=$(hostname|tr -d '\r');
 
     iocsh_ps1+=$hash;       
-    iocsh_ps1+=".";
+    iocsh_ps1+="-";
     iocsh_ps1+=${host:0:7};
-    iocsh_ps1+=".";
+    iocsh_ps1+="-";
     iocsh_ps1+=$pid;
     iocsh_ps1+=" > ";
     
@@ -308,16 +309,14 @@ function require_ioc
     #  #define PVNAME_STRINGSZ 61 in EPICS_BASE/include/dbDefs.h
 
     local require_ioc=""
-    local hashin="$1";
-    local hash=$( echo $hashin | tr /a-z/ /A-Z/ );
+    local hash="$1";
     local pid="$2";
-    local host=${HOSTNAME//./_};
+    local hostname=${HOSTNAME//./_};
     # Record name should not have . character, because it is used inside reacord
-    local hostname=$( echo $host | tr /a-z/ /A-Z/ );
-
-    require_ioc="REQMOD-";         # char 7 ( 7)
+ 
+    require_ioc="REQMOD:";         # char 7 ( 7)
     require_ioc+=$hash;            # char 7 (14),  703250D
-    require_ioc+=":";              # char 1 (15)  
+    require_ioc+="-";              # char 1 (15)  
     require_ioc+=${hostname:0:7};  # char 7 (22)
     require_ioc+="-";              # char 1 (23)
     require_ioc+=${pid}            # char 7 (30),  max pid in  64 bit  4194304 (7),

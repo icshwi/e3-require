@@ -42,6 +42,7 @@
 #  0.4.1 : - Use the one BASHPID for iocsh.bash
 #  0.4.2 : - Use the secure path within tmp, but it may create "disk full" in the long
 #            term if each IOC cannot be closed properly
+#  0.4.3 : - Tune REQUIRE-* PV in order to replace - with . easily
 #
 declare -gr SC_SCRIPT="$(realpath "$0")";
 declare -gr SC_SCRIPTNAME=${0##*/};
