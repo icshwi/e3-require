@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 #  Copyright (c) 2004 - 2017    Paul Scherrer Institute 
 #  Copyright (c) 2017 - 2019    European Spallation Source ERIC

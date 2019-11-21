@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 #  Copyright (c) 2004 - 2017    Paul Scherrer Institute 
 #  Copyright (c) 2017 - 2019    European Spallation Source ERIC
@@ -43,11 +43,12 @@
 #  0.4.2 : - Use the secure path within tmp, but it may create "disk full" in the long
 #            term if each IOC cannot be closed properly
 #  0.4.3 : - Tune REQUIRE-* PV in order to replace - with . easily
+#  0.4.4 : - Replace the absolute bash path with env one
 #
 declare -gr SC_SCRIPT="$(realpath "$0")";
 declare -gr SC_SCRIPTNAME=${0##*/};
 declare -gr SC_TOP="${SC_SCRIPT%/*}";
-declare -g  SC_VERSION="0.4.2";
+declare -g  SC_VERSION="0.4.4";
 declare -g  STARTUP="";
 declare -g  BASECODE="";
 declare -gr TMP_PATH="/tmp/systemd-private-e3-iocsh";
