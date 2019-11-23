@@ -328,7 +328,15 @@ function require_ioc
 function loadRequire
 {
     local libPrefix=lib
-    local libPostfix=.so
+    local libPostfix=""
+    local macOS="darwin"
+    
+    if test "${EPICS_HOST_ARCH#$macOS}" != "${EPICS_HOST_ARCH}"; then
+	libPostfix=.dylib
+    else
+	libPostfix=.so
+    fi
+    
     local libName=${libPrefix}${E3_REQUIRE_NAME}${libPostfix}
     
     local require_lib=${E3_REQUIRE_LIB}/${EPICS_HOST_ARCH}/${libName}
