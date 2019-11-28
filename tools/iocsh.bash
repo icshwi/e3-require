@@ -44,11 +44,12 @@
 #            term if each IOC cannot be closed properly
 #  0.4.3 : - Tune REQUIRE-* PV in order to replace - with . easily
 #  0.4.4 : - Replace the absolute bash path with env one
+#  0.5.0 : - Introduce EPICSV3 to use softIoc instead of softIocPVA after BASE 7.0.3.1
 #
 declare -gr SC_SCRIPT="$(realpath "$0")";
 declare -gr SC_SCRIPTNAME=${0##*/};
 declare -gr SC_TOP="${SC_SCRIPT%/*}";
-declare -g  SC_VERSION="0.4.4";
+declare -g  SC_VERSION="0.5.0";
 declare -g  STARTUP="";
 declare -g  BASECODE="";
 declare -gr TMP_PATH="/tmp/systemd-private-e3-iocsh";
@@ -106,12 +107,11 @@ trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
     printf "# Set REQUIRE_IOC for its internal PVs\n";
     printf "epicsEnvSet REQUIRE_IOC \"${REQUIRE_IOC}\"\n";
     printf "#\n";
-    printf "# Enable an exit subroutine for sotfioc\n";
+    printf "# Enable an exit subroutine.\n" 
     printf "dbLoadRecords \"${EPICS_BASE}/db/softIocExit.db\" \"IOC=${REQUIRE_IOC}\"\n";
     printf "#\n";
     printf "# Set E3_IOCSH_TOP for the absolute path where %s is executed.\n" "${SC_SCRIPTNAME}"
     printf "epicsEnvSet E3_IOCSH_TOP \"${IOCSH_TOP}\"\n";
-    printf "#\n";
     
     loadRequire;
 
@@ -124,7 +124,7 @@ trap "softIoc_end ${IOC_STARTUP}" EXIT HUP INT TERM
     if [ "$REALTIME" == "RT" ]; then
 	printf "# Real Time \"$REALTIME\"\n";
     fi
-    
+
     if [ "$init" != NO ]; then
 	printf "# \n";
 	printf "iocInit\n"
@@ -147,13 +147,23 @@ else
     __CHRT__="";
 fi
 
+
 if [[ ${BASECODE} -ge  07000101 ]]; then
-    __PVA__="PVA"
+    if [ "$EPICSV3" == "V3" ]; then
+	SOFTIOC_NAME="softIoc"
+    else
+	SOFTIOC_NAME="softIocPVA"
+    fi
 else
-    __PVA__=""
+    SOFTIOC_NAME="softIoc"
 fi
 
-#
-#
-${__CHRT__}${EPICS_BASE}/bin/${EPICS_HOST_ARCH}/softIoc${__PVA__} -D ${EPICS_BASE}/dbd/softIoc${__PVA__}.dbd "${IOC_STARTUP}" 2>&1
+if [[ ${BASECODE} -eq  07000301 ]] && [ "$EPICSV3" == "V3" ]; then
+    SOFTIOC_NAME="softIocPVA"
+    printf "## \n";
+    printf "## Unfornately, EPICS_BASE %s doesn't support the softIoc feature.\n" "${EPICS_BASE}";
+    printf "## Force to use %s \n" "${SOFTIOC_NAME}";
+    printf "## \n";
+fi
+${__CHRT__}${EPICS_BASE}/bin/${EPICS_HOST_ARCH}/${SOFTIOC_NAME} -D ${EPICS_BASE}/dbd/${SOFTIOC_NAME}.dbd "${IOC_STARTUP}" 2>&1
 

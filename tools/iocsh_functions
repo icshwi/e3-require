@@ -29,6 +29,8 @@ E_NOTROOT=101
 EXIST=1
 NON_EXIST=0
 REALTIME=
+EPICSV3=
+SOFTIOC_NAME=
 
 function pushd { builtin pushd "$@" > /dev/null; }
 function popd  { builtin popd  "$@" > /dev/null; }
@@ -223,21 +225,24 @@ function printIocEnv
     var_list+=(PATH);
     var_list+=(LD_LIBRARY_PATH);
 
+   
     printf "#\n";
-    printf "# Start at \"$(date +%Y-W%V-%b%d-%H%M-%S-%Z)\"\n"
+   
+    printf "# ------>-----> snip ----->------> \n";
+    printf "#\n";
+    printf "# Please Use Version and other environment variables\n";
+    printf "# in order to report or debug this shell\n";
+    printf "#\n";
+    printf "# The IOC is started at \"$(date +%Y-W%V-%b%d-%H%M-%S-%Z)\"\n";
     printf "#\n";
     printf "# Version information:\n";
     printf "# %s : %s%s\n" "European Spallation Source ERIC" "$SC_SCRIPTNAME" ${SC_VERSION:+" ($SC_VERSION)"};
     printf "#\n";
-     
-    printf "# --->--> snip -->--> \n";
-    printf "# Please Use Version and other environment variables\n";
-    printf "# in order to report or debug this shell\n";
-    printf "#\n";
     for var in ${var_list[@]};  do
 	printf "# $var=\"${!var}\"\n"
     done
-    printf "# --->--> snip -->--> \n";
+    printf "#\n";
+    printf "# ------>-----> snip ----->------> \n";
     printf "#\n";
 };
 
@@ -392,6 +397,9 @@ function loadFiles
 	    ;;
 	    ( -rt | -RT | -realtime | --realtime )
 	    REALTIME="RT"
+	    ;;
+	    ( -v3 | -V3 | -epicsv3 | --EPICSV3 )
+	    EPICSV3="V3"
 	    ;;
 	    ( @* )
   	    loadFiles $(cat ${file#@})
