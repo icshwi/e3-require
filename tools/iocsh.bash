@@ -45,11 +45,12 @@
 #  0.4.3 : - Tune REQUIRE-* PV in order to replace - with . easily
 #  0.4.4 : - Replace the absolute bash path with env one
 #  0.5.0 : - Introduce EPICSV3 to use softIoc instead of softIocPVA after BASE 7.0.3.1
+#  0.5.1 : - fixed typo
 #
 declare -gr SC_SCRIPT="$(realpath "$0")";
 declare -gr SC_SCRIPTNAME=${0##*/};
 declare -gr SC_TOP="${SC_SCRIPT%/*}";
-declare -g  SC_VERSION="0.5.0";
+declare -g  SC_VERSION="0.5.1";
 declare -g  STARTUP="";
 declare -g  BASECODE="";
 declare -gr TMP_PATH="/tmp/systemd-private-e3-iocsh";
@@ -161,7 +162,7 @@ fi
 if [[ ${BASECODE} -eq  07000301 ]] && [ "$EPICSV3" == "V3" ]; then
     SOFTIOC_NAME="softIocPVA"
     printf "## \n";
-    printf "## Unfornately, EPICS_BASE %s doesn't support the softIoc feature.\n" "${EPICS_BASE}";
+    printf "## Unfortunately, EPICS_BASE %s doesn't support the softIoc feature.\n" "${EPICS_BASE}";
     printf "## Force to use %s \n" "${SOFTIOC_NAME}";
     printf "## \n";
 fi
