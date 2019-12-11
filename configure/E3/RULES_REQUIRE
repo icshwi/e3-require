@@ -21,27 +21,29 @@ E3_IOC_CFG_FILES  += $(TOP)/tools/setE3Env.bash
 E3_IOC_CFG_FILES  += $(TOP)/tools/promptE3Env.bash
 E3_REQUIRE_CONF_FILES := $(filter-out $(FILE_FILTER), $(wildcard $(TOP)/configure/modules/*))
 
+E3_INSTALL_PERMISSION1:=775
+E3_INSTALL_PERMISSION2:=664
 
 .PHONY: e3-site-conf  e3-site-path requireconf
 
 requireconf: e3-site-path e3-site-conf e3-require-path
-	$(QUIET) $(SUDO) install    -m 755 $(wildcard $(E3_MODULE_SRC_PATH)/App/tools/*.tcl)  $(E3_REQUIRE_TOOLS)/
-	$(QUIET) $(SUDO) install    -m 644 $(E3_MODULE_SRC_PATH)/App/tools/driver.makefile    $(E3_REQUIRE_TOOLS)/
-	$(QUIET) $(SUDO) install    -m 755 $(E3_SHELL_FILES)             $(E3_REQUIRE_BIN)/
-	$(QUIET) $(SUDO) install    -m 644 $(E3_IOC_CFG_FILES)           $(E3_REQUIRE_BIN)/
-	$(QUIET) $(SUDO) install    -m 644 $(E3_REQUIRE_CONF_FILES)      $(E3_REQUIRE_CONFIG)/
+	$(QUIET) $(SUDO) install    -m $(E3_INSTALL_PERMISSION1) $(wildcard $(E3_MODULE_SRC_PATH)/App/tools/*.tcl)  $(E3_REQUIRE_TOOLS)/
+	$(QUIET) $(SUDO) install    -m $(E3_INSTALL_PERMISSION2) $(E3_MODULE_SRC_PATH)/App/tools/driver.makefile    $(E3_REQUIRE_TOOLS)/
+	$(QUIET) $(SUDO) install    -m $(E3_INSTALL_PERMISSION1) $(E3_SHELL_FILES)             $(E3_REQUIRE_BIN)/
+	$(QUIET) $(SUDO) install    -m $(E3_INSTALL_PERMISSION2) $(E3_IOC_CFG_FILES)           $(E3_REQUIRE_BIN)/
+	$(QUIET) $(SUDO) install    -m $(E3_INSTALL_PERMISSION2) $(E3_REQUIRE_CONF_FILES)      $(E3_REQUIRE_CONFIG)/
 
 
 e3-require-path:
-	$(QUIET) $(SUDO) install -d -m 755 $(E3_REQUIRE_TOOLS)
-	$(QUIET) $(SUDO) install -d -m 755 $(E3_REQUIRE_BIN)
-	$(QUIET) $(SUDO) install -d -m 755 $(E3_REQUIRE_CONFIG)	
+	$(QUIET) $(SUDO) install -d -m $(E3_INSTALL_PERMISSION1) $(E3_REQUIRE_TOOLS)
+	$(QUIET) $(SUDO) install -d -m $(E3_INSTALL_PERMISSION1) $(E3_REQUIRE_BIN)
+	$(QUIET) $(SUDO) install -d -m $(E3_INSTALL_PERMISSION1) $(E3_REQUIRE_CONFIG)	
 
 
 e3-site-path:
-	$(QUIET) $(SUDO) install -d -m 755 $(E3_SITELIBS_PATH)
-	$(QUIET) $(SUDO) install -d -m 755 $(E3_SITEMODS_PATH)
-	$(QUIET) $(SUDO) install -d -m 755 $(E3_SITEAPPS_PATH)
+	$(QUIET) $(SUDO) install -d -m $(E3_INSTALL_PERMISSION1) $(E3_SITELIBS_PATH)
+	$(QUIET) $(SUDO) install -d -m $(E3_INSTALL_PERMISSION1) $(E3_SITEMODS_PATH)
+	$(QUIET) $(SUDO) install -d -m $(E3_INSTALL_PERMISSION1) $(E3_SITEAPPS_PATH)
 
 
 e3-site-conf:
@@ -60,4 +62,5 @@ VARS_EXCLUDES+=E3_IOC_CFG_FILES
 VARS_EXCLUDES+=E3_REQUIRE_CONF_FILES
 VARS_EXCLUDES+=E3_ESSENVCFG_FILE
 VARS_EXCLUDES+=E3_CONFIG_FILE
-
+VARS_EXCLUDES+=E3_INSTALL_PERMISSION1
+VARS_EXCLUDES+=E3_INSTALL_PERMISSION2

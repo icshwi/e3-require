@@ -64,7 +64,7 @@ all: init patch rebuild
 
 ## Copy $(E3_MODULE_MAKEFILE) into $(E3_MODULE_SRC_PATH)
 conf: 
-	$(QUIET) install -m 644 $(TOP)/$(E3_MODULE_MAKEFILE)  $(E3_MODULE_SRC_PATH)/
+	$(QUIET) install -m $(E3_INSTALL_PERMISSION2) $(TOP)/$(E3_MODULE_MAKEFILE)  $(E3_MODULE_SRC_PATH)/
 
 
 .PHONY: init git-submodule-sync $(E3_MODULE_SRC_PATH)  checkout
