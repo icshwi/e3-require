@@ -3,6 +3,11 @@
 
 .DEFAULT_GOAL := help
 
+
+E3_INSTALL_PERMISSION1:=775
+E3_INSTALL_PERMISSION2:=664
+
+
 .PHONY: help default install uninstall build rebuild clean conf all
 
 default: help
