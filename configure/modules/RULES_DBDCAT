@@ -1,0 +1,32 @@
+# Extra rules to expand .dbd files. Taken from $(EPICS_BASE)/configure/RULES.Db
+#
+#
+
+DBDCAT_SOURCES += $(foreach file, $($*_DBD), $(DBDCAT_SOURCE) )
+DBDCAT_SOURCE = $(firstword $(wildcard $(file) $(foreach dir,  \
+    $(DBD_SEARCH_DIRS),$(addsuffix /$(file),$(dir)))) \
+    $(COMMON_DIR)/$(file))
+
+DBDCAT_COMMAND = $(if $(DBDCAT_SOURCES),\
+    $(CAT) $(DBDCAT_SOURCES) > $(notdir $@),\
+    @echo "No input files for $(notdir $@)")
+
+INSTALL_DBDS += $(addprefix $(INSTALL_DBD)/,$(DBDCAT))
+
+
+define  DBDCAT_template
+$$(COMMON_DIR)/$(1).dbd: ../Makefile $$(foreach file, $$($(1)_DBD),$$(DBDCAT_SOURCE) )
+endef
+$(foreach name,$(subst .dbd,,$(DBDCAT)), $(eval $(call DBDCAT_template,$(name))))
+
+$(DBDCAT):$(COMMON_DIR)/%.dbd:
+	$(ECHO) "Creating dbd file $(notdir $@)"
+	@$(RM) $(notdir $@)
+	$(DBDCAT_COMMAND)
+	@$(MV) $(notdir $@) $@
+
+$(COMMON_DIR)/%.dbd:
+	$(ECHO) "Creating dbd file $(notdir $@)"
+	@$(RM) $(notdir $@)
+	$(DBEXPAND) $(DBDFLAGS) -o $(notdir $@) $($*_DBD)
+	@$(MV) $(notdir $@) $@
