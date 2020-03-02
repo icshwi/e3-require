@@ -51,6 +51,9 @@ celluninstall: conf
 build: conf checkout vlibs
 	$(QUIET) $(E3_MODULE_MAKE_CMDS) build
 
+# Runs the debug command from driver.Makefile which outputs a lot of information about the build process
+debug:
+	$(QUIET) $(E3_MODULE_MAKE_CMDS) debug
 
 ## Clean, build, and install the EPICS Module : $(E3_MODULE_NAME)
 rebuild: clean build install
