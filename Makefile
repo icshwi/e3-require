@@ -14,11 +14,16 @@
 #  You should have received a copy of the GNU General Public License along with
 #  this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
 #
-# Author  : Jeong Han Lee
-# email   : han.lee@esss.se
-# Date    : Wednesday, October 18 21:17:45 CEST 2017
-# version : 0.1.1
+# Author   : Jeong Han Lee
+# email    : han.lee@esss.se
+# Date     : Wednesday, October 18 21:17:45 CEST 2017
+# version  : 0.1.1
 #
+# Author 2 : Simon Rose
+# email    : simon.rose@ess.eu
+# Date     : Monday, March 2
+# version  : 3.2.0
+
 
 TOP:=$(CURDIR)
 
