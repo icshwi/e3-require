@@ -53,7 +53,7 @@ declare -gr SC_TOP="${SC_SCRIPT%/*}";
 declare -g  SC_VERSION="0.5.1";
 declare -g  STARTUP="";
 declare -g  BASECODE="";
-declare -gr TMP_PATH="/tmp/systemd-private-e3-iocsh";
+declare -gr TMP_PATH="/tmp/systemd-private-e3-iocsh-$(whoami)";
 
 
 set -a
