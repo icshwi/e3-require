@@ -1,3 +1,7 @@
+# Deprecation notice
+
+2020-08-26: This remote has been deprecated. Moved to https://gitlab.esss.lu.se/e3/e3-require.
+
 # e3-require
 
 
